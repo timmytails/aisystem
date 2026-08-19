@@ -191,7 +191,7 @@ const contactLimiter = rateLimit({
 
 const aiPreviewLimiter = rateLimit({
     windowMs: 60 * 60 * 1000,
-    max: 5,
+    max: 15,
     standardHeaders: true,
     legacyHeaders: false,
     skip: () => !isProduction,
@@ -204,6 +204,18 @@ const aiPreviewLimiter = rateLimit({
 // ─────────────────────────────────────────────────────────────
 // Selective limiter middleware
 // ─────────────────────────────────────────────────────────────
+
+const applyAiLimiter = (req, res, next) => {
+    // Limit only expensive AI generation and verification endpoints
+    if (
+        req.method === 'POST' &&
+        (req.path === '/style-preview' || req.path === '/photo-verification')
+    ) {
+        return aiPreviewLimiter(req, res, next)
+    }
+
+    return next()
+}
 
 const applyAuthLimiter = (
     req,
@@ -309,7 +321,7 @@ app.use(
 
 app.use(
     '/api/ai',
-    aiPreviewLimiter,
+    applyAiLimiter,
     require('./routes/ai')
 )
 

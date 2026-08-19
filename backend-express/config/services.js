@@ -105,7 +105,7 @@ const STYLE_OPTIONS = [
         seasonReasons: {
             'hot-dry': 'Helps your pet stay cool and energetic during hot sunny days.'
         },
-        seasonPriority: { 'hot-dry': 1 },
+        seasonPriority: { 'hot-dry': 0 },
         coatSafety: 'Gentle on skin with safe length preserved for sun protection.'
     },
     {
@@ -178,7 +178,7 @@ const STYLE_OPTIONS = [
             'wet-rainy': 'Helps reduce matting and dirt buildup without cutting short.',
             'cool-dry': 'Maintains natural warmth and cozy coat coverage.'
         },
-        seasonPriority: { 'hot-dry': 1, 'wet-rainy': 1, 'cool-dry': 1 },
+        seasonPriority: { 'hot-dry': 2, 'wet-rainy': 2, 'cool-dry': 1 },
         coatSafety: 'Recommended for double-coated breeds like Huskies, Retrievers & Pomeranians.'
     },
     {
@@ -196,7 +196,7 @@ const STYLE_OPTIONS = [
             'hot-dry': 'Keeps long-haired cats comfortable during warm weather.',
             'wet-rainy': 'Makes daily brushing smooth and hassle-free.'
         },
-        seasonPriority: { 'hot-dry': 2, 'wet-rainy': 1 },
+        seasonPriority: { 'hot-dry': 1, 'wet-rainy': 1 },
         coatSafety: 'Soft and comfortable for Persian, Maine Coon, and long-haired cats.'
     },
     {
