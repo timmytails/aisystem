@@ -76,10 +76,10 @@ export default function Contact() {
                     </p>
 
                     <div className='mt-2 grid gap-3 sm:grid-cols-2 lg:grid-cols-1'>
-                        <InfoCard icon={MapPin}  label='Address'          text='Baliuag City, Bulacan, Philippines' />
-                        <InfoCard icon={Phone}   label='Customer Care'    text='+63 955 591 3304' />
-                        <InfoCard icon={Mail}    label='Email Inquiry'    text='contact@timmytails.com' />
-                        <InfoCard icon={Clock3}  label='Operating Hours'  text='Mon – Sat: 8:00 AM – 6:00 PM' />
+                        <InfoCard icon={MapPin} label='Address' text='Baliuag City, Bulacan, Philippines' />
+                        <InfoCard icon={Phone} label='Customer Care' text='+63 975 669 2647' />
+                        <InfoCard icon={Mail} label='Email Inquiry' text='contact@timmytails.com' />
+                        <InfoCard icon={Clock3} label='Operating Hours' text='Mon – Sat: 8:00 AM – 6:00 PM' />
                     </div>
                 </section>
 

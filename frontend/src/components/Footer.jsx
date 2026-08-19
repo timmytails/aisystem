@@ -33,7 +33,7 @@ export default function Footer() {
                         </p>
                         <p className='flex items-center gap-3'>
                             <Phone size={15} className='shrink-0 text-[#bf5a31]' />
-                            +63 955 591 3304
+                            +63 975 669 2647
                         </p>
                         <p className='flex items-center gap-3'>
                             <Mail size={15} className='shrink-0 text-[#bf5a31]' />
