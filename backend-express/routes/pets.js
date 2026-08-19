@@ -11,7 +11,9 @@ const validators = [
     body('type').isIn(['dog', 'cat']).withMessage('Pet type must be dog or cat'),
     body('breed').trim().notEmpty().withMessage('Breed is required'),
     body('coatType').optional().trim().isLength({ max: 100 }),
-    body('notes').optional().trim().isLength({ max: 300 })
+    body('notes').optional().trim().isLength({ max: 300 }),
+    body('ageMonths').optional({ checkFalsy: true }).isNumeric().withMessage('Age in months must be a number'),
+    body('vaccinated').optional()
 ]
 
 router.get('/', protect, async (req, res) => {
@@ -31,6 +33,7 @@ router.post('/', protect, validators, async (req, res) => {
     }
 
     try {
+        const isVaccinated = req.body.vaccinated === false || req.body.vaccinated === 'false' || req.body.vaccinated === 'no' ? false : true
         const pet = await Pet.create({
             owner: req.user._id,
             name: req.body.name,
@@ -38,6 +41,8 @@ router.post('/', protect, validators, async (req, res) => {
             breed: req.body.breed,
             coatType: req.body.coatType || '',
             notes: req.body.notes || '',
+            ageMonths: req.body.ageMonths !== undefined && req.body.ageMonths !== '' ? Number(req.body.ageMonths) : 12,
+            vaccinated: isVaccinated,
             photoUrl: req.body.photoUrl || ''
         })
         res.status(201).json({ success: true, pet })
@@ -58,6 +63,7 @@ router.patch('/:id', protect, validators, async (req, res) => {
     }
 
     try {
+        const isVaccinated = req.body.vaccinated === false || req.body.vaccinated === 'false' || req.body.vaccinated === 'no' ? false : true
         const pet = await Pet.findOneAndUpdate(
             { _id: req.params.id, owner: req.user._id },
             {
@@ -66,6 +72,8 @@ router.patch('/:id', protect, validators, async (req, res) => {
                 breed: req.body.breed,
                 coatType: req.body.coatType || '',
                 notes: req.body.notes || '',
+                ageMonths: req.body.ageMonths !== undefined && req.body.ageMonths !== '' ? Number(req.body.ageMonths) : 12,
+                vaccinated: isVaccinated,
                 photoUrl: req.body.photoUrl || ''
             },
             { new: true, runValidators: true }

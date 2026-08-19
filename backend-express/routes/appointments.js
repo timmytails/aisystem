@@ -872,7 +872,17 @@ router.post(
             })
             .withMessage(
                 'Notes cannot exceed 500 characters'
-            )
+            ),
+
+        body('petAgeMonths')
+            .optional({ checkFalsy: true })
+            .isNumeric()
+            .withMessage(
+                'Pet age in months must be a number'
+            ),
+
+        body('vaccinated')
+            .optional()
     ],
     async (req, res) => {
         const errors =
@@ -1098,6 +1108,26 @@ router.post(
                 pet?.breed ||
                 req.body.breed
             ).trim()
+            const authoritativePetAgeMonths = pet?.ageMonths !== undefined
+                ? pet.ageMonths
+                : (req.body.petAgeMonths !== undefined && req.body.petAgeMonths !== '' ? Number(req.body.petAgeMonths) : null)
+            const authoritativeVaccinated = pet?.vaccinated !== undefined
+                ? pet.vaccinated
+                : (req.body.vaccinated === false || req.body.vaccinated === 'false' || req.body.vaccinated === 'no' ? false : true)
+
+            if (authoritativePetAgeMonths !== null && authoritativePetAgeMonths < 3) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Notice: Pets must be at least 3 months old to be groomed.'
+                })
+            }
+
+            if (authoritativeVaccinated === false) {
+                return res.status(400).json({
+                    success: false,
+                    message: 'Booking Ends: Pets must be fully vaccinated to receive grooming services.'
+                })
+            }
 
             if (
                 style &&
@@ -1234,6 +1264,12 @@ router.post(
 
                     breed:
                         authoritativeBreed,
+
+                    petAgeMonths:
+                        authoritativePetAgeMonths,
+
+                    vaccinated:
+                        authoritativeVaccinated,
 
                     serviceId:
                         service.id,

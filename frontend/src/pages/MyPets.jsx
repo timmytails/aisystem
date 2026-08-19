@@ -4,7 +4,7 @@ import toast from 'react-hot-toast'
 import { getErrorMessage, petsApi } from '../utils/api'
 import ConfirmModal from '../components/ConfirmModal'
 
-const emptyPet = { name: '', type: 'dog', breed: '', coatType: '', notes: '' }
+const emptyPet = { name: '', type: 'dog', breed: '', coatType: '', notes: '', ageMonths: '', vaccinated: 'yes' }
 
 export default function MyPets() {
     const [pets, setPets] = useState([])
@@ -26,7 +26,15 @@ export default function MyPets() {
     const openNew = () => { setEditingId(''); setForm(emptyPet); setOpen(true) }
     const openEdit = (pet) => {
         setEditingId(pet._id)
-        setForm({ name: pet.name, type: pet.type, breed: pet.breed, coatType: pet.coatType || '', notes: pet.notes || '' })
+        setForm({
+            name: pet.name,
+            type: pet.type,
+            breed: pet.breed,
+            coatType: pet.coatType || '',
+            notes: pet.notes || '',
+            ageMonths: pet.ageMonths !== undefined && pet.ageMonths !== null ? String(pet.ageMonths) : '',
+            vaccinated: pet.vaccinated === false ? 'no' : 'yes'
+        })
         setOpen(true)
     }
 
@@ -139,6 +147,16 @@ export default function MyPets() {
                                         Coat: <span className='text-[#4e382b]'>{pet.coatType}</span>
                                     </p>
                                 )}
+                                <div className='mt-3 flex flex-wrap items-center gap-2 text-xs'>
+                                    {pet.ageMonths !== undefined && pet.ageMonths !== null && (
+                                        <span className={`rounded-full px-2.5 py-0.5 font-semibold ${pet.ageMonths < 3 ? 'bg-amber-100 text-amber-800' : 'bg-slate-100 text-slate-700'}`}>
+                                            {pet.ageMonths} mo old {pet.ageMonths < 3 ? '(Under 3 mo)' : ''}
+                                        </span>
+                                    )}
+                                    <span className={`rounded-full px-2.5 py-0.5 font-semibold ${pet.vaccinated === false ? 'bg-red-100 text-red-700' : 'bg-emerald-100 text-emerald-800'}`}>
+                                        {pet.vaccinated === false ? 'Unvaccinated' : 'Fully Vaccinated'}
+                                    </span>
+                                </div>
                                 {pet.notes && (
                                     <p className='mt-2 rounded-lg border border-[#eaddd0] bg-[#faf6f0] px-3 py-2 text-xs italic leading-relaxed text-[#806654]'>
                                         &ldquo;{pet.notes}&rdquo;
@@ -214,6 +232,21 @@ export default function MyPets() {
                                 <Field label='Coat Type (Optional)' placeholder='e.g. Double coat' value={form.coatType} onChange={(v) => setForm({ ...form, coatType: v })} required={false} />
                             </div>
 
+                            <div className='grid gap-4 sm:grid-cols-2'>
+                                <Field label='Pet Age (Months)' type='number' min='0' placeholder='e.g. 6' value={form.ageMonths} onChange={(v) => setForm({ ...form, ageMonths: v })} required={false} />
+                                <label className='block'>
+                                    <FieldLabel>Fully Vaccinated?</FieldLabel>
+                                    <select
+                                        value={form.vaccinated}
+                                        onChange={(e) => setForm({ ...form, vaccinated: e.target.value })}
+                                        className='h-11 w-full rounded-xl border border-[#e0d3c3] px-4 text-sm outline-none focus:border-[#bf5a31] focus:ring-2 focus:ring-[#bf5a31]/10'
+                                    >
+                                        <option value='yes'>Yes - Fully Vaccinated</option>
+                                        <option value='no'>No - Not Vaccinated</option>
+                                    </select>
+                                </label>
+                            </div>
+
                             <label className='block'>
                                 <FieldLabel>Special Notes / Care Instructions (Optional)</FieldLabel>
                                 <textarea
@@ -257,7 +290,7 @@ function FieldLabel({ children }) {
     return <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6e5645]'>{children}</span>
 }
 
-function Field({ label, value, onChange, placeholder, required = true }) {
+function Field({ label, value, onChange, placeholder, required = true, ...props }) {
     return (
         <label className='block'>
             <FieldLabel>{label}</FieldLabel>
@@ -267,6 +300,7 @@ function Field({ label, value, onChange, placeholder, required = true }) {
                 onChange={(e) => onChange(e.target.value)}
                 required={required}
                 className='h-11 w-full rounded-xl border border-[#e0d3c3] px-4 text-sm outline-none transition focus:border-[#bf5a31] focus:ring-2 focus:ring-[#bf5a31]/10 placeholder:text-[#b5a090]'
+                {...props}
             />
         </label>
     )

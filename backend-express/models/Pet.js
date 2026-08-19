@@ -37,6 +37,15 @@ const petSchema = new mongoose.Schema(
             maxlength: 300,
             default: ''
         },
+        ageMonths: {
+            type: Number,
+            min: 0,
+            default: 12
+        },
+        vaccinated: {
+            type: Boolean,
+            default: true
+        },
         photoUrl: {
             type: String,
             default: ''

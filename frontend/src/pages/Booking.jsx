@@ -52,7 +52,9 @@ const emptyPet = {
     type: 'dog',
     breed: '',
     coatType: '',
-    notes: ''
+    notes: '',
+    ageMonths: '',
+    vaccinated: 'yes'
 }
 
 
@@ -207,6 +209,9 @@ export default function Booking() {
     const selectedPet = pets.find((pet) => pet._id === selectedPetId)
     const activePet = petMode === 'existing' ? selectedPet : newPet
     const activePetId = getActivePetId(petMode, selectedPet)
+    const activePetAge = activePet?.ageMonths !== undefined && activePet?.ageMonths !== '' ? Number(activePet.ageMonths) : null
+    const isPetTooYoung = activePetAge !== null && !isNaN(activePetAge) && activePetAge < 3
+    const isPetNotVaccinated = activePet?.vaccinated === false || activePet?.vaccinated === 'no' || activePet?.vaccinated === 'false'
     const activePetType = String(activePet?.type || '').toLowerCase()
     const compatibleStyles = styles.filter((style) =>
         Array.isArray(style.petTypes) &&
@@ -913,6 +918,8 @@ export default function Booking() {
     const validate = () => {
         if (!selectedService) return 'Select a service'
         if (!activePet?.name || !activePet?.breed || !activePet?.type) return 'Complete the pet information'
+        if (isPetTooYoung) return 'Notice: Pets must be at least 3 months old to be booked'
+        if (isPetNotVaccinated) return 'Booking Ends: Pets must be fully vaccinated to proceed'
         if (aiEnabled && !selectedStyle) return 'Select a grooming style'
         if (!selectedDate || !selectedSlot) return 'Select an available date and time'
         if (!user?.phone) return 'Complete your profile with a phone number'
@@ -945,6 +952,8 @@ export default function Booking() {
                 petName: petRecord?.name || activePet.name,
                 petType: petRecord?.type || activePet.type,
                 breed: petRecord?.breed || activePet.breed,
+                petAgeMonths: activePet?.ageMonths !== undefined && activePet?.ageMonths !== '' ? Number(activePet.ageMonths) : null,
+                vaccinated: activePet?.vaccinated !== false && activePet?.vaccinated !== 'no' && activePet?.vaccinated !== 'false',
                 serviceId: selectedService.id,
                 haircutStyle: selectedStyle?.id || null,
                 aiPreviewUsed: Boolean(generatedPreview),
@@ -1083,26 +1092,79 @@ export default function Booking() {
 
                             {petMode === 'existing' ? (
                                 <div className='grid gap-3 sm:grid-cols-2'>
-                                    {pets.map((pet) => (
-                                        <button key={pet._id} type='button' onClick={() => { setSelectedPetId(pet._id); resetForPetChange() }} aria-pressed={selectedPetId === pet._id} className={`rounded-2xl border p-4 text-left transition ${selectedPetId === pet._id ? 'border-[#a84522] bg-[#fff3ec]' : 'border-[#e5d6c5] bg-white hover:border-[#c88968]'}`}>
-                                            <p className='font-serif text-xl font-bold'>{pet.name}</p>
-                                            <p className='mt-1 text-sm text-[#806654]'>{pet.type === 'cat' ? 'Cat' : 'Dog'} · {pet.breed}</p>
-                                            {pet.coatType && <p className='mt-2 text-xs text-[#8c7565]'>{pet.coatType}</p>}
-                                        </button>
-                                    ))}
+                                    {pets.map((pet) => {
+                                        const petAge = pet.ageMonths !== undefined && pet.ageMonths !== '' ? Number(pet.ageMonths) : null
+                                        const tooYoung = petAge !== null && petAge < 3
+                                        const unvax = pet.vaccinated === false || pet.vaccinated === 'no' || pet.vaccinated === 'false'
+                                        return (
+                                            <button key={pet._id} type='button' onClick={() => { setSelectedPetId(pet._id); resetForPetChange() }} aria-pressed={selectedPetId === pet._id} className={`rounded-2xl border p-4 text-left transition ${selectedPetId === pet._id ? 'border-[#a84522] bg-[#fff3ec]' : 'border-[#e5d6c5] bg-white hover:border-[#c88968]'}`}>
+                                                <p className='font-serif text-xl font-bold'>{pet.name}</p>
+                                                <p className='mt-1 text-sm text-[#806654]'>{pet.type === 'cat' ? 'Cat' : 'Dog'} · {pet.breed}{petAge !== null ? ` · ${petAge} mo` : ''}</p>
+                                                {pet.coatType && <p className='mt-1.5 text-xs text-[#8c7565]'>{pet.coatType}</p>}
+                                                {(tooYoung || unvax) && (
+                                                    <div className='mt-2 flex flex-wrap gap-1'>
+                                                        {tooYoung && <span className='rounded bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800'>&lt; 3 Months Old</span>}
+                                                        {unvax && <span className='rounded bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-800'>Unvaccinated</span>}
+                                                    </div>
+                                                )}
+                                            </button>
+                                        )
+                                    })}
                                 </div>
                             ) : (
                                 <div className='grid gap-4 sm:grid-cols-2'>
-                                    <Input label='Pet name' value={newPet.name} onChange={(value) => { setNewPet({ ...newPet, name: value }); resetForPetChange() }} />
-                                    <label className='block'><Label>Pet type</Label><select value={newPet.type} onChange={(event) => { setNewPet({ ...newPet, type: event.target.value }); resetForPetChange() }} className='w-full rounded-xl border border-[#dfcfbd] bg-white px-4 py-3.5'><option value='dog'>Dog</option><option value='cat'>Cat</option></select></label>
-                                    <Input label='Breed' value={newPet.breed} onChange={(value) => { setNewPet({ ...newPet, breed: value }); resetForPetChange() }} />
-                                    <Input label='Coat type (optional)' value={newPet.coatType} onChange={(value) => { setNewPet({ ...newPet, coatType: value }); resetForPetChange() }} placeholder='Long, short, curly, double coat' />
-                                    <label className='block sm:col-span-2'><Label>Pet notes (optional)</Label><textarea value={newPet.notes} onChange={(event) => setNewPet({ ...newPet, notes: event.target.value })} rows={3} className='w-full rounded-xl border border-[#dfcfbd] px-4 py-3 outline-none focus:border-[#b84c25]' /></label>
+                                    <Input label='PET NAME' value={newPet.name} onChange={(value) => { setNewPet({ ...newPet, name: value }); resetForPetChange() }} />
+                                    <label className='block'>
+                                        <Label>PET TYPE</Label>
+                                        <select value={newPet.type} onChange={(event) => { setNewPet({ ...newPet, type: event.target.value }); resetForPetChange() }} className='w-full rounded-xl border border-[#dfcfbd] bg-white px-4 py-3.5 outline-none focus:border-[#b84c25] text-sm'>
+                                            <option value='dog'>Dog</option>
+                                            <option value='cat'>Cat</option>
+                                        </select>
+                                    </label>
+                                    <Input label='BREED' value={newPet.breed} onChange={(value) => { setNewPet({ ...newPet, breed: value }); resetForPetChange() }} />
+                                    <Input label='COAT TYPE (OPTIONAL)' value={newPet.coatType} onChange={(value) => { setNewPet({ ...newPet, coatType: value }); resetForPetChange() }} placeholder='Long, short, curly, double coat' />
+                                    <Input label='PET AGE (MONTHS)' type='number' min='0' value={newPet.ageMonths} onChange={(value) => { setNewPet({ ...newPet, ageMonths: value }); resetForPetChange() }} placeholder='e.g. 6' />
+                                    <label className='block'>
+                                        <Label>IS PET FULLY VACCINATED?</Label>
+                                        <select value={newPet.vaccinated} onChange={(event) => { setNewPet({ ...newPet, vaccinated: event.target.value }); resetForPetChange() }} className='w-full rounded-xl border border-[#dfcfbd] bg-white px-4 py-3.5 outline-none focus:border-[#b84c25] text-sm'>
+                                            <option value='yes'>Yes - Fully Vaccinated</option>
+                                            <option value='no'>No - Not Vaccinated</option>
+                                        </select>
+                                    </label>
+                                    <label className='block sm:col-span-2'>
+                                        <Label>PET NOTES (OPTIONAL)</Label>
+                                        <textarea value={newPet.notes} onChange={(event) => setNewPet({ ...newPet, notes: event.target.value })} rows={3} className='w-full rounded-xl border border-[#dfcfbd] px-4 py-3 outline-none focus:border-[#b84c25] text-sm' />
+                                    </label>
+                                </div>
+                            )}
+
+                            {isPetTooYoung && (
+                                <div className='mt-5 flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-900 shadow-xs'>
+                                    <AlertTriangle className='mt-0.5 h-5 w-5 shrink-0 text-amber-600' />
+                                    <div>
+                                        <h4 className='font-bold text-sm text-amber-950 uppercase tracking-wide'>Notice</h4>
+                                        <p className='mt-0.5 text-sm text-amber-800 leading-relaxed'>
+                                            Pet must be at least 3 months old to be eligible for grooming.
+                                            {activePetAge !== null && ` (Current age: ${activePetAge} ${activePetAge === 1 ? 'month' : 'months'})`}
+                                        </p>
+                                    </div>
+                                </div>
+                            )}
+
+                            {!isPetTooYoung && isPetNotVaccinated && (
+                                <div className='mt-5 flex items-start gap-3 rounded-2xl border border-red-300 bg-red-50 p-4 text-red-900 shadow-xs'>
+                                    <AlertTriangle className='mt-0.5 h-5 w-5 shrink-0 text-red-600' />
+                                    <div>
+                                        <h4 className='font-bold text-sm text-red-950 uppercase tracking-wide'>Booking Ends</h4>
+                                        <p className='mt-0.5 text-sm text-red-800 leading-relaxed'>
+                                            Pet must be fully vaccinated to receive grooming services.
+                                        </p>
+                                    </div>
                                 </div>
                             )}
                         </Section>
 
-                        <Section number='2' title='Style and preview' description={aiEnabled ? 'Upload one pet photo, compare personalized styles, and choose a grooming reference.' : 'A style preview is available for Full Grooming and Custom Styling.'} icon={<WandSparkles size={19} className='text-[#a94723]' />} disabled={!selectedService || !activePet?.name || !activePet?.breed}>
+                        <Section number='2' title='Style and preview' description={aiEnabled ? 'Upload one pet photo, compare personalized styles, and choose a grooming reference.' : 'A style preview is available for Full Grooming and Custom Styling.'} icon={<WandSparkles size={19} className='text-[#a94723]' />} disabled={!selectedService || !activePet?.name || !activePet?.breed || isPetTooYoung || isPetNotVaccinated}>
                             {!aiEnabled ? (
                                 <div className='rounded-2xl border border-[#e5d6c5] bg-[#f7f2eb] p-6 text-sm text-[#806654]'>The selected service does not need a hairstyle preview. Continue to the schedule.</div>
                             ) : (
@@ -1138,7 +1200,7 @@ export default function Booking() {
                             )}
                         </Section>
 
-                        <Section number='3' title='Schedule' description='Choose an available date and one two-hour time period.' icon={<CalendarDays size={19} className='text-[#a94723]' />} disabled={!selectedService || !activePet?.name || !activePet?.breed || (aiEnabled && !selectedStyle)}>
+                        <Section number='3' title='Schedule' description='Choose an available date and one two-hour time period.' icon={<CalendarDays size={19} className='text-[#a94723]' />} disabled={!selectedService || !activePet?.name || !activePet?.breed || isPetTooYoung || isPetNotVaccinated || (aiEnabled && !selectedStyle)}>
                             <div className='grid gap-5 xl:grid-cols-[1fr_1fr]'>
                                 <AvailabilityCalendar
                                     monthKey={monthKey}

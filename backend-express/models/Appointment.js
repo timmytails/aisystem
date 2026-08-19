@@ -29,6 +29,14 @@ const appointmentSchema = new mongoose.Schema(
             required: [true, 'Breed is required'],
             trim: true
         },
+        petAgeMonths: {
+            type: Number,
+            default: null
+        },
+        vaccinated: {
+            type: Boolean,
+            default: true
+        },
         serviceId: {
             type: String,
             required: true,
