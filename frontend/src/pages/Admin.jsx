@@ -7,6 +7,7 @@ import {
 
 import {
     BarChart3,
+    Bell,
     CalendarDays,
     CheckCheck,
     CheckCircle2,
@@ -19,6 +20,7 @@ import {
     Inbox,
     LogOut,
     Mail,
+    Megaphone,
     Menu,
     MessageSquare,
     PawPrint,
@@ -26,6 +28,7 @@ import {
     RefreshCw,
     Scissors,
     Search,
+    Send,
     Trash2,
     UserRound,
     Users,
@@ -97,6 +100,11 @@ const NAV_ITEMS = [
         id: 'analytics',
         label: 'Analytics',
         icon: BarChart3
+    },
+    {
+        id: 'notifications',
+        label: 'Notifications',
+        icon: Bell
     }
 ]
 
@@ -364,6 +372,16 @@ export default function Admin() {
     ] = useState([])
 
     const [
+        adminNotifications,
+        setAdminNotifications
+    ] = useState([])
+
+    const [
+        notifLoading,
+        setNotifLoading
+    ] = useState(false)
+
+    const [
         bookingFilter,
         setBookingFilter
     ] = useState('')
@@ -430,13 +448,15 @@ export default function Admin() {
                 appointmentsResult,
                 analyticsResult,
                 customersResult,
-                contactsResult
+                contactsResult,
+                notificationsResult
             ] = await Promise.allSettled([
                 adminApi.getStats(),
                 adminApi.getAppointments({ limit: 100 }),
                 adminApi.getAnalytics(),
                 adminApi.getUsers(),
-                adminApi.getContacts()
+                adminApi.getContacts(),
+                adminApi.getNotifications()
             ])
 
             if (statsResult.status === 'fulfilled') {
@@ -453,6 +473,9 @@ export default function Admin() {
             }
             if (contactsResult.status === 'fulfilled') {
                 setContacts(contactsResult.value.data.contacts || [])
+            }
+            if (notificationsResult.status === 'fulfilled') {
+                setAdminNotifications(notificationsResult.value.data.notifications || [])
             }
 
             const rejected = [statsResult, appointmentsResult, analyticsResult, customersResult, contactsResult].find((r) => r.status === 'rejected')
@@ -940,6 +963,27 @@ export default function Admin() {
                                 }
                             />
                         )}
+
+                    {activeTab === 'notifications' && (
+                        <NotificationsView
+                            notifications={adminNotifications}
+                            customers={customers}
+                            loading={notifLoading}
+                            onSend={async (payload) => {
+                                setNotifLoading(true)
+                                try {
+                                    await adminApi.createNotification(payload)
+                                    toast.success('Notification sent successfully!')
+                                    const res = await adminApi.getNotifications()
+                                    setAdminNotifications(res.data.notifications || [])
+                                } catch (err) {
+                                    toast.error(getErrorMessage(err))
+                                } finally {
+                                    setNotifLoading(false)
+                                }
+                            }}
+                        />
+                    )}
                 </main>
             </div>
 
@@ -3269,6 +3313,291 @@ function ContactsView({ contacts = [], onRefresh }) {
                 onConfirm={() => confirmDeleteId && handleDelete(confirmDeleteId)}
                 onClose={() => setConfirmDeleteId(null)}
             />
+        </div>
+    )
+}
+
+// ─────────────────────────────────────────────────────────
+// NOTIFICATIONS VIEW
+// ─────────────────────────────────────────────────────────
+function NotificationsView({ notifications, customers, loading, onSend }) {
+    const [title, setTitle] = useState('')
+    const [message, setMessage] = useState('')
+    const [audience, setAudience] = useState('all-users')
+    const [targetUserId, setTargetUserId] = useState('')
+    const [sending, setSending] = useState(false)
+    const [search, setSearch] = useState('')
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        if (!title.trim() || !message.trim()) {
+            return
+        }
+        if (audience === 'user' && !targetUserId) {
+            return
+        }
+        setSending(true)
+        try {
+            await onSend({
+                title: title.trim(),
+                message: message.trim(),
+                audience,
+                ...(audience === 'user' ? { targetUserId } : {})
+            })
+            setTitle('')
+            setMessage('')
+            setTargetUserId('')
+        } finally {
+            setSending(false)
+        }
+    }
+
+    const filtered = (notifications || []).filter((n) => {
+        if (!search.trim()) return true
+        const q = search.toLowerCase()
+        return (
+            n.title?.toLowerCase().includes(q) ||
+            n.message?.toLowerCase().includes(q)
+        )
+    })
+
+    const broadcastCount = (notifications || []).filter((n) => n.audience === 'all-users').length
+    const targetedCount = (notifications || []).filter((n) => n.audience === 'user').length
+
+    function timeAgo(dateStr) {
+        const diff = Math.floor((Date.now() - new Date(dateStr)) / 1000)
+        if (diff < 60) return 'just now'
+        if (diff < 3600) return `${Math.floor(diff / 60)}m ago`
+        if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`
+        return `${Math.floor(diff / 86400)}d ago`
+    }
+
+    return (
+        <div className='space-y-6'>
+            {/* Page header */}
+            <div className='flex items-center gap-3 border-b border-[#e8ddd0] pb-4'>
+                <span className='grid h-10 w-10 place-items-center rounded-xl bg-[#1c3329] text-white'>
+                    <Bell size={20} />
+                </span>
+                <div>
+                    <h2 className='font-serif text-2xl font-bold text-[#201711]'>Notifications</h2>
+                    <p className='text-xs text-[#786150]'>Compose and send notifications to customers</p>
+                </div>
+            </div>
+
+            {/* Stats row */}
+            <div className='grid grid-cols-2 gap-3 sm:grid-cols-3'>
+                <div className='rounded-xl border border-[#e8ddd0] bg-white p-4'>
+                    <p className='text-2xl font-bold text-[#201711]'>{(notifications || []).length}</p>
+                    <p className='text-xs font-medium text-[#786150]'>Total Sent</p>
+                </div>
+                <div className='rounded-xl border border-[#e8ddd0] bg-white p-4'>
+                    <p className='text-2xl font-bold text-[#1c3329]'>{broadcastCount}</p>
+                    <p className='text-xs font-medium text-[#786150]'>Broadcasts</p>
+                </div>
+                <div className='rounded-xl border border-[#e8ddd0] bg-white p-4'>
+                    <p className='text-2xl font-bold text-[#bf5a31]'>{targetedCount}</p>
+                    <p className='text-xs font-medium text-[#786150]'>Targeted</p>
+                </div>
+            </div>
+
+            <div className='grid gap-6 lg:grid-cols-5'>
+                {/* ── Compose Form ── */}
+                <div className='lg:col-span-2'>
+                    <div className='rounded-2xl border border-[#e8ddd0] bg-white shadow-sm'>
+                        <div className='border-b border-[#f0e8de] px-5 py-4'>
+                            <div className='flex items-center gap-2'>
+                                <Megaphone size={16} className='text-[#bf5a31]' />
+                                <h3 className='font-bold text-[#201711]'>Send Notification</h3>
+                            </div>
+                        </div>
+
+                        <form onSubmit={handleSubmit} className='space-y-4 p-5'>
+                            {/* Audience toggle */}
+                            <div>
+                                <label className='mb-1.5 block text-xs font-bold text-[#4e382b]'>Send To</label>
+                                <div className='flex gap-2'>
+                                    <button
+                                        type='button'
+                                        onClick={() => { setAudience('all-users'); setTargetUserId('') }}
+                                        className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg border py-2 text-xs font-bold transition ${
+                                            audience === 'all-users'
+                                                ? 'border-[#1c3329] bg-[#1c3329] text-white'
+                                                : 'border-[#e5d8c8] bg-white text-[#4e382b] hover:border-[#1c3329]'
+                                        }`}
+                                    >
+                                        <Users size={13} />
+                                        All Users
+                                    </button>
+                                    <button
+                                        type='button'
+                                        onClick={() => setAudience('user')}
+                                        className={`flex flex-1 items-center justify-center gap-1.5 rounded-lg border py-2 text-xs font-bold transition ${
+                                            audience === 'user'
+                                                ? 'border-[#bf5a31] bg-[#bf5a31] text-white'
+                                                : 'border-[#e5d8c8] bg-white text-[#4e382b] hover:border-[#bf5a31]'
+                                        }`}
+                                    >
+                                        <UserRound size={13} />
+                                        Specific User
+                                    </button>
+                                </div>
+                            </div>
+
+                            {/* Target user selector */}
+                            {audience === 'user' && (
+                                <div>
+                                    <label className='mb-1.5 block text-xs font-bold text-[#4e382b]'>Select Customer</label>
+                                    <select
+                                        value={targetUserId}
+                                        onChange={(e) => setTargetUserId(e.target.value)}
+                                        required
+                                        className='w-full rounded-lg border border-[#e5d8c8] bg-white px-3 py-2.5 text-xs font-medium text-[#201711] focus:border-[#bf5a31] focus:outline-none'
+                                    >
+                                        <option value=''>— Choose a customer —</option>
+                                        {(customers || []).map((c) => (
+                                            <option key={c._id} value={c._id}>
+                                                {c.firstName} {c.lastName} ({c.email})
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+                            )}
+
+                            {/* Title */}
+                            <div>
+                                <label className='mb-1.5 block text-xs font-bold text-[#4e382b]'>
+                                    Title <span className='text-[#bf5a31]'>*</span>
+                                </label>
+                                <input
+                                    type='text'
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    maxLength={120}
+                                    placeholder='e.g. Shop Holiday Hours'
+                                    required
+                                    className='w-full rounded-lg border border-[#e5d8c8] px-3 py-2.5 text-xs text-[#201711] placeholder-[#c0a98b] focus:border-[#bf5a31] focus:outline-none'
+                                />
+                                <p className='mt-1 text-right text-[10px] text-[#b0a090]'>{title.length}/120</p>
+                            </div>
+
+                            {/* Message */}
+                            <div>
+                                <label className='mb-1.5 block text-xs font-bold text-[#4e382b]'>
+                                    Message <span className='text-[#bf5a31]'>*</span>
+                                </label>
+                                <textarea
+                                    value={message}
+                                    onChange={(e) => setMessage(e.target.value)}
+                                    maxLength={1000}
+                                    rows={5}
+                                    placeholder='Write your notification message here…'
+                                    required
+                                    className='w-full resize-none rounded-lg border border-[#e5d8c8] px-3 py-2.5 text-xs text-[#201711] placeholder-[#c0a98b] focus:border-[#bf5a31] focus:outline-none'
+                                />
+                                <p className='mt-1 text-right text-[10px] text-[#b0a090]'>{message.length}/1000</p>
+                            </div>
+
+                            {/* Preview */}
+                            {(title || message) && (
+                                <div className='rounded-xl border border-dashed border-[#e0d0c0] bg-[#faf6f0] p-3'>
+                                    <p className='mb-1 text-[10px] font-bold uppercase tracking-wider text-[#b0a090]'>Preview</p>
+                                    <p className='text-xs font-bold text-[#201711]'>{title || '—'}</p>
+                                    <p className='mt-0.5 text-xs text-[#5f4637]'>{message || '—'}</p>
+                                </div>
+                            )}
+
+                            <button
+                                type='submit'
+                                disabled={sending || loading || !title.trim() || !message.trim() || (audience === 'user' && !targetUserId)}
+                                className='flex w-full items-center justify-center gap-2 rounded-xl bg-[#bf5a31] py-3 text-xs font-bold text-white shadow-sm transition hover:bg-[#a94723] disabled:cursor-not-allowed disabled:opacity-50'
+                            >
+                                {sending ? (
+                                    <>
+                                        <span className='h-4 w-4 animate-spin rounded-full border-2 border-white/30 border-t-white' />
+                                        Sending…
+                                    </>
+                                ) : (
+                                    <>
+                                        <Send size={13} />
+                                        {audience === 'all-users' ? 'Send to All Users' : 'Send to User'}
+                                    </>
+                                )}
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                {/* ── Sent History ── */}
+                <div className='lg:col-span-3'>
+                    <div className='rounded-2xl border border-[#e8ddd0] bg-white shadow-sm'>
+                        <div className='flex items-center justify-between border-b border-[#f0e8de] px-5 py-4'>
+                            <div className='flex items-center gap-2'>
+                                <Bell size={15} className='text-[#1c3329]' />
+                                <h3 className='font-bold text-[#201711]'>Sent History</h3>
+                                <span className='rounded-full bg-[#f0e8dd] px-2 py-0.5 text-[10px] font-bold text-[#7a5c3a]'>
+                                    {(notifications || []).length}
+                                </span>
+                            </div>
+                            {/* Search */}
+                            <div className='relative'>
+                                <Search size={13} className='absolute left-2.5 top-1/2 -translate-y-1/2 text-[#c0a98b]' />
+                                <input
+                                    value={search}
+                                    onChange={(e) => setSearch(e.target.value)}
+                                    placeholder='Search…'
+                                    className='rounded-lg border border-[#e5d8c8] bg-[#faf6f0] py-1.5 pl-7 pr-3 text-xs text-[#201711] focus:border-[#bf5a31] focus:outline-none w-36'
+                                />
+                            </div>
+                        </div>
+
+                        <div className='max-h-[520px] overflow-y-auto divide-y divide-[#f5ede3]'>
+                            {filtered.length === 0 ? (
+                                <div className='flex flex-col items-center gap-3 py-14 text-[#9e8a7a]'>
+                                    <Bell size={32} strokeWidth={1.5} />
+                                    <p className='text-sm font-medium'>No notifications sent yet</p>
+                                    <p className='text-xs text-[#b0a090]'>Use the form on the left to send one</p>
+                                </div>
+                            ) : (
+                                filtered.map((n) => (
+                                    <div key={n._id} className='flex items-start gap-3 px-5 py-4 hover:bg-[#faf6f0]'>
+                                        <span className={`mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-full ${
+                                            n.audience === 'all-users'
+                                                ? 'bg-[#eef4f1] text-[#1c3329]'
+                                                : 'bg-[#f6ede2] text-[#bf5a31]'
+                                        }`}>
+                                            {n.audience === 'all-users' ? <Megaphone size={14} /> : <UserRound size={14} />}
+                                        </span>
+                                        <div className='flex-1 min-w-0'>
+                                            <div className='flex items-start justify-between gap-2'>
+                                                <p className='text-xs font-bold text-[#201711] leading-snug'>{n.title}</p>
+                                                <span className='shrink-0 text-[10px] text-[#b0a090] whitespace-nowrap'>{timeAgo(n.createdAt)}</span>
+                                            </div>
+                                            <p className='mt-0.5 text-xs text-[#5f4637] leading-relaxed line-clamp-2'>{n.message}</p>
+                                            <div className='mt-1.5 flex items-center gap-2'>
+                                                <span className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-bold ${
+                                                    n.audience === 'all-users'
+                                                        ? 'bg-[#eef4f1] text-[#1c3329]'
+                                                        : 'bg-[#fff0e8] text-[#bf5a31]'
+                                                }`}>
+                                                    {n.audience === 'all-users' ? <Users size={9} /> : <UserRound size={9} />}
+                                                    {n.audience === 'all-users' ? 'Broadcast' : 'Targeted'}
+                                                </span>
+                                                {n.readBy?.length > 0 && (
+                                                    <span className='inline-flex items-center gap-1 rounded-full bg-[#f0f4ff] px-2 py-0.5 text-[10px] font-bold text-[#4466bb]'>
+                                                        <CheckCheck size={9} />
+                                                        {n.readBy.length} read
+                                                    </span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     )
 }

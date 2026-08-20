@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation, useNavigate } from 'react-router-dom'
 import { CalendarDays, LogOut, Menu, PawPrint, Shield, UserRound, X } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { rememberReturnTo } from '../utils/authRouting'
+import NotificationBell from './NotificationBell'
 
 const publicLinks = [
     { label: 'Services', href: '/#services' },
@@ -101,15 +102,18 @@ export default function Header() {
                                     Admin Panel
                                 </Link>
                             ) : (
-                                <Link
-                                    to='/profile'
-                                    className='inline-flex items-center gap-2 rounded-lg border border-[#e5d8c8] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#3e2b20] transition hover:border-[#bf5a31]/40 hover:text-[#bf5a31]'
-                                >
-                                    <span className='grid h-5 w-5 place-items-center rounded-full bg-[#bf5a31] text-[10px] font-bold text-white'>
-                                        {user.firstName?.[0]?.toUpperCase() || <UserRound size={11} />}
-                                    </span>
-                                    {user.firstName}
-                                </Link>
+                                <>
+                                    <NotificationBell />
+                                    <Link
+                                        to='/profile'
+                                        className='inline-flex items-center gap-2 rounded-lg border border-[#e5d8c8] bg-white px-3.5 py-1.5 text-xs font-semibold text-[#3e2b20] transition hover:border-[#bf5a31]/40 hover:text-[#bf5a31]'
+                                    >
+                                        <span className='grid h-5 w-5 place-items-center rounded-full bg-[#bf5a31] text-[10px] font-bold text-white'>
+                                            {user.firstName?.[0]?.toUpperCase() || <UserRound size={11} />}
+                                        </span>
+                                        {user.firstName}
+                                    </Link>
+                                </>
                             )}
                             <button
                                 onClick={signOut}
@@ -199,13 +203,18 @@ export default function Header() {
                             </Link>
                         )}
                         {user?.role !== 'admin' && (
-                            <button
-                                onClick={startBooking}
-                                className='flex w-full items-center justify-center gap-2 rounded-xl bg-[#bf5a31] py-3 text-sm font-bold text-white shadow-xs transition hover:bg-[#a94723]'
-                            >
-                                <CalendarDays size={16} />
-                                <span>Book Now</span>
-                            </button>
+                            <>
+                                <div className='flex justify-center'>
+                                    <NotificationBell />
+                                </div>
+                                <button
+                                    onClick={startBooking}
+                                    className='flex w-full items-center justify-center gap-2 rounded-xl bg-[#bf5a31] py-3 text-sm font-bold text-white shadow-xs transition hover:bg-[#a94723]'
+                                >
+                                    <CalendarDays size={16} />
+                                    <span>Book Now</span>
+                                </button>
+                            </>
                         )}
                         {user && (
                             <button
