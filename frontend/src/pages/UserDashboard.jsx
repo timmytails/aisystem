@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-    CalendarDays, ChevronRight, Clock3, Eye, PawPrint,
-    Plus, Scissors, Settings, Sparkles
+    CalendarDays, ChevronRight, Clock3, Eye,
+    Plus, Scissors, Settings, Dog, Cat
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
@@ -21,10 +21,10 @@ const appointmentDate = (appointment, useEnd = false) => {
 }
 
 const STATUS_STYLES = {
-    confirmed: { pill: 'bg-blue-50 text-blue-700 border-blue-200',   bar: 'bg-blue-500' },
-    completed: { pill: 'bg-emerald-50 text-emerald-700 border-emerald-200', bar: 'bg-emerald-500' },
-    cancelled: { pill: 'bg-red-50 text-red-600 border-red-200',      bar: 'bg-red-400' },
-    pending:   { pill: 'bg-amber-50 text-amber-700 border-amber-200', bar: 'bg-amber-400' }
+    confirmed: { pill: 'bg-blue-50 text-blue-800 border-blue-200', bar: 'bg-blue-500' },
+    completed: { pill: 'bg-emerald-50 text-emerald-800 border-emerald-200', bar: 'bg-emerald-500' },
+    cancelled: { pill: 'bg-red-50 text-red-700 border-red-200', bar: 'bg-red-400' },
+    pending:   { pill: 'bg-amber-50 text-amber-800 border-amber-200', bar: 'bg-amber-400' }
 }
 
 export default function UserDashboard() {
@@ -72,144 +72,147 @@ export default function UserDashboard() {
     const completedCount = appointments.filter((a) => a.status === 'completed').length
 
     return (
-        <div className='min-h-screen bg-[#fbf7f1] px-4 py-8 text-[#201711] sm:px-6 sm:py-12'>
+        <div className='min-h-screen bg-[#FAF7F2] px-4 py-8 text-[#261C14] sm:px-6 sm:py-10'>
             <div className='mx-auto max-w-6xl space-y-8'>
 
                 {/* ── Welcome Banner ── */}
-                <section className='overflow-hidden rounded-2xl bg-[#1c3329] text-white shadow-md'>
-                    <div className='px-7 py-8 sm:px-10 sm:py-10'>
+                <section className='overflow-hidden rounded-xl border border-[#E2D9C8] bg-[#2B4C3F] text-white shadow-sm'>
+                    <div className='px-6 py-8 sm:px-10 sm:py-10'>
                         <div className='flex flex-col justify-between gap-6 md:flex-row md:items-center'>
                             <div>
-                                <div className='mb-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-xs font-semibold uppercase tracking-wider'>
-                                    <Sparkles size={13} className='text-amber-300' />
+                                <span className='mb-2 inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white/90'>
                                     Customer Dashboard
-                                </div>
+                                </span>
                                 <h1 className='font-serif text-3xl font-bold tracking-tight sm:text-4xl'>
                                     Welcome back, {user.firstName}!
                                 </h1>
-                                <p className='mt-2 max-w-lg text-sm text-white/80 sm:text-base'>
+                                <p className='mt-2 max-w-lg text-sm text-white/80'>
                                     {upcoming.length
-                                        ? `You have ${upcoming.length} upcoming grooming appointment${upcoming.length === 1 ? '' : 's'}.`
-                                        : 'You have no upcoming grooming appointments.'}
+                                        ? `You have ${upcoming.length} upcoming grooming appointment${upcoming.length === 1 ? '' : 's'} scheduled.`
+                                        : 'You currently have no upcoming grooming appointments.'}
                                 </p>
                             </div>
 
-                            <div className='flex flex-col gap-3 sm:flex-row sm:shrink-0'>
+                            <div className='flex flex-wrap items-center gap-3 sm:shrink-0'>
                                 <Link
                                     to='/profile'
-                                    className='inline-flex items-center justify-center gap-2 rounded-xl border border-white/25 bg-white/10 px-5 py-2.5 text-xs font-bold text-white transition hover:bg-white/20'
+                                    className='inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/10 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-white/20'
                                 >
                                     <Settings size={15} />
-                                    Manage Profile
+                                    <span>Profile Settings</span>
                                 </Link>
                                 <Link
                                     to='/booking'
-                                    className='inline-flex items-center justify-center gap-2 rounded-xl bg-[#bf5a31] px-6 py-2.5 text-xs font-bold uppercase tracking-wide text-white shadow-sm transition hover:bg-[#a94723]'
+                                    className='inline-flex items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-[#A84E20]'
                                 >
-                                    <Plus size={15} />
-                                    Book Appointment
+                                    <Plus size={16} />
+                                    <span>Book Appointment</span>
                                 </Link>
                             </div>
                         </div>
                     </div>
-
-                    {/* Bottom accent bar */}
-                    <div className='h-1 bg-[#bf5a31]' />
                 </section>
 
-                {/* ── Quick Stats ── */}
+                {/* ── Metric Cards ── */}
                 <section className='grid gap-4 sm:grid-cols-3'>
-                    <StatCard icon={CalendarDays} label='Upcoming'       value={upcoming.length}  accent='#bf5a31' />
-                    <StatCard icon={PawPrint}     label='Saved Pets'     value={pets.length}       accent='#1c3329' />
-                    <StatCard icon={Scissors}     label='Completed Visits' value={completedCount}  accent='#7a5c3a' />
+                    <StatCard icon={CalendarDays} label='Upcoming Bookings' value={upcoming.length} accent='#C25E2B' />
+                    <StatCard icon={Dog} label='Saved Pets' value={pets.length} accent='#2B4C3F' />
+                    <StatCard icon={Scissors} label='Completed Groomings' value={completedCount} accent='#68594E' />
                 </section>
 
-                {/* ── Upcoming Appointments ── */}
+                {/* ── Upcoming Appointments Section ── */}
                 <section>
-                    <div className='mb-5 flex items-center justify-between border-b border-[#e8ddd0] pb-3'>
-                        <div className='flex items-center gap-2.5'>
-                            <span className='grid h-8 w-8 place-items-center rounded-lg bg-[#f6ede2] text-[#bf5a31]'>
-                                <CalendarDays size={17} />
-                            </span>
-                            <h2 className='font-serif text-2xl font-bold text-[#201711]'>Upcoming Appointments</h2>
+                    <div className='mb-4 flex items-center justify-between border-b border-[#E2D9C8] pb-3'>
+                        <div className='flex items-center gap-2'>
+                            <CalendarDays size={18} className='text-[#C25E2B]' />
+                            <h2 className='font-serif text-xl font-bold text-[#261C14]'>Upcoming Appointments</h2>
                         </div>
                         <Link
                             to='/appointments'
-                            className='inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-[#bf5a31] transition hover:underline'
+                            className='inline-flex items-center gap-1 text-xs font-bold text-[#C25E2B] transition hover:underline'
                         >
-                            View All <ChevronRight size={14} />
+                            <span>View All</span>
+                            <ChevronRight size={14} />
                         </Link>
                     </div>
 
                     {loading ? (
-                        <LoadingCard text='Loading appointments...' />
+                        <LoadingCard text='Loading your schedule...' />
                     ) : upcoming.length ? (
-                        <div className='space-y-3.5'>
-                            {upcoming.slice(0, 3).map((a) => (
-                                <article
-                                    key={a._id}
-                                    onClick={() => setSelectedAppointment(a)}
-                                    className='group relative cursor-pointer overflow-hidden rounded-2xl border border-[#e8ddd0] bg-white shadow-xs transition hover:border-[#bf5a31]/50 hover:shadow-md active:scale-[0.99]'
-                                >
-                                    {/* status bar */}
-                                    <span className={`absolute left-0 top-0 h-full w-1 ${STATUS_STYLES[a.status]?.bar ?? 'bg-amber-400'}`} />
-
-                                    <div className='flex flex-col justify-between gap-4 px-6 py-5 sm:flex-row sm:items-center'>
-                                        <div className='flex items-start gap-4'>
-                                            <span className='grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#f6ede2] text-[#bf5a31] border border-[#e8d2c2]'>
-                                                <PawPrint size={20} />
-                                            </span>
-                                            <div>
-                                                <div className='flex flex-wrap items-center gap-2'>
-                                                    <h3 className='font-serif text-lg font-bold text-[#201711] transition-colors group-hover:text-[#bf5a31]'>
-                                                        {a.petName}
-                                                    </h3>
-                                                    <StatusPill status={a.status} />
+                        <div className='space-y-4'>
+                            {upcoming.slice(0, 3).map((a) => {
+                                const petPhoto = a.pet?.photoUrl || a.photoUrl || pets.find((p) => p.name?.toLowerCase() === a.petName?.toLowerCase())?.photoUrl
+                                return (
+                                    <article
+                                        key={a._id}
+                                        onClick={() => setSelectedAppointment(a)}
+                                        className='group relative cursor-pointer overflow-hidden rounded-xl border border-[#E2D9C8] bg-white p-5 shadow-xs transition hover:border-[#C25E2B]/60 hover:shadow-sm'
+                                    >
+                                        <div className='flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
+                                            <div className='flex items-center gap-4'>
+                                                {/* Pet Photo / Avatar */}
+                                                <div className='h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-[#E2D9C8] bg-[#F4EFE6]'>
+                                                    {petPhoto ? (
+                                                        <img src={petPhoto} alt={a.petName} className='h-full w-full object-cover' />
+                                                    ) : (
+                                                        <div className='flex h-full w-full items-center justify-center text-[#8C7A6D]'>
+                                                            {a.petType === 'cat' ? <Cat size={22} /> : <Dog size={22} />}
+                                                        </div>
+                                                    )}
                                                 </div>
-                                                <p className='mt-0.5 text-xs font-medium text-[#786150]'>
-                                                    {a.service}{a.haircutStyle ? ` · ${a.haircutStyle}` : ''}
-                                                </p>
-                                                <p className='mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs font-bold text-[#bf5a31]'>
-                                                    <span>{formatDateLong(a.date)}</span>
-                                                    <span className='flex items-center gap-1 font-semibold text-[#8d7565]'>
-                                                        <Clock3 size={12} />
-                                                        {formatTimeRange(a.time, a.endTime)}
-                                                    </span>
-                                                </p>
+
+                                                <div>
+                                                    <div className='flex flex-wrap items-center gap-2'>
+                                                        <h3 className='font-serif text-lg font-bold text-[#261C14] group-hover:text-[#C25E2B] transition-colors'>
+                                                            {a.petName}
+                                                        </h3>
+                                                        <StatusPill status={a.status} />
+                                                    </div>
+                                                    <p className='mt-0.5 text-xs font-medium text-[#68594E]'>
+                                                        {a.service}{a.haircutStyle ? ` · Style: ${a.haircutStyle}` : ''}
+                                                    </p>
+                                                    <div className='mt-2 flex flex-wrap items-center gap-4 text-xs font-bold text-[#C25E2B]'>
+                                                        <span>{formatDateLong(a.date)}</span>
+                                                        <span className='flex items-center gap-1 font-semibold text-[#68594E]'>
+                                                            <Clock3 size={13} />
+                                                            {formatTimeRange(a.time, a.endTime)}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div className='flex items-center justify-between border-t border-[#E2D9C8] pt-3 sm:flex-col sm:items-end sm:border-t-0 sm:pt-0'>
+                                                <span className='font-serif text-xl font-bold text-[#261C14]'>
+                                                    ₱{Number(a.price).toLocaleString('en-PH')}
+                                                </span>
+                                                <span className='inline-flex items-center gap-1 rounded-md border border-[#E2D9C8] bg-[#FAF7F2] px-3 py-1 text-xs font-bold text-[#C25E2B] group-hover:bg-[#C25E2B] group-hover:text-white group-hover:border-[#C25E2B] transition'>
+                                                    <Eye size={13} />
+                                                    <span>View Details</span>
+                                                </span>
                                             </div>
                                         </div>
-
-                                        <div className='flex items-center justify-between sm:flex-col sm:items-end gap-2'>
-                                            <span className='font-serif text-2xl font-bold text-[#201711]'>
-                                                ₱{Number(a.price).toLocaleString('en-PH')}
-                                            </span>
-                                            <span className='inline-flex items-center gap-1 rounded-lg border border-[#e8ddd0] bg-[#faf6f0] px-2.5 py-1 text-xs font-bold text-[#bf5a31] transition group-hover:bg-[#bf5a31] group-hover:text-white group-hover:border-[#bf5a31]'>
-                                                <Eye size={12} /> Details
-                                            </span>
-                                        </div>
-                                    </div>
-                                </article>
-                            ))}
+                                    </article>
+                                )
+                            })}
                         </div>
                     ) : (
                         <EmptyAppointments />
                     )}
                 </section>
 
-                {/* ── My Pets ── */}
+                {/* ── My Pets Overview Section ── */}
                 <section>
-                    <div className='mb-5 flex items-center justify-between border-b border-[#e8ddd0] pb-3'>
-                        <div className='flex items-center gap-2.5'>
-                            <span className='grid h-8 w-8 place-items-center rounded-lg bg-[#f6ede2] text-[#bf5a31]'>
-                                <PawPrint size={17} />
-                            </span>
-                            <h2 className='font-serif text-2xl font-bold text-[#201711]'>My Pets</h2>
+                    <div className='mb-4 flex items-center justify-between border-b border-[#E2D9C8] pb-3'>
+                        <div className='flex items-center gap-2'>
+                            <Dog size={18} className='text-[#C25E2B]' />
+                            <h2 className='font-serif text-xl font-bold text-[#261C14]'>My Pets</h2>
                         </div>
                         <Link
                             to='/my-pets'
-                            className='inline-flex items-center gap-1 text-xs font-bold uppercase tracking-wider text-[#bf5a31] transition hover:underline'
+                            className='inline-flex items-center gap-1 text-xs font-bold text-[#C25E2B] transition hover:underline'
                         >
-                            Manage <ChevronRight size={14} />
+                            <span>Manage Profiles</span>
+                            <ChevronRight size={14} />
                         </Link>
                     </div>
 
@@ -217,29 +220,33 @@ export default function UserDashboard() {
                         {pets.slice(0, 5).map((pet) => (
                             <article
                                 key={pet._id}
-                                className='group rounded-2xl border border-[#e8ddd0] bg-white p-5 shadow-xs transition hover:-translate-y-0.5 hover:border-[#bf5a31]/40 hover:shadow-md'
+                                className='group flex items-center gap-3.5 rounded-xl border border-[#E2D9C8] bg-white p-4 shadow-xs transition hover:border-[#C25E2B]/50'
                             >
-                                <div className='flex items-center gap-3.5'>
-                                    <span className='grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-[#1c3329] font-bold text-white text-base'>
-                                        {pet.name?.[0]?.toUpperCase() ?? '?'}
-                                    </span>
-                                    <div className='min-w-0'>
-                                        <h3 className='font-serif text-lg font-bold text-[#201711] truncate'>{pet.name}</h3>
-                                        <p className='mt-0.5 text-xs font-medium text-[#786150] truncate'>
-                                            {pet.type === 'cat' ? 'Cat' : 'Dog'} · {pet.breed}
-                                        </p>
-                                    </div>
+                                <div className='h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-[#E2D9C8] bg-[#F4EFE6]'>
+                                    {pet.photoUrl ? (
+                                        <img src={pet.photoUrl} alt={pet.name} className='h-full w-full object-cover' />
+                                    ) : (
+                                        <div className='flex h-full w-full items-center justify-center text-[#8C7A6D]'>
+                                            {pet.type === 'cat' ? <Cat size={22} /> : <Dog size={22} />}
+                                        </div>
+                                    )}
+                                </div>
+                                <div className='min-w-0 flex-1'>
+                                    <h3 className='truncate font-serif text-base font-bold text-[#261C14]'>{pet.name}</h3>
+                                    <p className='truncate text-xs text-[#68594E]'>
+                                        {pet.type === 'cat' ? 'Cat' : 'Dog'} · {pet.breed}
+                                    </p>
                                 </div>
                             </article>
                         ))}
 
                         <Link
                             to='/my-pets'
-                            className='group grid min-h-[92px] place-items-center rounded-2xl border border-dashed border-[#dfcfbd] bg-[#fcfaf7] text-center transition hover:border-[#bf5a31] hover:bg-[#fff9f4]'
+                            className='group flex min-h-[72px] items-center justify-center rounded-xl border border-dashed border-[#E2D9C8] bg-[#FAF7F2] p-4 text-center transition hover:border-[#C25E2B] hover:bg-white'
                         >
-                            <div className='flex flex-col items-center gap-1.5'>
-                                <Plus className='text-[#bf5a31] transition-transform group-hover:scale-110' size={22} />
-                                <span className='text-xs font-bold uppercase tracking-wider text-[#bf5a31]'>Add a Pet</span>
+                            <div className='flex items-center gap-2 text-xs font-bold text-[#C25E2B]'>
+                                <Plus size={16} />
+                                <span>Add New Pet</span>
                             </div>
                         </Link>
                     </div>
@@ -269,8 +276,8 @@ export default function UserDashboard() {
                 description={confirmCancelAppointment
                     ? `Are you sure you want to cancel the ${confirmCancelAppointment.service} appointment for ${confirmCancelAppointment.petName}?`
                     : ''}
-                confirmText='Yes, Cancel'
-                cancelText='Keep'
+                confirmText='Cancel Appointment'
+                cancelText='Keep Appointment'
                 variant='danger'
                 loading={cancelling}
                 onConfirm={handleConfirmCancel}
@@ -282,13 +289,14 @@ export default function UserDashboard() {
 
 function StatCard({ icon: Icon, label, value, accent }) {
     return (
-        <div className='relative overflow-hidden rounded-2xl border border-[#e8ddd0] bg-white p-5 shadow-xs'>
-            <span className='absolute left-0 top-0 h-full w-1 rounded-l-2xl' style={{ background: accent }} />
-            <span className='grid h-10 w-10 place-items-center rounded-xl' style={{ background: accent + '18' }}>
-                <Icon size={19} style={{ color: accent }} />
-            </span>
-            <p className='mt-4 font-serif text-3xl font-bold text-[#201711]'>{value}</p>
-            <p className='mt-0.5 text-xs font-semibold uppercase tracking-wider text-[#786150]'>{label}</p>
+        <div className='rounded-xl border border-[#E2D9C8] bg-white p-5 shadow-xs'>
+            <div className='flex items-center justify-between'>
+                <span className='text-xs font-bold uppercase tracking-wider text-[#68594E]'>{label}</span>
+                <span className='grid h-9 w-9 place-items-center rounded-lg bg-[#FAF7F2]' style={{ color: accent }}>
+                    <Icon size={18} />
+                </span>
+            </div>
+            <p className='mt-2 font-serif text-3xl font-bold text-[#261C14]'>{value}</p>
         </div>
     )
 }
@@ -305,7 +313,7 @@ function StatusPill({ status }) {
 
 function LoadingCard({ text }) {
     return (
-        <div className='rounded-2xl border border-[#e8ddd0] bg-white p-8 text-center text-sm font-medium text-[#9c7b68]'>
+        <div className='rounded-xl border border-[#E2D9C8] bg-white p-8 text-center text-sm font-medium text-[#68594E]'>
             {text}
         </div>
     )
@@ -313,17 +321,18 @@ function LoadingCard({ text }) {
 
 function EmptyAppointments() {
     return (
-        <div className='rounded-2xl border border-dashed border-[#dfcfbd] bg-white p-10 text-center'>
-            <span className='mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-[#f6ede2] text-[#bf5a31]'>
-                <CalendarDays size={26} />
-            </span>
-            <h3 className='mt-4 font-serif text-xl font-bold text-[#201711]'>No Upcoming Appointments</h3>
-            <p className='mt-1.5 text-xs text-[#786150]'>Choose a service and an available schedule when you are ready.</p>
+        <div className='rounded-xl border border-dashed border-[#E2D9C8] bg-white p-10 text-center'>
+            <div className='mx-auto grid h-12 w-12 place-items-center rounded-full bg-[#FAF7F2] text-[#C25E2B]'>
+                <CalendarDays size={24} />
+            </div>
+            <h3 className='mt-3 font-serif text-lg font-bold text-[#261C14]'>No Upcoming Appointments</h3>
+            <p className='mt-1 text-xs text-[#68594E]'>Schedule a grooming session for your pet whenever you are ready.</p>
             <Link
                 to='/booking'
-                className='mt-5 inline-flex items-center gap-2 rounded-xl bg-[#bf5a31] px-6 py-2.5 text-xs font-bold uppercase tracking-wide text-white shadow-sm transition hover:bg-[#a94723]'
+                className='mt-4 inline-flex items-center gap-2 rounded-lg bg-[#C25E2B] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-[#A84E20]'
             >
-                <Plus size={15} /> Start Booking
+                <Plus size={15} />
+                <span>Book Appointment</span>
             </Link>
         </div>
     )

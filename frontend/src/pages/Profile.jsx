@@ -14,8 +14,17 @@ export default function Profile() {
     const [form, setForm] = useState({ email: '', phone: '', address: emptyAddress })
     const [phoneOtp, setPhoneOtp] = useState('')
     const [otpSent, setOtpSent] = useState(false)
+    const [otpTimer, setOtpTimer] = useState(0)
     const [sendingOtp, setSendingOtp] = useState(false)
     const [submitting, setSubmitting] = useState(false)
+
+    useEffect(() => {
+        if (otpTimer <= 0) return
+        const interval = setInterval(() => {
+            setOtpTimer((prev) => prev - 1)
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [otpTimer])
 
     useEffect(() => {
         if (!user) return
@@ -40,9 +49,11 @@ export default function Profile() {
         setForm((c) => ({ ...c, phone: e.target.value }))
         setPhoneOtp('')
         setOtpSent(false)
+        setOtpTimer(0)
     }
 
     const requestPhoneOtp = async () => {
+        if (sendingOtp || (otpSent && otpTimer > 0)) return
         if (!normalizedPhone) { toast.error('Enter a valid mobile number using +63 or 09 format'); return }
         if (!phoneChanged) { toast.error('Enter a different mobile number before requesting an OTP'); return }
         setSendingOtp(true)
@@ -50,6 +61,7 @@ export default function Profile() {
             const data = await sendProfilePhoneOtp(normalizedPhone)
             setForm((c) => ({ ...c, phone: data.phone || normalizedPhone }))
             setOtpSent(true)
+            setOtpTimer(60)
             toast.success('Verification code sent to your new mobile number')
         } catch (error) {
             toast.error(getErrorMessage(error))
@@ -78,42 +90,44 @@ export default function Profile() {
     const initials = [user?.firstName?.[0], user?.lastName?.[0]].filter(Boolean).join('').toUpperCase()
 
     return (
-        <div className='min-h-screen bg-[#fbf7f1] px-5 py-12 text-[#201711]'>
-            <div className='mx-auto max-w-4xl'>
+        <div className='min-h-screen bg-[#FAF7F2] px-4 py-8 text-[#261C14] sm:px-6 lg:px-8'>
+            <div className='mx-auto max-w-3xl'>
 
                 {/* Page header */}
-                <div className='mb-8'>
-                    <span className='inline-block rounded-full bg-[#bf5a31]/10 px-4 py-1 text-[11px] font-bold uppercase tracking-[0.2em] text-[#bf5a31]'>
+                <div className='mb-8 border-b border-[#E2D9C8] pb-6'>
+                    <span className='inline-block rounded-full bg-[#C25E2B]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
                         Account Settings
                     </span>
-                    <h1 className='mt-2 font-serif text-3xl font-bold text-[#201711] sm:text-4xl'>My Profile</h1>
-                    <p className='mt-1.5 text-sm text-[#806654]'>Update your contact information and home address.</p>
+                    <h1 className='mt-2 font-serif text-3xl font-bold tracking-tight text-[#261C14] sm:text-4xl'>
+                        My Profile
+                    </h1>
+                    <p className='mt-1 text-sm text-[#68594E]'>
+                        Manage your account information, mobile phone verification, and delivery address.
+                    </p>
                 </div>
 
-                <form onSubmit={submit} className='space-y-7'>
-                    {/* Profile header card */}
-                    <div className='overflow-hidden rounded-2xl border border-[#e8ddd0] bg-white shadow-xs'>
-                        <div className='h-1 bg-[#1c3329]' />
-                        <div className='flex flex-col gap-5 px-7 py-6 sm:flex-row sm:items-center'>
-                            {/* Avatar */}
-                            <span className='grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-2xl bg-[#1c3329] text-lg font-bold text-white shadow-sm'>
+                <form onSubmit={submit} className='space-y-6'>
+                    {/* Profile Header Card */}
+                    <div className='rounded-xl border border-[#E2D9C8] bg-white p-6 shadow-xs'>
+                        <div className='flex flex-col items-start gap-4 sm:flex-row sm:items-center'>
+                            <span className='grid h-16 w-16 shrink-0 place-items-center overflow-hidden rounded-xl bg-[#2B4C3F] text-xl font-bold text-white shadow-xs'>
                                 {user?.profileImage ? (
                                     <img src={user.profileImage} alt='Profile' className='h-full w-full object-cover' />
                                 ) : initials ? initials : (
-                                    <UserRound size={26} />
+                                    <UserRound size={28} />
                                 )}
                             </span>
                             <div>
-                                <h2 className='font-serif text-2xl font-bold text-[#201711]'>
+                                <h2 className='font-serif text-2xl font-bold text-[#261C14]'>
                                     {user?.firstName} {user?.lastName}
                                 </h2>
                                 <div className='mt-1.5 flex flex-wrap items-center gap-2'>
-                                    <span className='rounded-full border border-[#e8d2c2] bg-[#f6ede2] px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-[#bf5a31]'>
+                                    <span className='rounded-full border border-[#E2D9C8] bg-[#FAF7F2] px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider text-[#C25E2B]'>
                                         Customer Account
                                     </span>
                                     {googleAccount && (
-                                        <span className='rounded-full border border-blue-200 bg-blue-50 px-3 py-0.5 text-[11px] font-bold uppercase tracking-wide text-blue-700'>
-                                            Google
+                                        <span className='rounded-full border border-blue-200 bg-blue-50 px-3 py-0.5 text-[11px] font-bold uppercase tracking-wider text-blue-700'>
+                                            Google SSO
                                         </span>
                                     )}
                                 </div>
@@ -121,72 +135,69 @@ export default function Profile() {
                         </div>
                     </div>
 
-                    {/* Personal Info */}
-                    <div className='overflow-hidden rounded-2xl border border-[#e8ddd0] bg-white shadow-xs'>
-                        <div className='flex items-center gap-2.5 border-b border-[#e8ddd0] px-7 py-4'>
-                            <span className='grid h-8 w-8 place-items-center rounded-lg bg-[#f6ede2] text-[#bf5a31]'>
-                                <LockKeyhole size={16} />
-                            </span>
-                            <h3 className='font-serif text-lg font-bold text-[#201711]'>Personal Information</h3>
+                    {/* Personal Information */}
+                    <div className='rounded-xl border border-[#E2D9C8] bg-white shadow-xs'>
+                        <div className='flex items-center gap-2 border-b border-[#E2D9C8] px-6 py-4'>
+                            <LockKeyhole size={18} className='text-[#C25E2B]' />
+                            <h3 className='font-serif text-lg font-bold text-[#261C14]'>Personal Details</h3>
                         </div>
 
-                        <div className='space-y-5 px-7 py-6'>
+                        <div className='space-y-4 p-6'>
                             <div className='grid gap-4 sm:grid-cols-2'>
-                                <ReadOnlyField label='First name' value={user?.firstName || ''} />
-                                <ReadOnlyField label='Last name'  value={user?.lastName  || ''} />
+                                <ReadOnlyField label='First Name' value={user?.firstName || ''} />
+                                <ReadOnlyField label='Last Name' value={user?.lastName || ''} />
                             </div>
-                            <p className='text-xs text-[#9c7b68]'>Your account name cannot be edited from the customer profile.</p>
 
                             <div>
                                 <Field
-                                    label='Email address'
+                                    label='Email Address'
                                     type='email'
                                     value={form.email}
                                     onChange={(e) => setForm((c) => ({ ...c, email: e.target.value }))}
                                     readOnly={googleAccount}
                                     required={false}
                                     className={googleAccount
-                                        ? 'h-11 w-full cursor-not-allowed rounded-xl border border-[#e0d3c3] bg-[#f7f2ec] px-4 text-sm text-[#8a7060]'
+                                        ? 'h-11 w-full cursor-not-allowed rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] px-3.5 text-sm text-[#8C7A6D]'
                                         : undefined}
                                 />
                                 {googleAccount && (
-                                    <p className='mt-1.5 text-xs text-[#9c7b68]'>Managed by your Google account — cannot be changed here.</p>
+                                    <p className='mt-1 text-xs text-[#8C7A6D]'>Managed by your Google account.</p>
                                 )}
                             </div>
 
                             <div>
-                                <PhoneField label='Mobile number' name='phone' value={form.phone} onChange={updatePhoneField} placeholder='917 123 4567' help='A changed number must be verified by OTP.' />
+                                <PhoneField label='Mobile Number' name='phone' value={form.phone} onChange={updatePhoneField} placeholder='917 123 4567' help='Changing your number requires OTP verification.' />
                             </div>
 
-                            {/* OTP verification */}
+                            {/* OTP Verification Block */}
                             {phoneChanged && (
-                                <div className='rounded-xl border border-[#e0d3c3] bg-[#faf7f3] p-5'>
+                                <div className='rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] p-4'>
                                     <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                                         <div className='flex items-start gap-3'>
-                                            <span className={`mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl ${otpSent ? 'bg-emerald-100 text-emerald-700' : 'bg-[#f6ede2] text-[#bf5a31]'}`}>
+                                            <span className={`mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg ${otpSent ? 'bg-emerald-100 text-emerald-700' : 'bg-[#F4EFE6] text-[#C25E2B]'}`}>
                                                 {otpSent ? <CheckCircle2 size={18} /> : <ShieldCheck size={18} />}
                                             </span>
                                             <div>
-                                                <p className='font-semibold text-[#2b2019]'>Verify new mobile number</p>
-                                                <p className='mt-0.5 text-xs text-[#9c7b68]'>
-                                                    {otpSent ? `A code was sent to ${form.phone}.` : 'Request a code to confirm that you own this number.'}
+                                                <p className='font-semibold text-[#261C14] text-sm'>Verify Mobile Number</p>
+                                                <p className='mt-0.5 text-xs text-[#68594E]'>
+                                                    {otpSent ? (otpTimer > 0 ? `Code sent to ${form.phone}. Resend available in ${otpTimer}s.` : `A verification code was sent to ${form.phone}.`) : 'Request a security code to confirm ownership of this number.'}
                                                 </p>
                                             </div>
                                         </div>
                                         <button
                                             type='button'
                                             onClick={requestPhoneOtp}
-                                            disabled={sendingOtp}
-                                            className='shrink-0 rounded-xl border border-[#bf5a31] px-4 py-2 text-xs font-bold text-[#bf5a31] transition hover:bg-[#fff1e9] disabled:cursor-not-allowed disabled:opacity-60'
+                                            disabled={sendingOtp || (otpSent && otpTimer > 0)}
+                                            className='shrink-0 rounded-lg border border-[#C25E2B] px-3.5 py-1.5 text-xs font-bold text-[#C25E2B] transition hover:bg-[#C25E2B]/10 disabled:opacity-60'
                                         >
-                                            {sendingOtp ? 'Sending...' : otpSent ? 'Resend OTP' : 'Send OTP'}
+                                            {sendingOtp ? 'Sending...' : otpSent ? (otpTimer > 0 ? `Resend (${otpTimer}s)` : 'Resend OTP') : 'Send Code'}
                                         </button>
                                     </div>
 
                                     {otpSent && (
                                         <div className='mt-4'>
                                             <Field
-                                                label='Six-digit verification code'
+                                                label='Six-Digit Verification Code'
                                                 inputMode='numeric'
                                                 autoComplete='one-time-code'
                                                 value={phoneOtp}
@@ -202,33 +213,30 @@ export default function Profile() {
                         </div>
                     </div>
 
-                    {/* Address */}
-                    <div className='overflow-hidden rounded-2xl border border-[#e8ddd0] bg-white shadow-xs'>
-                        <div className='flex items-center gap-2.5 border-b border-[#e8ddd0] px-7 py-4'>
-                            <span className='grid h-8 w-8 place-items-center rounded-lg bg-[#f6ede2] text-[#bf5a31]'>
-                                <MapPin size={16} />
-                            </span>
-                            <h3 className='font-serif text-lg font-bold text-[#201711]'>Home Address</h3>
+                    {/* Address Section */}
+                    <div className='rounded-xl border border-[#E2D9C8] bg-white shadow-xs'>
+                        <div className='flex items-center gap-2 border-b border-[#E2D9C8] px-6 py-4'>
+                            <MapPin size={18} className='text-[#C25E2B]' />
+                            <h3 className='font-serif text-lg font-bold text-[#261C14]'>Home Address</h3>
                         </div>
 
-                        <div className='space-y-4 px-7 py-6'>
-                            <p className='text-xs text-[#9c7b68]'>All address fields are required.</p>
-                            <Field label='Street / House number' name='street' value={form.address.street} onChange={updateAddress} placeholder='123 Pawsome Street' />
+                        <div className='space-y-4 p-6'>
+                            <Field label='Street / House Number' name='street' value={form.address.street} onChange={updateAddress} placeholder='e.g. 123 Grooming Street' />
                             <div className='grid gap-4 sm:grid-cols-2'>
                                 <Field label='Barangay' name='barangay' value={form.address.barangay} onChange={updateAddress} />
-                                <Field label='City'     name='city'     value={form.address.city}     onChange={updateAddress} />
+                                <Field label='City' name='city' value={form.address.city} onChange={updateAddress} />
                             </div>
                             <Field label='Province' name='province' value={form.address.province} onChange={updateAddress} />
                         </div>
                     </div>
 
-                    {/* Submit */}
+                    {/* Submit Actions */}
                     <div className='flex justify-end'>
                         <button
                             disabled={submitting || (phoneChanged && (!otpSent || phoneOtp.length !== 6))}
-                            className='h-12 w-full rounded-xl bg-[#bf5a31] px-8 font-bold text-white shadow-xs transition hover:bg-[#a94723] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto'
+                            className='h-11 w-full rounded-lg bg-[#C25E2B] px-8 font-bold text-white shadow-xs transition hover:bg-[#A84E20] disabled:cursor-not-allowed disabled:opacity-60 sm:w-auto'
                         >
-                            {submitting ? 'Saving changes...' : 'Save Changes'}
+                            {submitting ? 'Saving Profile...' : 'Save Profile Changes'}
                         </button>
                     </div>
                 </form>
@@ -241,13 +249,13 @@ function ReadOnlyField({ label, value }) {
     return (
         <label className='block'>
             <FieldLabel>{label}</FieldLabel>
-            <input value={value} readOnly className='h-11 w-full cursor-not-allowed rounded-xl border border-[#e0d3c3] bg-[#f7f2ec] px-4 text-sm text-[#8a7060]' />
+            <input value={value} readOnly className='h-11 w-full cursor-not-allowed rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] px-3.5 text-sm text-[#8C7A6D]' />
         </label>
     )
 }
 
 function FieldLabel({ children }) {
-    return <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6e5645]'>{children}</span>
+    return <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#68594E]'>{children}</span>
 }
 
 function Field({ label, required = true, className, ...props }) {
@@ -256,7 +264,7 @@ function Field({ label, required = true, className, ...props }) {
             <FieldLabel>{label}</FieldLabel>
             <input
                 required={required}
-                className={className || 'h-11 w-full rounded-xl border border-[#e0d3c3] bg-white px-4 text-sm outline-none transition placeholder:text-[#b5a090] focus:border-[#bf5a31] focus:ring-2 focus:ring-[#bf5a31]/10'}
+                className={className || 'h-11 w-full rounded-lg border border-[#E2D9C8] bg-white px-3.5 text-sm outline-none transition focus:border-[#C25E2B] placeholder:text-[#A8988A]'}
                 {...props}
             />
         </label>

@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { CheckCircle2, PawPrint, ShieldCheck } from 'lucide-react'
+import { CheckCircle2, ShieldCheck } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
 import { getErrorMessage } from '../utils/api'
@@ -17,8 +17,17 @@ export default function CompleteProfile() {
     const [form, setForm] = useState({ firstName: '', lastName: '', phone: '', address: emptyAddress })
     const [otp, setOtp] = useState('')
     const [otpSent, setOtpSent] = useState(false)
+    const [otpTimer, setOtpTimer] = useState(0)
     const [sendingOtp, setSendingOtp] = useState(false)
     const [submitting, setSubmitting] = useState(false)
+
+    useEffect(() => {
+        if (otpTimer <= 0) return
+        const interval = setInterval(() => {
+            setOtpTimer((prev) => prev - 1)
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [otpTimer])
 
     useEffect(() => {
         if (!user) return
@@ -31,16 +40,18 @@ export default function CompleteProfile() {
     }, [user])
 
     const normalizedPhone = useMemo(() => normalizePhilippinePhone(form.phone), [form.phone])
-    const updatePhone = (e) => { setForm((c) => ({ ...c, phone: e.target.value })); setOtp(''); setOtpSent(false) }
+    const updatePhone = (e) => { setForm((c) => ({ ...c, phone: e.target.value })); setOtp(''); setOtpSent(false); setOtpTimer(0) }
     const updateAddress = (e) => setForm((c) => ({ ...c, address: { ...c.address, [e.target.name]: e.target.value } }))
 
     const requestOtp = async () => {
+        if (sendingOtp || (otpSent && otpTimer > 0)) return
         if (!normalizedPhone) { toast.error('Enter a valid mobile number using +63 or 09 format'); return }
         setSendingOtp(true)
         try {
             const data = await sendCompleteProfileOtp(normalizedPhone)
             setForm((c) => ({ ...c, phone: data.phone || normalizedPhone }))
             setOtpSent(true)
+            setOtpTimer(60)
             toast.success('Verification code sent to your mobile number')
         } catch (error) {
             toast.error(getErrorMessage(error))
@@ -66,76 +77,74 @@ export default function CompleteProfile() {
     }
 
     return (
-        <div className='min-h-screen bg-[#fbf7f1] px-5 py-12 text-[#201711]'>
-            <div className='mx-auto max-w-3xl'>
+        <div className='min-h-screen bg-[#FAF7F2] px-4 py-12 text-[#261C14] sm:px-6 lg:px-8'>
+            <div className='mx-auto max-w-2xl'>
 
-                {/* Brand */}
-                <div className='mb-8 flex items-center gap-3'>
-                    <span className='grid h-10 w-10 place-items-center rounded-xl bg-[#bf5a31] text-white shadow-sm'>
-                        <PawPrint size={19} />
+                {/* Brand title */}
+                <div className='mb-6'>
+                    <span className='font-serif text-2xl font-bold tracking-tight text-[#261C14]'>
+                        TimmyTails
                     </span>
-                    <span className='font-serif text-xl font-bold'>TimmyTails</span>
                 </div>
 
-                <div className='rounded-2xl border border-[#e0d3c3] bg-white p-7 shadow-sm sm:p-10'>
+                <div className='rounded-xl border border-[#E2D9C8] bg-white p-6 shadow-xs sm:p-10'>
                     {/* Step indicator */}
                     <div className='mb-6 flex items-center gap-3'>
-                        <span className='inline-flex items-center gap-1.5 rounded-full bg-[#f6ede2] px-3.5 py-1 text-xs font-bold text-[#bf5a31]'>
+                        <span className='inline-flex items-center gap-1.5 rounded-full bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold text-[#C25E2B]'>
                             Step 2 of 2
                         </span>
-                        <span className='h-px flex-1 bg-[#e8ddd0]' />
+                        <span className='h-px flex-1 bg-[#E2D9C8]' />
                     </div>
 
-                    <h1 className='font-serif text-3xl font-bold text-[#201711]'>Complete your profile</h1>
-                    <p className='mt-2 text-sm leading-relaxed text-[#806654]'>
-                        Google provided your verified email. Fill in your contact details and verify your mobile number before continuing.
+                    <h1 className='font-serif text-3xl font-bold text-[#261C14]'>Complete Your Profile</h1>
+                    <p className='mt-1 text-sm text-[#68594E]'>
+                        Your Google account is connected. Please fill in your contact details and verify your mobile number.
                     </p>
 
-                    <form onSubmit={submit} className='mt-8 space-y-5'>
+                    <form onSubmit={submit} className='mt-6 space-y-4'>
                         <div className='grid gap-4 sm:grid-cols-2'>
-                            <Field label='First name' name='firstName' value={form.firstName} onChange={(e) => setForm((c) => ({ ...c, firstName: e.target.value }))} />
-                            <Field label='Last name'  name='lastName'  value={form.lastName}  onChange={(e) => setForm((c) => ({ ...c, lastName:  e.target.value }))} />
+                            <Field label='First Name' name='firstName' value={form.firstName} onChange={(e) => setForm((c) => ({ ...c, firstName: e.target.value }))} />
+                            <Field label='Last Name'  name='lastName'  value={form.lastName}  onChange={(e) => setForm((c) => ({ ...c, lastName:  e.target.value }))} />
                         </div>
 
                         <label className='block'>
-                            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6e5645]'>Email address</span>
-                            <input value={user?.email || ''} readOnly className='h-11 w-full rounded-xl border border-[#e0d3c3] bg-[#f7f2ec] px-4 text-sm text-[#8a7060] cursor-not-allowed' />
-                            <span className='mt-1 block text-[11px] text-[#9c7b68]'>Managed by your Google account — cannot be changed here.</span>
+                            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#68594E]'>Email Address</span>
+                            <input value={user?.email || ''} readOnly className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] px-3.5 text-sm text-[#8C7A6D] cursor-not-allowed' />
+                            <span className='mt-1 block text-xs text-[#8C7A6D]'>Managed by your Google account.</span>
                         </label>
 
                         <div>
-                            <PhoneField label='Phone number' name='phone' value={form.phone} onChange={updatePhone} placeholder='917 123 4567' />
-                            <p className='mt-1.5 text-[11px] text-[#9c7b68]'>Enter your 10-digit number starting with 9. Stored as +63 format.</p>
+                            <PhoneField label='Mobile Number' name='phone' value={form.phone} onChange={updatePhone} placeholder='917 123 4567' />
                         </div>
 
-                        {/* OTP Section */}
-                        <div className='rounded-xl border border-[#e0d3c3] bg-[#faf7f3] p-5'>
+                        {/* OTP Block */}
+                        <div className='rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] p-4'>
                             <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                                 <div className='flex items-start gap-3'>
-                                    <span className={`mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl ${otpSent ? 'bg-emerald-100 text-emerald-700' : 'bg-[#f6ede2] text-[#bf5a31]'}`}>
+                                    <span className={`mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg ${otpSent ? 'bg-emerald-100 text-emerald-700' : 'bg-[#F4EFE6] text-[#C25E2B]'}`}>
                                         {otpSent ? <CheckCircle2 size={18} /> : <ShieldCheck size={18} />}
                                     </span>
                                     <div>
-                                        <p className='font-semibold text-[#2b2019]'>Mobile number verification</p>
-                                        <p className='mt-0.5 text-xs text-[#9c7b68]'>
-                                            {otpSent ? `A code was sent to ${form.phone}.` : 'Request a one-time code before saving your profile.'}
+                                        <p className='font-semibold text-[#261C14] text-sm'>Mobile Phone Verification</p>
+                                        <p className='mt-0.5 text-xs text-[#68594E]'>
+                                            {otpSent ? (otpTimer > 0 ? `Code sent to ${form.phone}. Resend available in ${otpTimer}s.` : `A verification code was sent to ${form.phone}.`) : 'Request an OTP code before saving.'}
                                         </p>
                                     </div>
                                 </div>
                                 <button
                                     type='button'
                                     onClick={requestOtp}
-                                    disabled={sendingOtp}
-                                    className='shrink-0 rounded-xl border border-[#bf5a31] px-4 py-2 text-xs font-bold text-[#bf5a31] transition hover:bg-[#fff1e9] disabled:cursor-not-allowed disabled:opacity-60'
+                                    disabled={sendingOtp || (otpSent && otpTimer > 0)}
+                                    className='shrink-0 rounded-lg border border-[#C25E2B] px-3.5 py-1.5 text-xs font-bold text-[#C25E2B] transition hover:bg-[#C25E2B]/10 disabled:opacity-60'
                                 >
-                                    {sendingOtp ? 'Sending...' : otpSent ? 'Resend OTP' : 'Send OTP'}
+                                    {sendingOtp ? 'Sending...' : otpSent ? (otpTimer > 0 ? `Resend (${otpTimer}s)` : 'Resend OTP') : 'Send OTP'}
                                 </button>
                             </div>
 
                             {otpSent && (
                                 <div className='mt-4'>
                                     <Field
-                                        label='Six-digit verification code'
+                                        label='Six-Digit Verification Code'
                                         name='otp'
                                         inputMode='numeric'
                                         autoComplete='one-time-code'
@@ -149,12 +158,12 @@ export default function CompleteProfile() {
                             )}
                         </div>
 
-                        {/* Address */}
-                        <div className='border-t border-[#e8ddd0] pt-6'>
-                            <h2 className='font-serif text-xl font-bold text-[#201711]'>Home Address</h2>
-                            <p className='mt-1 text-xs text-[#9c7b68]'>All address fields are required.</p>
+                        {/* Address Block */}
+                        <div className='border-t border-[#E2D9C8] pt-5'>
+                            <h2 className='font-serif text-lg font-bold text-[#261C14]'>Home Address</h2>
+                            <p className='mt-0.5 text-xs text-[#8C7A6D]'>Required for grooming appointment confirmation.</p>
                             <div className='mt-4 space-y-4'>
-                                <Field label='Street / House number' name='street' value={form.address.street} onChange={updateAddress} placeholder='123 Pawsome Street' autoComplete='street-address' />
+                                <Field label='Street / House Number' name='street' value={form.address.street} onChange={updateAddress} placeholder='e.g. 123 Grooming Street' autoComplete='street-address' />
                                 <div className='grid gap-4 sm:grid-cols-2'>
                                     <Field label='Barangay' name='barangay' value={form.address.barangay} onChange={updateAddress} />
                                     <Field label='City'     name='city'     value={form.address.city}     onChange={updateAddress} autoComplete='address-level2' />
@@ -165,15 +174,15 @@ export default function CompleteProfile() {
 
                         <button
                             disabled={submitting || !otpSent || otp.length !== 6}
-                            className='h-12 w-full rounded-xl bg-[#bf5a31] px-5 font-bold text-white shadow-xs transition hover:bg-[#a94723] disabled:cursor-not-allowed disabled:opacity-60'
+                            className='h-11 w-full rounded-lg bg-[#C25E2B] px-5 font-bold text-white shadow-xs transition hover:bg-[#A84E20] disabled:opacity-60'
                         >
-                            {submitting ? 'Saving profile...' : 'Verify & Save Profile'}
+                            {submitting ? 'Saving Profile...' : 'Verify &amp; Save Profile'}
                         </button>
                     </form>
 
                     <button
                         onClick={() => { logout(); navigate('/login') }}
-                        className='mt-5 w-full text-xs font-semibold text-[#9c7b68] transition hover:text-[#bf5a31]'
+                        className='mt-5 w-full text-xs font-bold text-[#68594E] hover:text-[#C25E2B]'
                     >
                         Sign out and use another account
                     </button>
@@ -186,10 +195,10 @@ export default function CompleteProfile() {
 function Field({ label, required = true, ...props }) {
     return (
         <label className='block'>
-            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6e5645]'>{label}</span>
+            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#68594E]'>{label}</span>
             <input
                 required={required}
-                className='h-11 w-full rounded-xl border border-[#e0d3c3] bg-white px-4 text-sm outline-none transition placeholder:text-[#b5a090] focus:border-[#bf5a31] focus:ring-2 focus:ring-[#bf5a31]/10'
+                className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-white px-3.5 text-sm outline-none transition focus:border-[#C25E2B] placeholder:text-[#A8988A]'
                 {...props}
             />
         </label>

@@ -1,3 +1,4 @@
+import { useEffect } from 'react'
 import { BrowserRouter, Navigate, Outlet, Route, Routes, useLocation } from 'react-router-dom'
 import ScrollToTop from './components/ScrollToTop'
 import Header from './components/Header'
@@ -22,6 +23,7 @@ import ForgotPassword from './pages/ForgotPassword'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import { useAuth } from './context/AuthContext'
+import { warmupBackendServer } from './utils/api'
 
 const publicFooterRoutes = new Set([
     '/',
@@ -37,7 +39,7 @@ function AppLayout() {
     const showFooter = publicFooterRoutes.has(location.pathname)
 
     return (
-        <div className='min-h-screen bg-[#fbf7f1] text-[#201711]'>
+        <div className='min-h-screen bg-[#FAF7F2] text-[#261C14] antialiased selection:bg-[#C25E2B] selection:text-white'>
             <Header />
             <main><Outlet /></main>
             {showFooter && <Footer />}
@@ -62,6 +64,18 @@ function AdminEntry() {
 }
 
 export default function App() {
+    useEffect(() => {
+        // Trigger silent background health check to wake up Render free tier container immediately on app mount
+        warmupBackendServer()
+
+        // Send a heartbeat ping every 4 minutes to keep Render backend container warm while user browses
+        const interval = setInterval(() => {
+            warmupBackendServer()
+        }, 4 * 60 * 1000)
+
+        return () => clearInterval(interval)
+    }, [])
+
     return (
         <BrowserRouter>
             <ScrollToTop />

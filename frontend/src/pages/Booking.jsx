@@ -6,7 +6,6 @@ import {
     Check,
     Clock,
     Clock3,
-    PawPrint,
     Scissors,
     WandSparkles
 } from 'lucide-react'
@@ -232,8 +231,7 @@ export default function Booking() {
             if (petsResult.status === 'fulfilled') {
                 const loadedPets = petsResult.value.data?.pets || []
                 setPets(loadedPets)
-                if (loadedPets.length) setSelectedPetId(loadedPets[0]._id)
-                else setPetMode('new')
+                if (!loadedPets.length) setPetMode('new')
             }
         })
     }, [])
@@ -273,6 +271,21 @@ export default function Booking() {
             active = false
         }
     }, [activePet?.type])
+
+    // Auto-load saved pet photo if available on selected pet profile
+    useEffect(() => {
+        if (activePet?.photoUrl) {
+            setPhotoPreview(activePet.photoUrl)
+            setPhotoDataUrl(activePet.photoUrl)
+            setPhotoHash(`pet-profile-${activePet._id || activePet.name}-${String(activePet.photoUrl).slice(-20)}`)
+            setConsent(true)
+        } else {
+            setPhotoPreview('')
+            setPhotoDataUrl('')
+            setPhotoHash('')
+            setConsent(false)
+        }
+    }, [activePet?._id, activePet?.photoUrl, petMode])
 
     useEffect(() => {
         if (!aiEnabled || !activePet?.name || !activePet?.breed) {
@@ -872,9 +885,7 @@ export default function Booking() {
         photoHash &&
         previewVersion &&
         compatibleStyles.length &&
-        recommendationsReady &&
-        !stylesLoading &&
-        !recommendationsLoading
+        !stylesLoading
     )
         ? [
             selectedService.id,
@@ -915,21 +926,52 @@ export default function Booking() {
     }, [galleryInputKey])
     /* eslint-enable react-hooks/exhaustive-deps */
 
+    // Auto-select top recommendation or first ready style preview into sidebar
+    useEffect(() => {
+        if (selectedStyleId) return
+
+        const topRecommendationId = recommendations[0]?.id
+        if (topRecommendationId && stylePreviews[topRecommendationId]?.status === 'ready' && stylePreviews[topRecommendationId]?.generatedImage) {
+            selectStyle(topRecommendationId)
+            return
+        }
+
+        const firstReadyEntry = Object.entries(stylePreviews).find(
+            ([, entry]) => entry?.status === 'ready' && entry?.generatedImage
+        )
+        if (firstReadyEntry) {
+            selectStyle(firstReadyEntry[0])
+        }
+    }, [stylePreviews, recommendations, selectedStyleId])
+
     const validate = () => {
-        if (!selectedService) return 'Select a service'
-        if (!activePet?.name || !activePet?.breed || !activePet?.type) return 'Complete the pet information'
-        if (isPetTooYoung) return 'Notice: Pets must be at least 3 months old to be booked'
-        if (isPetNotVaccinated) return 'Booking Ends: Pets must be fully vaccinated to proceed'
-        if (aiEnabled && !selectedStyle) return 'Select a grooming style'
-        if (!selectedDate || !selectedSlot) return 'Select an available date and time'
-        if (!user?.phone) return 'Complete your profile with a phone number'
-        return ''
+        if (!selectedService) return { message: 'Please select a grooming service', sectionId: 'booking-section-1' }
+        if (!activePet?.name || !activePet?.breed || !activePet?.type) return { message: 'Please complete the pet information', sectionId: 'booking-section-1' }
+        if (isPetTooYoung) return { message: 'Pets must be at least 3 months old to be booked', sectionId: 'booking-section-1' }
+        if (isPetNotVaccinated) return { message: 'Pets must be fully vaccinated to proceed', sectionId: 'booking-section-1' }
+        if (aiEnabled && !selectedStyle) return { message: 'Please select a haircut style preview', sectionId: 'booking-section-2' }
+        if (!selectedDate || !selectedSlot) return { message: 'Please select an available date and time slot', sectionId: 'booking-section-3' }
+        if (!user?.phone) return { message: 'Complete your profile with a phone number', sectionId: null }
+        return null
+    }
+
+    const scrollToSection = (sectionId) => {
+        if (!sectionId) return
+        const el = document.getElementById(sectionId)
+        if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' })
+            el.classList.add('ring-2', 'ring-[#C25E2B]', 'border-[#C25E2B]')
+            setTimeout(() => {
+                el.classList.remove('ring-2', 'ring-[#C25E2B]', 'border-[#C25E2B]')
+            }, 2500)
+        }
     }
 
     const submitBooking = async () => {
-        const validationMessage = validate()
-        if (validationMessage) {
-            toast.error(validationMessage)
+        const error = validate()
+        if (error) {
+            toast.error(error.message)
+            scrollToSection(error.sectionId)
             return
         }
 
@@ -983,17 +1025,17 @@ export default function Booking() {
 
     if (booked) {
         return (
-            <div className='min-h-[calc(100vh-64px)] bg-[#fbf7f1] px-5 py-16'>
-                <div className='mx-auto max-w-2xl rounded-3xl border border-[#e7d8c8] bg-white p-8 text-center shadow-xl sm:p-12 space-y-6'>
-                    <span className='mx-auto grid h-20 w-20 place-items-center rounded-full bg-[#dcf5e7] text-[#24523f] shadow-xs'>
-                        <PawPrint size={34} />
+            <div className='min-h-screen bg-[#FAF7F2] px-4 py-12 text-[#261C14] sm:px-6 lg:px-8'>
+                <div className='mx-auto max-w-2xl rounded-xl border border-[#E2D9C8] bg-white p-8 text-center shadow-xs sm:p-12 space-y-6'>
+                    <span className='mx-auto grid h-16 w-16 place-items-center rounded-xl bg-emerald-100 text-emerald-800 shadow-xs'>
+                        <Check size={32} />
                     </span>
                     <div>
-                        <h1 className='font-serif text-4xl font-bold text-[#201711]'>Appointment Booked</h1>
-                        <p className='mt-2 text-sm text-[#806654]'>Your request was saved and is waiting for staff confirmation.</p>
+                        <h1 className='font-serif text-3xl font-bold tracking-tight text-[#261C14] sm:text-4xl'>Appointment Confirmed</h1>
+                        <p className='mt-1.5 text-sm text-[#68594E]'>Your grooming appointment has been received and saved.</p>
                     </div>
 
-                    <div className='rounded-2xl border border-[#eadfce] bg-[#fcfaf7] p-6 text-left space-y-2.5'>
+                    <div className='rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] p-5 text-left space-y-2.5'>
                         <SummaryRow label='Pet' value={`${booked.petName} (${booked.breed})`} />
                         <SummaryRow label='Service' value={booked.service} />
                         {booked.haircutStyle && <SummaryRow label='Style' value={booked.haircutStyle} />}
@@ -1003,18 +1045,18 @@ export default function Booking() {
                     </div>
 
                     {/* Arrival Policy Notice Banner */}
-                    <div className='rounded-2xl border border-amber-300 bg-amber-50 p-4 text-left flex items-start gap-3 text-amber-950 shadow-xs'>
-                        <Clock size={20} className='text-amber-700 shrink-0 mt-0.5' />
+                    <div className='rounded-lg border border-amber-300 bg-amber-50 p-4 text-left flex items-start gap-3 text-amber-950 shadow-xs'>
+                        <Clock size={18} className='text-amber-700 shrink-0 mt-0.5' />
                         <div className='text-xs leading-relaxed'>
-                            <p className='font-bold text-amber-900 text-sm mb-1'>Studio Arrival Policy:</p>
+                            <p className='font-bold text-amber-900 text-sm mb-1'>Salon Arrival Policy:</p>
                             <p>Please arrive <strong>5–10 minutes before</strong> your scheduled appointment time.</p>
-                            <p className='mt-1 text-amber-800 font-semibold'>⚠️ Late arrival beyond 10 minutes will automatically cancel the appointment.</p>
+                            <p className='mt-1 text-amber-800 font-semibold'>Notice: Late arrival beyond 10 minutes will automatically cancel the appointment.</p>
                         </div>
                     </div>
 
                     <div className='flex flex-col justify-center gap-3 sm:flex-row pt-2'>
-                        <button onClick={() => navigate('/appointments')} className='rounded-full bg-[#bf5a31] px-7 py-3.5 font-bold text-white shadow-xs transition hover:bg-[#a94723]'>View Appointments</button>
-                        <button onClick={() => navigate('/dashboard')} className='rounded-full border border-[#dfcfbd] px-7 py-3.5 font-bold text-[#5f4637] transition hover:bg-[#faf6f0]'>Back to Dashboard</button>
+                        <button onClick={() => navigate('/appointments')} className='rounded-lg bg-[#C25E2B] px-6 py-3 font-bold text-white shadow-xs transition hover:bg-[#A84E20]'>View Appointments</button>
+                        <button onClick={() => navigate('/dashboard')} className='rounded-lg border border-[#E2D9C8] bg-white px-6 py-3 font-bold text-[#68594E] transition hover:bg-[#FAF7F2]'>Back to Dashboard</button>
                     </div>
                 </div>
             </div>
@@ -1022,39 +1064,46 @@ export default function Booking() {
     }
 
     return (
-        <div className='min-h-screen bg-[#fbf7f1] px-4 py-10 sm:px-6'>
+        <div className='min-h-screen bg-[#FAF7F2] px-4 py-6 pb-28 text-[#261C14] sm:px-6 sm:py-8 lg:px-8 lg:pb-12'>
             <div className='mx-auto max-w-7xl'>
-                <div className='mb-6'>
-                    <p className='text-xs font-bold uppercase tracking-[0.22em] text-[#b84c25]'>Unified booking</p>
-                    <h1 className='mt-2 font-serif text-4xl font-bold sm:text-5xl'>Book a grooming appointment</h1>
-                    <p className='mt-3 max-w-3xl text-[#806654]'>Select a service, pet, optional AI style preview, and an available schedule without leaving this page.</p>
+                <div className='mb-6 border-b border-[#E2D9C8] pb-5'>
+                    <span className='inline-block rounded-full bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
+                        Grooming Reservation
+                    </span>
+                    <h1 className='mt-2 font-serif text-2xl font-bold tracking-tight text-[#261C14] sm:text-4xl'>
+                        Book a Grooming Appointment
+                    </h1>
+                    <p className='mt-1 text-xs text-[#68594E] sm:text-sm'>
+                        Select your service, pet profile, haircut style preview, and schedule date.
+                    </p>
                 </div>
 
-                <div className='mb-8 rounded-2xl border border-[#e5d6c5] bg-white p-3 sm:p-4 shadow-sm'>
-                    <div className='grid grid-cols-2 gap-2 sm:gap-3 sm:grid-cols-4'>
-                        <div className={`flex items-center gap-2.5 rounded-xl p-2.5 sm:p-3 text-xs font-bold transition ${selectedService && activePet?.name ? 'bg-[#f2f8f4] text-[#24523f]' : 'bg-[#fff8f3] text-[#a94723]'}`}>
-                            <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-bold ${selectedService && activePet?.name ? 'bg-[#24523f] text-white' : 'bg-[#bf5a31] text-white'}`}>
-                                {selectedService && activePet?.name ? <Check size={13} /> : '1'}
+                {/* Stepper Progress Header */}
+                <div className='mb-8 rounded-xl border border-[#E2D9C8] bg-white p-3 shadow-xs'>
+                    <div className='grid grid-cols-2 gap-2 sm:grid-cols-4'>
+                        <button type='button' onClick={() => scrollToSection('booking-section-1')} className={`flex items-center gap-2 rounded-lg p-2.5 text-xs font-bold text-left transition ${selectedService && activePet?.name ? 'bg-emerald-50 text-emerald-800' : 'bg-[#FAF7F2] text-[#C25E2B]'}`}>
+                            <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[11px] font-bold ${selectedService && activePet?.name ? 'bg-emerald-700 text-white' : 'bg-[#C25E2B] text-white'}`}>
+                                {selectedService && activePet?.name ? <Check size={12} /> : '1'}
                             </span>
-                            <span className='truncate'>1. Pet & Service</span>
-                        </div>
+                            <span className='truncate'>1. Pet &amp; Service</span>
+                        </button>
 
-                        <div className={`flex items-center gap-2.5 rounded-xl p-2.5 sm:p-3 text-xs font-bold transition ${selectedStyle ? 'bg-[#f2f8f4] text-[#24523f]' : selectedService ? 'bg-[#fff8f3] text-[#a94723]' : 'bg-[#f7f2eb] text-[#9a8677]'}`}>
-                            <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-bold ${selectedStyle ? 'bg-[#24523f] text-white' : selectedService ? 'bg-[#bf5a31] text-white' : 'bg-[#d9c8b8] text-white'}`}>
-                                {selectedStyle ? <Check size={13} /> : '2'}
+                        <button type='button' onClick={() => scrollToSection('booking-section-2')} className={`flex items-center gap-2 rounded-lg p-2.5 text-xs font-bold text-left transition ${selectedStyle ? 'bg-emerald-50 text-emerald-800' : selectedService ? 'bg-[#FAF7F2] text-[#C25E2B]' : 'bg-[#FAF7F2] text-[#8C7A6D]'}`}>
+                            <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[11px] font-bold ${selectedStyle ? 'bg-emerald-700 text-white' : selectedService ? 'bg-[#C25E2B] text-white' : 'bg-[#E2D9C8] text-[#68594E]'}`}>
+                                {selectedStyle ? <Check size={12} /> : '2'}
                             </span>
                             <span className='truncate'>2. AI Cut Preview</span>
-                        </div>
+                        </button>
 
-                        <div className={`flex items-center gap-2.5 rounded-xl p-2.5 sm:p-3 text-xs font-bold transition ${selectedDate && selectedSlot ? 'bg-[#f2f8f4] text-[#24523f]' : selectedStyle ? 'bg-[#fff8f3] text-[#a94723]' : 'bg-[#f7f2eb] text-[#9a8677]'}`}>
-                            <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-bold ${selectedDate && selectedSlot ? 'bg-[#24523f] text-white' : selectedStyle ? 'bg-[#bf5a31] text-white' : 'bg-[#d9c8b8] text-white'}`}>
-                                {selectedDate && selectedSlot ? <Check size={13} /> : '3'}
+                        <button type='button' onClick={() => scrollToSection('booking-section-3')} className={`flex items-center gap-2 rounded-lg p-2.5 text-xs font-bold text-left transition ${selectedDate && selectedSlot ? 'bg-emerald-50 text-emerald-800' : selectedStyle ? 'bg-[#FAF7F2] text-[#C25E2B]' : 'bg-[#FAF7F2] text-[#8C7A6D]'}`}>
+                            <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[11px] font-bold ${selectedDate && selectedSlot ? 'bg-emerald-700 text-white' : selectedStyle ? 'bg-[#C25E2B] text-white' : 'bg-[#E2D9C8] text-[#68594E]'}`}>
+                                {selectedDate && selectedSlot ? <Check size={12} /> : '3'}
                             </span>
-                            <span className='truncate'>3. Date & Schedule</span>
-                        </div>
+                            <span className='truncate'>3. Date &amp; Schedule</span>
+                        </button>
 
-                        <div className={`flex items-center gap-2.5 rounded-xl p-2.5 sm:p-3 text-xs font-bold transition ${!validate() ? 'bg-[#f2f8f4] text-[#24523f]' : 'bg-[#f7f2eb] text-[#9a8677]'}`}>
-                            <span className={`grid h-6 w-6 shrink-0 place-items-center rounded-full text-xs font-bold ${!validate() ? 'bg-[#24523f] text-white' : 'bg-[#d9c8b8] text-white'}`}>
+                        <div className={`flex items-center gap-2 rounded-lg p-2.5 text-xs font-bold transition ${validate() === null ? 'bg-emerald-50 text-emerald-800' : 'bg-[#FAF7F2] text-[#8C7A6D]'}`}>
+                            <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[11px] font-bold ${validate() === null ? 'bg-emerald-700 text-white' : 'bg-[#E2D9C8] text-[#68594E]'}`}>
                                 4
                             </span>
                             <span className='truncate'>4. Confirmation</span>
@@ -1062,31 +1111,31 @@ export default function Booking() {
                     </div>
                 </div>
 
-                <div className='grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_360px]'>
-                    <div className='space-y-7'>
-                        <Section number='1' title='Service and pet' description='Choose the grooming service and the pet you are booking for.' icon={<Scissors size={19} className='text-[#a94723]' />}>
+                <div className='grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_340px]'>
+                    <div className='space-y-6'>
+                        <Section id='booking-section-1' number='1' title='Service and Pet' description='Select a grooming service and the pet receiving treatment.' icon={<Scissors size={18} className='text-[#C25E2B]' />}>
                             <div className='grid gap-3 md:grid-cols-2'>
                                 {services.map((service) => {
                                     const selected = selectedServiceId === service.id
                                     return (
-                                        <button key={service.id} type='button' onClick={() => selectService(service.id)} aria-pressed={selected} className={`rounded-2xl border p-5 text-left transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a84522] focus-visible:ring-offset-2 ${selected ? 'border-[#a84522] bg-[#fff3ec] ring-1 ring-[#a84522]' : 'border-[#e5d6c5] bg-white hover:border-[#c88968]'}`}>
-                                            <div className='flex items-start justify-between gap-4'>
-                                                <div><h3 className='font-serif text-xl font-bold'>{service.name}</h3><p className='mt-2 text-sm leading-6 text-[#806654]'>{service.description}</p></div>
-                                                {selected && <span className='grid h-7 w-7 shrink-0 place-items-center rounded-full bg-[#bf5a31] text-white'><Check size={15} /></span>}
+                                        <button key={service.id} type='button' onClick={() => selectService(service.id)} aria-pressed={selected} className={`rounded-xl border p-4 text-left transition ${selected ? 'border-[#C25E2B] bg-[#C25E2B]/5 ring-1 ring-[#C25E2B]' : 'border-[#E2D9C8] bg-white hover:border-[#C25E2B]/60'}`}>
+                                            <div className='flex items-start justify-between gap-3'>
+                                                <div><h3 className='font-serif text-lg font-bold text-[#261C14]'>{service.name}</h3><p className='mt-1 text-xs leading-relaxed text-[#68594E]'>{service.description}</p></div>
+                                                {selected && <span className='grid h-6 w-6 shrink-0 place-items-center rounded-full bg-[#C25E2B] text-white'><Check size={14} /></span>}
                                             </div>
-                                            <div className='mt-4 flex items-center justify-between text-sm'><span className='font-bold text-[#b84c25]'>₱{service.price.toLocaleString('en-PH')}</span><span className='flex items-center gap-2 text-[#806654]'><Clock3 size={14} />{service.durationMinutes} minutes</span></div>
-                                            {service.supportsAiPreview && <p className='mt-3 text-xs font-semibold text-[#24523f]'>Style preview available</p>}
+                                            <div className='mt-3 flex items-center justify-between text-xs'><span className='font-bold text-[#C25E2B] text-sm'>₱{service.price.toLocaleString('en-PH')}</span><span className='flex items-center gap-1 text-[#68594E]'><Clock3 size={13} />{service.durationMinutes} min</span></div>
+                                            {service.supportsAiPreview && <p className='mt-2 text-[11px] font-bold text-emerald-800'>AI Style Preview Available</p>}
                                         </button>
                                     )
                                 })}
                             </div>
 
-                            <div className='my-7 h-px bg-[#eadfce]' />
-                            <div className='mb-5 flex flex-wrap items-center justify-between gap-3'>
-                                <div><h3 className='font-serif text-xl font-bold'>Pet information</h3><p className='mt-1 text-sm text-[#806654]'>Use a saved pet or add a new profile.</p></div>
-                                <div className='inline-flex rounded-full bg-[#eee2d3] p-1'>
-                                    <button type='button' onClick={() => { setPetMode('existing'); resetForPetChange() }} disabled={!pets.length} className={`rounded-full px-5 py-2 text-sm font-bold ${petMode === 'existing' ? 'bg-white shadow-sm' : 'text-[#806654]'} disabled:opacity-40`}>Saved Pet</button>
-                                    <button type='button' onClick={() => { setPetMode('new'); resetForPetChange() }} className={`rounded-full px-5 py-2 text-sm font-bold ${petMode === 'new' ? 'bg-white shadow-sm' : 'text-[#806654]'}`}>New Pet</button>
+                            <div className='my-6 h-px bg-[#E2D9C8]' />
+                            <div className='mb-4 flex flex-wrap items-center justify-between gap-3'>
+                                <div><h3 className='font-serif text-lg font-bold text-[#261C14]'>Pet Profile</h3><p className='mt-0.5 text-xs text-[#68594E]'>Choose a saved pet or enter details for a new companion.</p></div>
+                                <div className='inline-flex rounded-lg bg-[#FAF7F2] p-1 border border-[#E2D9C8]'>
+                                    <button type='button' onClick={() => { setPetMode('existing'); resetForPetChange() }} disabled={!pets.length} className={`rounded-md px-4 py-1.5 text-xs font-bold ${petMode === 'existing' ? 'bg-white shadow-xs text-[#261C14]' : 'text-[#68594E]'} disabled:opacity-40`}>Saved Pets</button>
+                                    <button type='button' onClick={() => { setPetMode('new'); resetForPetChange() }} className={`rounded-md px-4 py-1.5 text-xs font-bold ${petMode === 'new' ? 'bg-white shadow-xs text-[#261C14]' : 'text-[#68594E]'}`}>New Pet</button>
                                 </div>
                             </div>
 
@@ -1096,17 +1145,28 @@ export default function Booking() {
                                         const petAge = pet.ageMonths !== undefined && pet.ageMonths !== '' ? Number(pet.ageMonths) : null
                                         const tooYoung = petAge !== null && petAge < 3
                                         const unvax = pet.vaccinated === false || pet.vaccinated === 'no' || pet.vaccinated === 'false'
+                                        const selected = selectedPetId === pet._id
                                         return (
-                                            <button key={pet._id} type='button' onClick={() => { setSelectedPetId(pet._id); resetForPetChange() }} aria-pressed={selectedPetId === pet._id} className={`rounded-2xl border p-4 text-left transition ${selectedPetId === pet._id ? 'border-[#a84522] bg-[#fff3ec]' : 'border-[#e5d6c5] bg-white hover:border-[#c88968]'}`}>
-                                                <p className='font-serif text-xl font-bold'>{pet.name}</p>
-                                                <p className='mt-1 text-sm text-[#806654]'>{pet.type === 'cat' ? 'Cat' : 'Dog'} · {pet.breed}{petAge !== null ? ` · ${petAge} mo` : ''}</p>
-                                                {pet.coatType && <p className='mt-1.5 text-xs text-[#8c7565]'>{pet.coatType}</p>}
-                                                {(tooYoung || unvax) && (
-                                                    <div className='mt-2 flex flex-wrap gap-1'>
-                                                        {tooYoung && <span className='rounded bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800'>&lt; 3 Months Old</span>}
-                                                        {unvax && <span className='rounded bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-800'>Unvaccinated</span>}
-                                                    </div>
-                                                )}
+                                            <button key={pet._id} type='button' onClick={() => { setSelectedPetId(pet._id); resetForPetChange() }} aria-pressed={selected} className={`flex items-start gap-3 rounded-xl border p-4 text-left transition ${selected ? 'border-[#C25E2B] bg-[#C25E2B]/5 ring-1 ring-[#C25E2B]' : 'border-[#E2D9C8] bg-white hover:border-[#C25E2B]/60'}`}>
+                                                <span className='grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] text-[#2B4C3F]'>
+                                                    {pet.photoUrl ? (
+                                                        <img src={pet.photoUrl} alt={pet.name} className='h-full w-full object-cover' />
+                                                    ) : (
+                                                        <span className='font-serif font-bold text-lg'>{pet.name[0]?.toUpperCase()}</span>
+                                                    )}
+                                                </span>
+                                                <div className='min-w-0 flex-1'>
+                                                    <p className='font-serif text-base font-bold text-[#261C14] truncate'>{pet.name}</p>
+                                                    <p className='mt-0.5 text-xs text-[#68594E]'>{pet.type === 'cat' ? 'Cat' : 'Dog'} · {pet.breed}{petAge !== null ? ` · ${petAge} mo` : ''}</p>
+                                                    {pet.coatType && <p className='mt-1 text-[11px] text-[#8C7A6D]'>{pet.coatType}</p>}
+                                                    {(tooYoung || unvax) && (
+                                                        <div className='mt-2 flex flex-wrap gap-1'>
+                                                            {tooYoung && <span className='rounded bg-amber-100 px-2 py-0.5 text-[10px] font-bold text-amber-800'>&lt; 3 Months</span>}
+                                                            {unvax && <span className='rounded bg-red-100 px-2 py-0.5 text-[10px] font-bold text-red-800'>Unvaccinated</span>}
+                                                        </div>
+                                                    )}
+                                                </div>
+                                                {selected && <span className='grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#C25E2B] text-white'><Check size={12} /></span>}
                                             </button>
                                         )
                                     })}
@@ -1116,57 +1176,56 @@ export default function Booking() {
                                     <Input label='PET NAME' value={newPet.name} onChange={(value) => { setNewPet({ ...newPet, name: value }); resetForPetChange() }} />
                                     <label className='block'>
                                         <Label>PET TYPE</Label>
-                                        <select value={newPet.type} onChange={(event) => { setNewPet({ ...newPet, type: event.target.value }); resetForPetChange() }} className='w-full rounded-xl border border-[#dfcfbd] bg-white px-4 py-3.5 outline-none focus:border-[#b84c25] text-sm'>
+                                        <select value={newPet.type} onChange={(event) => { setNewPet({ ...newPet, type: event.target.value }); resetForPetChange() }} className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-white px-3.5 text-sm outline-none focus:border-[#C25E2B]'>
                                             <option value='dog'>Dog</option>
                                             <option value='cat'>Cat</option>
                                         </select>
                                     </label>
                                     <Input label='BREED' value={newPet.breed} onChange={(value) => { setNewPet({ ...newPet, breed: value }); resetForPetChange() }} />
-                                    <Input label='COAT TYPE (OPTIONAL)' value={newPet.coatType} onChange={(value) => { setNewPet({ ...newPet, coatType: value }); resetForPetChange() }} placeholder='Long, short, curly, double coat' />
+                                    <Input label='COAT TYPE (OPTIONAL)' value={newPet.coatType} onChange={(value) => { setNewPet({ ...newPet, coatType: value }); resetForPetChange() }} placeholder='Long, short, double coat' />
                                     <Input label='PET AGE (MONTHS)' type='number' min='0' value={newPet.ageMonths} onChange={(value) => { setNewPet({ ...newPet, ageMonths: value }); resetForPetChange() }} placeholder='e.g. 6' />
                                     <label className='block'>
                                         <Label>IS PET FULLY VACCINATED?</Label>
-                                        <select value={newPet.vaccinated} onChange={(event) => { setNewPet({ ...newPet, vaccinated: event.target.value }); resetForPetChange() }} className='w-full rounded-xl border border-[#dfcfbd] bg-white px-4 py-3.5 outline-none focus:border-[#b84c25] text-sm'>
+                                        <select value={newPet.vaccinated} onChange={(event) => { setNewPet({ ...newPet, vaccinated: event.target.value }); resetForPetChange() }} className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-white px-3.5 text-sm outline-none focus:border-[#C25E2B]'>
                                             <option value='yes'>Yes - Fully Vaccinated</option>
                                             <option value='no'>No - Not Vaccinated</option>
                                         </select>
                                     </label>
                                     <label className='block sm:col-span-2'>
                                         <Label>PET NOTES (OPTIONAL)</Label>
-                                        <textarea value={newPet.notes} onChange={(event) => setNewPet({ ...newPet, notes: event.target.value })} rows={3} className='w-full rounded-xl border border-[#dfcfbd] px-4 py-3 outline-none focus:border-[#b84c25] text-sm' />
+                                        <textarea value={newPet.notes} onChange={(event) => setNewPet({ ...newPet, notes: event.target.value })} rows={2} className='w-full rounded-lg border border-[#E2D9C8] bg-white px-3.5 py-2.5 text-sm outline-none focus:border-[#C25E2B]' />
                                     </label>
                                 </div>
                             )}
 
                             {isPetTooYoung && (
-                                <div className='mt-5 flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-amber-900 shadow-xs'>
-                                    <AlertTriangle className='mt-0.5 h-5 w-5 shrink-0 text-amber-600' />
+                                <div className='mt-4 flex items-start gap-3 rounded-lg border border-amber-300 bg-amber-50 p-3.5 text-amber-900 shadow-xs'>
+                                    <AlertTriangle className='mt-0.5 h-4 w-4 shrink-0 text-amber-600' />
                                     <div>
-                                        <h4 className='font-bold text-sm text-amber-950 uppercase tracking-wide'>Notice</h4>
-                                        <p className='mt-0.5 text-sm text-amber-800 leading-relaxed'>
-                                            Pet must be at least 3 months old to be eligible for grooming.
-                                            {activePetAge !== null && ` (Current age: ${activePetAge} ${activePetAge === 1 ? 'month' : 'months'})`}
+                                        <h4 className='font-bold text-xs text-amber-950 uppercase tracking-wide'>Notice</h4>
+                                        <p className='mt-0.5 text-xs text-amber-800 leading-relaxed'>
+                                            Pets must be at least 3 months old to be booked for grooming services.
                                         </p>
                                     </div>
                                 </div>
                             )}
 
                             {!isPetTooYoung && isPetNotVaccinated && (
-                                <div className='mt-5 flex items-start gap-3 rounded-2xl border border-red-300 bg-red-50 p-4 text-red-900 shadow-xs'>
-                                    <AlertTriangle className='mt-0.5 h-5 w-5 shrink-0 text-red-600' />
+                                <div className='mt-4 flex items-start gap-3 rounded-lg border border-red-300 bg-red-50 p-3.5 text-red-900 shadow-xs'>
+                                    <AlertTriangle className='mt-0.5 h-4 w-4 shrink-0 text-red-600' />
                                     <div>
-                                        <h4 className='font-bold text-sm text-red-950 uppercase tracking-wide'>Booking Ends</h4>
-                                        <p className='mt-0.5 text-sm text-red-800 leading-relaxed'>
-                                            Pet must be fully vaccinated to receive grooming services.
+                                        <h4 className='font-bold text-xs text-red-950 uppercase tracking-wide'>Vaccination Required</h4>
+                                        <p className='mt-0.5 text-xs text-red-800 leading-relaxed'>
+                                            Pets must be fully vaccinated prior to salon entry.
                                         </p>
                                     </div>
                                 </div>
                             )}
                         </Section>
 
-                        <Section number='2' title='Style and preview' description={aiEnabled ? 'Upload one pet photo, compare personalized styles, and choose a grooming reference.' : 'A style preview is available for Full Grooming and Custom Styling.'} icon={<WandSparkles size={19} className='text-[#a94723]' />} disabled={!selectedService || !activePet?.name || !activePet?.breed || isPetTooYoung || isPetNotVaccinated}>
+                        <Section id='booking-section-2' number='2' title='Style and Preview' description={aiEnabled ? 'Upload one pet photo, compare styles, and choose a haircut reference.' : 'Style preview is available for Full Grooming and Custom Styling.'} icon={<WandSparkles size={18} className='text-[#C25E2B]' />} disabled={!selectedService || !activePet?.name || !activePet?.breed || isPetTooYoung || isPetNotVaccinated}>
                             {!aiEnabled ? (
-                                <div className='rounded-2xl border border-[#e5d6c5] bg-[#f7f2eb] p-6 text-sm text-[#806654]'>The selected service does not need a hairstyle preview. Continue to the schedule.</div>
+                                <div className='rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] p-4 text-xs text-[#68594E]'>The selected service does not require a haircut preview. Proceed to schedule selection.</div>
                             ) : (
                                 <AiPreviewPanel
                                     season={season}
@@ -1200,7 +1259,7 @@ export default function Booking() {
                             )}
                         </Section>
 
-                        <Section number='3' title='Schedule' description='Choose an available date and one two-hour time period.' icon={<CalendarDays size={19} className='text-[#a94723]' />} disabled={!selectedService || !activePet?.name || !activePet?.breed || isPetTooYoung || isPetNotVaccinated || (aiEnabled && !selectedStyle)}>
+                        <Section id='booking-section-3' number='3' title='Schedule' description='Pick an available date and a guaranteed 2-hour window.' icon={<CalendarDays size={18} className='text-[#C25E2B]' />} disabled={!selectedService || !activePet?.name || !activePet?.breed || isPetTooYoung || isPetNotVaccinated || (aiEnabled && !selectedStyle)}>
                             <div className='grid gap-5 xl:grid-cols-[1fr_1fr]'>
                                 <AvailabilityCalendar
                                     monthKey={monthKey}
@@ -1213,56 +1272,57 @@ export default function Booking() {
                                     loading={calendarLoading}
                                 />
                                 <div>
-                                    <h3 className='mb-3 font-serif text-xl font-bold'>{selectedDate ? formatDateLong(selectedDate) : 'Available time periods'}</h3>
+                                    <h3 className='mb-3 font-serif text-lg font-bold text-[#261C14]'>{selectedDate ? formatDateLong(selectedDate) : 'Available Time Slots'}</h3>
                                     <TimeSlotGrid slots={slots} selectedTime={selectedTime} onSelect={setSelectedTime} loading={slotsLoading} />
                                 </div>
                             </div>
 
-                            <div className='my-7 h-px bg-[#eadfce]' />
+                            <div className='my-6 h-px bg-[#E2D9C8]' />
                             <label className='block'>
-                                <Label>Notes for the groomer (optional)</Label>
-                                <textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={4} maxLength={500} placeholder='Temperament, skin sensitivity, handling instructions, or anything else we should know' className='w-full rounded-xl border border-[#dfcfbd] bg-white px-4 py-3 outline-none focus:border-[#b84c25]' />
+                                <Label>Notes for Groomer (Optional)</Label>
+                                <textarea value={notes} onChange={(event) => setNotes(event.target.value)} rows={3} maxLength={500} placeholder='Special handling, skin sensitivities, coat preferences, etc.' className='w-full rounded-lg border border-[#E2D9C8] bg-white px-3.5 py-2.5 text-sm outline-none focus:border-[#C25E2B]' />
                             </label>
-                            <p className='mt-2 text-right text-xs text-[#8b7769]'>{notes.length}/500</p>
+                            <p className='mt-1 text-right text-[11px] font-medium text-[#8C7A6D]'>{notes.length}/500</p>
                         </Section>
                     </div>
 
-                    <aside className='sticky top-24 rounded-3xl border border-[#dfcfbd] bg-white p-6 shadow-sm'>
-                        <div className='flex items-center gap-3'>
-                            <span className='grid h-9 w-9 place-items-center rounded-full bg-[#f1e5d7] font-mono text-xs font-bold text-[#9c4424]'>4</span>
-                            <div><p className='text-[10px] font-bold uppercase tracking-[0.16em] text-[#a94723]'>Review</p><h2 className='font-serif text-2xl font-bold'>Booking summary</h2></div>
+                    {/* Booking Summary Sidebar */}
+                    <aside className='sticky top-24 rounded-xl border border-[#E2D9C8] bg-white p-6 shadow-xs'>
+                        <div className='flex items-center gap-2.5'>
+                            <span className='grid h-7 w-7 place-items-center rounded-lg bg-[#2B4C3F] font-mono text-xs font-bold text-white'>4</span>
+                            <div><p className='text-[10px] font-bold uppercase tracking-wider text-[#C25E2B]'>Review</p><h2 className='font-serif text-xl font-bold text-[#261C14]'>Booking Summary</h2></div>
                         </div>
-                        <div className='mt-6 space-y-1'>
+                        <div className='mt-5 space-y-1'>
                             <SummaryRow label='Pet' value={activePet?.name || 'Not selected'} />
                             <SummaryRow label='Breed' value={activePet?.breed || 'Not selected'} />
                             <SummaryRow label='Service' value={selectedService?.name || 'Not selected'} />
                             {aiEnabled && <SummaryRow label='Style' value={selectedStyle?.name || 'Not selected'} />}
-                            {aiEnabled && generatedPreview && <SummaryRow label='Style preview' value='Ready' />}
+                            {aiEnabled && generatedPreview && <SummaryRow label='Style Preview' value='Ready' />}
                             <SummaryRow label='Date' value={selectedDate ? formatDateLong(selectedDate) : 'Not selected'} />
                             <SummaryRow label='Time' value={selectedSlot ? formatTimeRange(selectedSlot.startTime, selectedSlot.endTime) : 'Not selected'} />
                         </div>
-                        <div className='my-6 h-px bg-[#eadfce]' />
-                        <div className='flex items-end justify-between'><span className='font-serif text-xl font-bold'>Total</span><span className='font-serif text-3xl font-bold text-[#b84c25]'>₱{Number(selectedService?.price || 0).toLocaleString('en-PH')}</span></div>
-                        <button onClick={submitBooking} disabled={submitting} className='mt-6 w-full rounded-full bg-[#bf5a31] px-6 py-4 font-bold text-white disabled:cursor-not-allowed disabled:opacity-50'>{submitting ? 'Saving appointment...' : 'Confirm Booking'}</button>
+                        <div className='my-5 h-px bg-[#E2D9C8]' />
+                        <div className='flex items-end justify-between'><span className='font-serif text-lg font-bold text-[#261C14]'>Total Amount</span><span className='font-serif text-2xl font-bold text-[#C25E2B]'>₱{Number(selectedService?.price || 0).toLocaleString('en-PH')}</span></div>
+                        <button onClick={submitBooking} disabled={submitting} className='mt-6 hidden w-full rounded-lg bg-[#C25E2B] px-5 py-3.5 font-bold text-white shadow-xs transition hover:bg-[#A84E20] disabled:opacity-50 lg:block'>{submitting ? 'Saving appointment...' : 'Confirm Booking'}</button>
                     </aside>
                 </div>
             </div>
 
-            {/* Mobile Fixed Sticky Booking Summary Bar */}
-            <div className='fixed bottom-0 left-0 right-0 z-40 border-t border-[#e5d6c5] bg-white/95 px-4 py-3 shadow-lg backdrop-blur-md lg:hidden'>
+            {/* Mobile Fixed Sticky Bar */}
+            <div className='fixed bottom-0 left-0 right-0 z-40 border-t border-[#E2D9C8] bg-white/95 px-4 py-3 shadow-lg backdrop-blur-md lg:hidden'>
                 <div className='flex items-center justify-between gap-3 max-w-7xl mx-auto'>
                     <div>
-                        <p className='text-[10px] font-bold uppercase tracking-wider text-[#a94723] truncate max-w-[160px]'>
+                        <p className='text-[10px] font-bold uppercase tracking-wider text-[#C25E2B] truncate max-w-[160px]'>
                             {selectedService?.name || 'Grooming'} {selectedStyle ? `• ${selectedStyle.name}` : ''}
                         </p>
-                        <p className='font-serif text-lg font-bold text-[#b84c25]'>
+                        <p className='font-serif text-lg font-bold text-[#C25E2B]'>
                             ₱{Number(selectedService?.price || 0).toLocaleString('en-PH')}
                         </p>
                     </div>
                     <button
                         onClick={submitBooking}
                         disabled={submitting}
-                        className='rounded-full bg-[#bf5a31] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#a84522] disabled:opacity-50'
+                        className='rounded-lg bg-[#C25E2B] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#A84E20] disabled:opacity-50'
                     >
                         {submitting ? 'Saving...' : 'Confirm Booking'}
                     </button>
@@ -1272,12 +1332,12 @@ export default function Booking() {
     )
 }
 
-function Section({ number, title, description, icon, disabled = false, children }) {
+function Section({ id, number, title, description, icon, disabled = false, children }) {
     return (
-        <section className={`rounded-3xl border border-[#e5d6c5] bg-[#fffdf9] p-5 shadow-sm sm:p-7 ${disabled ? 'pointer-events-none opacity-45' : ''}`}>
-            <div className='mb-6 flex items-start gap-4'>
-                <span className='grid h-11 w-11 shrink-0 place-items-center rounded-full bg-[#f1e5d7] font-mono text-sm font-bold text-[#9c4424]'>{number}</span>
-                <div className='flex-1'><div className='flex items-center gap-2'>{icon}<h2 className='font-serif text-2xl font-bold sm:text-3xl'>{title}</h2></div><p className='mt-2 text-sm leading-6 text-[#806654]'>{description}</p></div>
+        <section id={id} className={`rounded-xl border border-[#E2D9C8] bg-white p-5 shadow-xs transition-all duration-300 sm:p-6 ${disabled ? 'pointer-events-none opacity-45' : ''}`}>
+            <div className='mb-5 flex items-start gap-3.5'>
+                <span className='grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#FAF7F2] border border-[#E2D9C8] font-mono text-xs font-bold text-[#C25E2B]'>{number}</span>
+                <div className='flex-1'><div className='flex items-center gap-2'>{icon}<h2 className='font-serif text-xl font-bold text-[#261C14]'>{title}</h2></div><p className='mt-1 text-xs leading-relaxed text-[#68594E]'>{description}</p></div>
             </div>
             {children}
         </section>
@@ -1285,13 +1345,18 @@ function Section({ number, title, description, icon, disabled = false, children 
 }
 
 function Label({ children }) {
-    return <span className='mb-2 block text-xs font-semibold uppercase tracking-[0.14em] text-[#7b5f4c]'>{children}</span>
+    return <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#68594E]'>{children}</span>
 }
 
 function Input({ label, value, onChange, ...props }) {
-    return <label className='block'><Label>{label}</Label><input value={value} onChange={(event) => onChange(event.target.value)} className='w-full rounded-xl border border-[#dfcfbd] bg-white px-4 py-3.5 outline-none focus:border-[#b84c25]' {...props} /></label>
+    return <label className='block'><Label>{label}</Label><input value={value} onChange={(event) => onChange(event.target.value)} className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-white px-3.5 text-sm outline-none transition focus:border-[#C25E2B] placeholder:text-[#A8988A]' {...props} /></label>
 }
 
 function SummaryRow({ label, value, strong = false }) {
-    return <div className='flex items-start justify-between gap-5 border-b border-[#f0e7dd] py-3 last:border-0'><span className='text-sm text-[#806654]'>{label}</span><span className={`text-right text-sm ${strong ? 'font-bold text-[#b84c25]' : 'font-semibold text-[#2b2019]'}`}>{value}</span></div>
+    return (
+        <div className='flex items-start justify-between gap-4 border-b border-[#E2D9C8] py-2.5 last:border-0'>
+            <span className='text-xs text-[#68594E]'>{label}</span>
+            <span className={`text-right text-xs ${strong ? 'font-bold text-[#C25E2B]' : 'font-semibold text-[#261C14]'}`}>{value}</span>
+        </div>
+    )
 }

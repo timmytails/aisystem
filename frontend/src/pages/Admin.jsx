@@ -23,7 +23,6 @@ import {
     Megaphone,
     Menu,
     MessageSquare,
-    PawPrint,
     Phone,
     RefreshCw,
     Scissors,
@@ -846,31 +845,21 @@ export default function Admin() {
                 </header>
 
                 <main className='p-4 sm:p-6'>
-                    {activeTab ===
-                        'dashboard' && (
-                            <DashboardView
-                                stats={
-                                    stats
-                                }
-                                todaysAppointments={
-                                    todaysAppointments
-                                }
-                                pendingAppointments={
-                                    pendingAppointments
-                                }
-                                updatingId={
-                                    updatingId
-                                }
-                                onStatusUpdate={
-                                    handleStatusUpdate
-                                }
-                                onViewBookings={() =>
-                                    changeTab(
-                                        'bookings'
-                                    )
-                                }
-                            />
-                        )}
+                    {activeTab === 'dashboard' && (
+                        <DashboardView
+                            stats={stats}
+                            todaysAppointments={todaysAppointments}
+                            pendingAppointments={pendingAppointments}
+                            updatingId={updatingId}
+                            onStatusUpdate={handleStatusUpdate}
+                            onViewBookings={() => changeTab('bookings')}
+                            onViewAnalytics={() => changeTab('analytics')}
+                            analytics={analytics}
+                            appointments={appointments}
+                            aiUsageRate={aiUsageRate}
+                            completedRate={completedRate}
+                        />
+                    )}
 
                     {activeTab ===
                         'bookings' && (
@@ -1018,60 +1007,55 @@ function AdminSidebar({
                 <button
                     type='button'
                     onClick={onClose}
-                    className='fixed inset-0 z-40 bg-black/35 lg:hidden'
+                    className='fixed inset-0 z-40 bg-black/40 lg:hidden'
                     aria-label='Close navigation overlay'
                 />
             )}
 
             <aside
-                className={`fixed inset-y-0 left-0 z-50 flex w-[240px] flex-col bg-[#1c3329] text-white transition-transform duration-300 lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}
+                className={`fixed inset-y-0 left-0 z-50 flex w-[240px] flex-col bg-[#2B4C3F] text-white transition-transform duration-200 lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}
             >
-                {/* Logo */}
-                <div className='flex h-[70px] items-center justify-between border-b border-white/8 px-5'>
-                    <div className='flex items-center gap-3'>
-                        <span className='grid h-9 w-9 place-items-center rounded-xl bg-[#bf5a31]'>
-                            <PawPrint size={17} />
-                        </span>
-                        <div>
-                            <p className='font-serif text-base font-bold leading-tight'>Timmy Tails</p>
-                            <p className='text-[10px] font-medium uppercase tracking-widest text-white/40'>Admin</p>
-                        </div>
+                {/* Header Brand */}
+                <div className='flex h-16 items-center justify-between border-b border-white/10 px-5'>
+                    <div>
+                        <p className='font-serif text-lg font-bold tracking-tight text-white'>TimmyTails</p>
+                        <p className='text-[10px] font-bold uppercase tracking-widest text-amber-200/80'>Admin Portal</p>
                     </div>
                     <button
                         onClick={onClose}
-                        className='grid h-8 w-8 place-items-center rounded-lg text-white/50 transition hover:bg-white/10 hover:text-white lg:hidden'
+                        className='grid h-8 w-8 place-items-center rounded-lg text-white/70 hover:bg-white/10 hover:text-white lg:hidden'
                         aria-label='Close navigation'
                     >
-                        <X size={17} />
+                        <X size={18} />
                     </button>
                 </div>
 
-                {/* Navigation */}
-                <nav className='flex-1 space-y-0.5 px-3 py-4'>
+                {/* Navigation Menu */}
+                <nav className='flex-1 space-y-1 px-3 py-4'>
                     {NAV_ITEMS.map(({ id, label, icon }) => {
                         const isActive = activeTab === id
                         return (
                             <button
                                 key={id}
                                 onClick={() => onChange(id)}
-                                className={`group relative flex w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-left text-sm font-medium transition-all duration-150 ${
+                                className={`group relative flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-left text-sm font-semibold transition ${
                                     isActive
-                                        ? 'bg-white/12 text-white'
-                                        : 'text-white/55 hover:bg-white/7 hover:text-white'
+                                        ? 'bg-white/15 text-white'
+                                        : 'text-white/70 hover:bg-white/10 hover:text-white'
                                 }`}
                             >
                                 {isActive && (
-                                    <span className='absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-[#bf5a31]' />
+                                    <span className='absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-[#C25E2B]' />
                                 )}
                                 {createElement(icon, { size: 16 })}
                                 <span className='flex-1'>{label}</span>
                                 {id === 'bookings' && pendingCount > 0 && (
-                                    <span className='inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#bf5a31] px-1.5 text-[10px] font-bold text-white'>
+                                    <span className='inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#C25E2B] px-1.5 text-[10px] font-bold text-white'>
                                         {pendingCount}
                                     </span>
                                 )}
                                 {id === 'messages' && unreadContactsCount > 0 && (
-                                    <span className='inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#bf5a31] px-1.5 text-[10px] font-bold text-white'>
+                                    <span className='inline-flex h-5 min-w-5 items-center justify-center rounded-full bg-[#C25E2B] px-1.5 text-[10px] font-bold text-white'>
                                         {unreadContactsCount}
                                     </span>
                                 )}
@@ -1080,23 +1064,23 @@ function AdminSidebar({
                     })}
                 </nav>
 
-                {/* User Footer */}
-                <div className='border-t border-white/8 p-4'>
+                {/* Admin Profile Footer */}
+                <div className='border-t border-white/10 p-4'>
                     <div className='mb-3 flex items-center gap-3'>
-                        <span className='grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/10 text-sm font-bold'>
+                        <span className='grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/15 text-sm font-bold text-white'>
                             {(user?.firstName?.[0] || 'A').toUpperCase()}
                         </span>
                         <div className='min-w-0'>
-                            <p className='truncate text-sm font-semibold text-white'>{user?.firstName || 'Admin'}</p>
-                            <p className='truncate text-[10px] text-white/40'>{user?.email || user?.phone}</p>
+                            <p className='truncate text-xs font-bold text-white'>{user?.firstName || 'Admin'}</p>
+                            <p className='truncate text-[10px] text-white/60'>{user?.email || user?.phone}</p>
                         </div>
                     </div>
                     <button
                         onClick={onLogout}
-                        className='flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-medium text-white/50 transition hover:bg-white/8 hover:text-white'
+                        className='flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-white/70 hover:bg-white/10 hover:text-white'
                     >
                         <LogOut size={15} />
-                        Sign Out
+                        <span>Sign Out</span>
                     </button>
                 </div>
             </aside>
@@ -1110,62 +1094,154 @@ function DashboardView({
     pendingAppointments,
     updatingId,
     onStatusUpdate,
-    onViewBookings
+    onViewBookings,
+    onViewAnalytics,
+    analytics,
+    appointments = [],
+    aiUsageRate = 0,
+    completedRate = 0
 }) {
-    const confirmedToday =
-        todaysAppointments.filter(
-            (item) =>
-                item.status ===
-                'confirmed'
-        ).length
+    const confirmedToday = todaysAppointments.filter((item) => item.status === 'confirmed').length
+
+    const serviceCounts = useMemo(() => {
+        const counts = {}
+        appointments.forEach((a) => {
+            if (a.service) {
+                counts[a.service] = (counts[a.service] || 0) + 1
+            }
+        })
+        const total = appointments.length || 1
+        return Object.entries(counts)
+            .map(([name, count]) => ({
+                name,
+                count,
+                pct: Math.round((count / total) * 100)
+            }))
+            .sort((a, b) => b.count - a.count)
+            .slice(0, 3)
+    }, [appointments])
 
     return (
         <div className='space-y-6'>
             <div className='grid gap-4 sm:grid-cols-2 xl:grid-cols-4'>
                 <MetricCard
-                    icon={
-                        CalendarDays
-                    }
-                    value={
-                        stats?.todayAppointments ??
-                        todaysAppointments.length
-                    }
+                    icon={CalendarDays}
+                    value={stats?.todayAppointments ?? todaysAppointments.length}
                     label="Today's Appointments"
                     tone='orange'
                 />
-
                 <MetricCard
                     icon={Clock3}
-                    value={
-                        stats?.pendingAppointments ??
-                        pendingAppointments.length
-                    }
+                    value={stats?.pendingAppointments ?? pendingAppointments.length}
                     label='Pending Approval'
                     tone='amber'
                 />
-
                 <MetricCard
-                    icon={
-                        CheckCircle2
-                    }
-                    value={
-                        confirmedToday
-                    }
+                    icon={CheckCircle2}
+                    value={confirmedToday}
                     label='Approved Today'
                     tone='blue'
                 />
-
                 <MetricCard
-                    icon={
-                        CircleDollarSign
-                    }
-                    value={formatPeso(
-                        stats?.todayRevenue
-                    )}
+                    icon={CircleDollarSign}
+                    value={formatPeso(stats?.todayRevenue)}
                     label="Today's Revenue"
                     tone='green'
                     compact
                 />
+            </div>
+
+            {/* Analytics Executive Summary Grid */}
+            <div className='grid gap-6 lg:grid-cols-2'>
+                {/* Revenue & Top Services Card */}
+                <div className='rounded-2xl border border-[#e0d3c3] bg-white p-5 shadow-xs'>
+                    <div className='mb-4 flex items-center justify-between border-b border-[#f0e8de] pb-3'>
+                        <div className='flex items-center gap-2'>
+                            <BarChart3 size={18} className='text-[#C25E2B]' />
+                            <h2 className='font-serif text-base font-bold text-[#201711]'>Revenue &amp; Demand Summary</h2>
+                        </div>
+                        <button
+                            type='button'
+                            onClick={onViewAnalytics}
+                            className='text-xs font-bold text-[#C25E2B] transition hover:underline'
+                        >
+                            Full Analytics →
+                        </button>
+                    </div>
+
+                    <div className='mb-4 grid grid-cols-2 gap-3'>
+                        <div className='rounded-xl border border-[#e8ddd0] bg-[#FAF7F2] p-3.5'>
+                            <p className='text-[10px] font-bold uppercase tracking-wider text-[#8C7A6D]'>Total All-Time Revenue</p>
+                            <p className='mt-1 font-serif text-xl font-bold text-[#C25E2B]'>{formatPeso(stats?.totalRevenue || analytics?.totalRevenue || 0)}</p>
+                        </div>
+                        <div className='rounded-xl border border-[#e8ddd0] bg-[#FAF7F2] p-3.5'>
+                            <p className='text-[10px] font-bold uppercase tracking-wider text-[#8C7A6D]'>AI Preview Adoption</p>
+                            <p className='mt-1 font-serif text-xl font-bold text-[#2B4C3F]'>{aiUsageRate}%</p>
+                        </div>
+                    </div>
+
+                    <div>
+                        <p className='mb-2 text-[11px] font-bold uppercase tracking-wider text-[#8C7A6D]'>Top Booked Services</p>
+                        {serviceCounts.length ? (
+                            <div className='space-y-2.5'>
+                                {serviceCounts.map((svc) => (
+                                    <div key={svc.name} className='space-y-1'>
+                                        <div className='flex justify-between text-xs font-semibold text-[#261C14]'>
+                                            <span>{svc.name}</span>
+                                            <span className='text-[#68594E]'>{svc.count} bookings ({svc.pct}%)</span>
+                                        </div>
+                                        <div className='h-2 w-full overflow-hidden rounded-full bg-[#FAF7F2] border border-[#E2D9C8]'>
+                                            <div
+                                                className='h-full bg-[#C25E2B] transition-all duration-500 rounded-full'
+                                                style={{ width: `${Math.max(svc.pct, 8)}%` }}
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className='text-xs italic text-[#8C7A6D]'>No booking service breakdown available yet.</p>
+                        )}
+                    </div>
+                </div>
+
+                {/* Operations & Performance Card */}
+                <div className='rounded-2xl border border-[#e0d3c3] bg-white p-5 shadow-xs'>
+                    <div className='mb-4 flex items-center justify-between border-b border-[#f0e8de] pb-3'>
+                        <div className='flex items-center gap-2'>
+                            <ClipboardList size={18} className='text-[#2B4C3F]' />
+                            <h2 className='font-serif text-base font-bold text-[#201711]'>Operations &amp; Completion</h2>
+                        </div>
+                        <span className='rounded-full border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800'>
+                            {completedRate}% Completion Rate
+                        </span>
+                    </div>
+
+                    <div className='mb-4 grid grid-cols-2 gap-3'>
+                        <div className='rounded-xl border border-[#e8ddd0] bg-[#FAF7F2] p-3.5'>
+                            <p className='text-[10px] font-bold uppercase tracking-wider text-[#8C7A6D]'>Total Customer Bookings</p>
+                            <p className='mt-1 font-serif text-xl font-bold text-[#261C14]'>{appointments.length}</p>
+                        </div>
+                        <div className='rounded-xl border border-[#e8ddd0] bg-[#FAF7F2] p-3.5'>
+                            <p className='text-[10px] font-bold uppercase tracking-wider text-[#8C7A6D]'>Active / Approved</p>
+                            <p className='mt-1 font-serif text-xl font-bold text-[#2B4C3F]'>
+                                {appointments.filter((a) => ['confirmed', 'completed'].includes(a.status)).length}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div className='rounded-xl border border-[#E2D9C8] bg-[#FAF7F2] p-3.5'>
+                        <div className='mb-1 flex items-center gap-2 text-xs font-bold text-[#261C14]'>
+                            <Scissors size={14} className='text-[#C25E2B]' />
+                            <span>AI Haircut Style Insights</span>
+                        </div>
+                        <p className='text-xs leading-relaxed text-[#68594E]'>
+                            {aiUsageRate > 0
+                                ? `${aiUsageRate}% of style haircut bookings utilized the AI Preview generator prior to scheduling.`
+                                : 'Haircut style previews allow clients to visualize grooming styles before visiting the salon.'}
+                        </p>
+                    </div>
+                </div>
             </div>
 
             <section className='overflow-hidden rounded-2xl border border-[#e0d3c3] bg-white shadow-xs'>
@@ -1994,7 +2070,7 @@ function ScheduleView({
                             <div className='grid gap-4 sm:grid-cols-2'>
                                 <div className='rounded-2xl border border-[#eadbc9] bg-[#fffaf6] p-4 space-y-2'>
                                     <p className='text-[10px] font-bold uppercase tracking-wider text-[#a94723] flex items-center gap-1.5'>
-                                        <PawPrint size={14} /> Pet Information
+                                        <Scissors size={14} /> Pet Information
                                     </p>
                                     <p className='text-sm font-bold text-[#2b2019]'>{selectedAppointment.petName}</p>
                                     <p className='text-xs text-[#806654]'>Breed: <span className='font-semibold text-[#2b2019]'>{selectedAppointment.breed || selectedAppointment.petBreed || 'N/A'}</span></p>
@@ -2946,34 +3022,29 @@ function PetAvatar({
     const photo =
         appointment?.pet?.photoUrl ||
         appointment?.petPhotoUrl ||
+        appointment?.petPhoto ||
         ''
 
     const size =
         large
-            ? 'h-14 w-14'
-            : 'h-11 w-11'
+            ? 'h-14 w-14 rounded-xl text-lg'
+            : 'h-10 w-10 rounded-lg text-sm'
 
     if (photo) {
         return (
             <img
                 src={photo}
-                alt=''
-                className={`${size} shrink-0 rounded-full object-cover`}
+                alt={appointment?.petName || 'Pet'}
+                className={`${size} shrink-0 border border-[#E2D9C8] object-cover`}
             />
         )
     }
 
     return (
         <span
-            className={`grid ${size} shrink-0 place-items-center rounded-full bg-[#efe4d5] text-[#8b5e44]`}
+            className={`grid ${size} shrink-0 place-items-center border border-[#E2D9C8] bg-[#FAF7F2] font-serif font-bold text-[#2B4C3F]`}
         >
-            <PawPrint
-                size={
-                    large
-                        ? 22
-                        : 18
-                }
-            />
+            {(appointment?.petName?.[0] || 'P').toUpperCase()}
         </span>
     )
 }

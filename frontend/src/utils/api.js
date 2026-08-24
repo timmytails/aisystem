@@ -97,6 +97,17 @@ export const notificationsApi = {
     markAsRead: (id) => api.patch(`/notifications/${id}/read`)
 }
 
+export const systemApi = {
+    health: () => api.get('/health', { timeout: 35000 })
+}
+
+export function warmupBackendServer() {
+    // Fire a silent background health check request to wake up cold-started backends (e.g. Render free tier)
+    return systemApi.health().catch(() => {
+        // Silent catch: background warmup request
+    })
+}
+
 export const getErrorMessage = (error) => {
     if (error?.response?.data?.message) return error.response.data.message
     if (error?.response?.data?.errors?.length) return error.response.data.errors[0].msg

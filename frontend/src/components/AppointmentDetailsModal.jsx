@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Calendar, CalendarDays, Clock3, MapPin, PawPrint, Phone, Scissors, Sparkles, User, X, XCircle } from 'lucide-react'
+import { Calendar, CalendarDays, Clock3, MapPin, Phone, Scissors, Sparkles, User, XCircle } from 'lucide-react'
 import { formatDateLong, formatTimeRange } from '../features/booking/utils/dateTime'
 import { getRemainingEditSeconds, formatRemainingTime } from '../utils/appointmentEditWindow'
 

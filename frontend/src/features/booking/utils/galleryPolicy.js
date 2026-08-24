@@ -6,13 +6,16 @@ export const getAutomaticPreviewStyles = ({
     if (manualRequest) return stylesToGenerate
 
     const topRecommendationId = recommendations[0]?.id
-    if (!topRecommendationId) return stylesToGenerate.slice(0, 1)
+    if (!topRecommendationId) return stylesToGenerate
 
     const topStyle = stylesToGenerate.find(
         (style) => style.id === topRecommendationId
     )
+    const otherStyles = stylesToGenerate.filter(
+        (style) => style.id !== topRecommendationId
+    )
 
-    return topStyle ? [topStyle] : []
+    return topStyle ? [topStyle, ...otherStyles] : stylesToGenerate
 }
 
 export const getNextFailedStyleId = ({

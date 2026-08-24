@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Eye, EyeOff, Loader2, PawPrint } from 'lucide-react'
+import { ArrowLeft, Eye, EyeOff, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
 import { getErrorMessage } from '../utils/api'
@@ -59,76 +59,74 @@ export default function Login() {
     }, [finishLogin, googleLogin])
 
     return (
-        <div className='min-h-[100dvh] w-full bg-[#fbf7f1] text-[#201711] lg:grid lg:h-[100dvh] lg:grid-cols-12 lg:overflow-hidden'>
+        <div className='min-h-screen w-full bg-[#FAF7F2] text-[#261C14] lg:grid lg:h-screen lg:grid-cols-12 lg:overflow-hidden'>
 
-            {/* Left Photo Panel */}
-            <div className='relative hidden h-full overflow-hidden bg-[#1c140e] lg:col-span-5 lg:block xl:col-span-6'>
+            {/* Left Image Side */}
+            <div className='relative hidden h-full overflow-hidden bg-[#261C14] lg:col-span-5 lg:block xl:col-span-6'>
                 <img
                     src={loginImage}
                     alt='Professional groomer pampering a pet'
-                    className='h-full w-full object-cover object-center opacity-80'
+                    className='h-full w-full object-cover opacity-70'
                 />
-                <div className='absolute inset-0 bg-black/55' />
+                <div className='absolute inset-0 bg-gradient-to-t from-[#261C14] via-transparent to-transparent' />
 
-                {/* Brand tag */}
-                <div className='absolute left-8 top-8 flex items-center gap-2 text-white/90'>
-                    <span className='grid h-8 w-8 place-items-center rounded-lg bg-[#bf5a31]'>
-                        <PawPrint size={16} />
+                {/* Brand title */}
+                <div className='absolute left-8 top-8'>
+                    <span className='font-serif text-2xl font-bold tracking-tight text-white'>
+                        TimmyTails
                     </span>
-                    <span className='font-serif text-sm font-bold tracking-wide'>TimmyTails</span>
                 </div>
 
                 {/* Bottom quote */}
-                <div className='absolute bottom-10 left-10 right-10 max-w-lg border-l-2 border-[#bf5a31] pl-5 text-white'>
-                    <p className='font-serif text-xl leading-relaxed text-white/90 xl:text-2xl'>
-                        &ldquo;Tailored grooming and pet-fidelity previews, crafted with care for your companion.&rdquo;
+                <div className='absolute bottom-10 left-10 right-10 border-l-2 border-[#C25E2B] pl-4 text-white'>
+                    <p className='font-serif text-xl leading-relaxed text-white/90'>
+                        &ldquo;Gentle, professional pet care with visual haircut style previews.&rdquo;
                     </p>
-                    <p className='mt-3 text-xs font-semibold uppercase tracking-widest text-white/60'>
+                    <p className='mt-2 text-xs font-bold uppercase tracking-widest text-white/70'>
                         TimmyTails Pet Grooming
                     </p>
                 </div>
             </div>
 
-            {/* Right Sign-In Panel */}
-            <div className='flex h-full min-h-[100dvh] items-center justify-center p-5 sm:p-8 lg:col-span-7 lg:min-h-0 lg:overflow-y-auto xl:col-span-6'>
+            {/* Right Form Side */}
+            <div className='flex h-full min-h-screen items-center justify-center p-6 lg:col-span-7 lg:min-h-0 lg:overflow-y-auto xl:col-span-6'>
                 <div className='my-auto w-full max-w-md py-4'>
 
-                    {/* Back */}
+                    {/* Back link */}
                     <Link
                         to='/'
-                        className='group mb-6 inline-flex items-center gap-2 text-xs font-semibold text-[#806654] transition hover:text-[#bf5a31]'
+                        className='group mb-6 inline-flex items-center gap-1.5 text-xs font-bold text-[#68594E] transition hover:text-[#C25E2B]'
                     >
                         <ArrowLeft size={14} className='transition-transform duration-200 group-hover:-translate-x-1' />
-                        Back to Home
+                        <span>Back to Home</span>
                     </Link>
 
-                    {/* Brand */}
-                    <div className='mb-3 flex items-center gap-2.5'>
-                        <span className='grid h-8 w-8 place-items-center rounded-xl bg-[#bf5a31] text-white shadow-sm'>
-                            <PawPrint size={16} />
+                    {/* Brand title */}
+                    <div className='mb-2'>
+                        <span className='font-serif text-xl font-bold tracking-tight text-[#261C14]'>
+                            TimmyTails
                         </span>
-                        <span className='font-serif text-base font-bold text-[#201711]'>TimmyTails</span>
                     </div>
 
-                    <h1 className='font-serif text-2xl font-bold tracking-tight text-[#201711] sm:text-3xl'>
-                        Welcome back
+                    <h1 className='font-serif text-3xl font-bold tracking-tight text-[#261C14]'>
+                        Welcome Back
                     </h1>
-                    <p className='mt-1.5 text-sm leading-relaxed text-[#786150]'>
-                        Sign in to access your pet profiles, appointments, and AI style previews.
+                    <p className='mt-1 text-sm text-[#68594E]'>
+                        Sign in to view appointments, manage pet profiles, and book grooming slots.
                     </p>
 
                     {/* Booking alert */}
                     {location.state?.reason === 'booking-required' && (
-                        <div className='mt-4 rounded-xl border border-[#e7c6b5] bg-[#fff4ed] px-4 py-3 text-xs font-medium text-[#8c3d20]'>
-                            Please sign in to complete your booking. You will be returned automatically.
+                        <div className='mt-4 rounded-lg border border-[#C25E2B]/30 bg-[#C25E2B]/10 px-4 py-3 text-xs font-medium text-[#C25E2B]'>
+                            Please sign in to complete your appointment booking.
                         </div>
                     )}
 
                     {/* Form */}
                     <form id='login-form' onSubmit={handleSubmit} className='mt-6 space-y-4'>
                         <div>
-                            <label htmlFor='login-identifier' className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6e5645]'>
-                                Phone number or email
+                            <label htmlFor='login-identifier' className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#68594E]'>
+                                Phone Number or Email
                             </label>
                             <input
                                 id='login-identifier'
@@ -138,12 +136,12 @@ export default function Login() {
                                 required
                                 autoComplete='username'
                                 placeholder='0917 123 4567 or email@example.com'
-                                className='h-11 w-full rounded-xl border border-[#e0d3c3] bg-white px-4 text-sm font-medium text-[#201711] outline-none transition placeholder:text-[#b5a090] focus:border-[#bf5a31] focus:ring-2 focus:ring-[#bf5a31]/10'
+                                className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-white px-3.5 text-sm font-medium text-[#261C14] outline-none transition focus:border-[#C25E2B] placeholder:text-[#A8988A]'
                             />
                         </div>
 
                         <div>
-                            <label htmlFor='login-password' className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6e5645]'>
+                            <label htmlFor='login-password' className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#68594E]'>
                                 Password
                             </label>
                             <div className='relative'>
@@ -155,19 +153,19 @@ export default function Login() {
                                     required
                                     autoComplete='current-password'
                                     placeholder='Enter your password'
-                                    className='h-11 w-full rounded-xl border border-[#e0d3c3] bg-white pl-4 pr-10 text-sm font-medium text-[#201711] outline-none transition placeholder:text-[#b5a090] focus:border-[#bf5a31] focus:ring-2 focus:ring-[#bf5a31]/10'
+                                    className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-white pl-3.5 pr-10 text-sm font-medium text-[#261C14] outline-none transition focus:border-[#C25E2B] placeholder:text-[#A8988A]'
                                 />
                                 <button
                                     type='button'
                                     onClick={() => setShowPassword((p) => !p)}
-                                    className='absolute right-2 top-1/2 grid h-7 w-7 -translate-y-1/2 place-items-center rounded-lg text-[#9c7b68] transition hover:bg-[#f3e9dd] hover:text-[#bf5a31]'
+                                    className='absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8C7A6D] hover:text-[#261C14]'
                                     aria-label={showPassword ? 'Hide password' : 'Show password'}
                                 >
-                                    {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                                 </button>
                             </div>
                             <div className='mt-1.5 flex justify-end'>
-                                <Link to='/forgot-password' className='text-xs font-semibold text-[#bf5a31] transition hover:underline'>
+                                <Link to='/forgot-password' className='text-xs font-bold text-[#C25E2B] transition hover:underline'>
                                     Forgot password?
                                 </Link>
                             </div>
@@ -176,7 +174,7 @@ export default function Login() {
                         <button
                             type='submit'
                             disabled={submitting}
-                            className='flex h-11 w-full items-center justify-center gap-2 rounded-xl bg-[#bf5a31] px-5 text-sm font-bold text-white shadow-xs transition hover:bg-[#a94723] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60'
+                            className='flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-4 text-sm font-bold text-white shadow-xs transition hover:bg-[#A84E20] disabled:opacity-60'
                         >
                             {submitting ? (
                                 <><Loader2 size={16} className='animate-spin' /><span>Signing in...</span></>
@@ -187,20 +185,20 @@ export default function Login() {
                     </form>
 
                     {/* Divider */}
-                    <div className='my-5 flex items-center gap-3 text-[11px] font-bold uppercase tracking-widest text-[#b5a090]'>
-                        <span className='h-px flex-1 bg-[#e8ddd0]' />
+                    <div className='my-5 flex items-center gap-3 text-[11px] font-bold uppercase tracking-widest text-[#8C7A6D]'>
+                        <span className='h-px flex-1 bg-[#E2D9C8]' />
                         <span>or</span>
-                        <span className='h-px flex-1 bg-[#e8ddd0]' />
+                        <span className='h-px flex-1 bg-[#E2D9C8]' />
                     </div>
 
                     <div className='mx-auto flex w-full max-w-[400px] justify-center'>
                         <GoogleSignInButton onCredential={handleGoogle} disabled={submitting} text='continue_with' />
                     </div>
 
-                    <p className='mt-6 text-center text-xs text-[#806654] sm:text-sm'>
+                    <p className='mt-6 text-center text-xs text-[#68594E] sm:text-sm'>
                         Don&apos;t have an account?{' '}
-                        <Link to='/signup' state={{ returnTo: requestedReturnTo }} className='font-bold text-[#bf5a31] transition hover:underline'>
-                            Create one
+                        <Link to='/signup' state={{ returnTo: requestedReturnTo }} className='font-bold text-[#C25E2B] transition hover:underline'>
+                            Create Account
                         </Link>
                     </p>
                 </div>

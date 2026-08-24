@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { ArrowLeft, Loader2, PawPrint } from 'lucide-react'
+import { ArrowLeft, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
 import { getErrorMessage } from '../utils/api'
@@ -18,8 +18,17 @@ const initialForm = {
 export default function Signup() {
     const [form, setForm] = useState(initialForm)
     const [otp, setOtp] = useState('')
+    const [otpTimer, setOtpTimer] = useState(0)
     const [step, setStep] = useState('details')
     const [submitting, setSubmitting] = useState(false)
+
+    useEffect(() => {
+        if (otpTimer <= 0) return
+        const interval = setInterval(() => {
+            setOtpTimer((prev) => prev - 1)
+        }, 1000)
+        return () => clearInterval(interval)
+    }, [otpTimer])
 
     const { sendRegisterOtp, register, googleLogin } = useAuth()
     const location = useLocation()
@@ -50,7 +59,22 @@ export default function Signup() {
             await sendRegisterOtp({ firstName: form.firstName, lastName: form.lastName, email: form.email.trim() || undefined, phone: normalizedPhone, address: form.address, password: form.password })
             setForm((c) => ({ ...c, phone: normalizedPhone }))
             setStep('otp')
+            setOtpTimer(60)
             toast.success('Verification code sent')
+        } catch (error) {
+            toast.error(getErrorMessage(error))
+        } finally {
+            setSubmitting(false)
+        }
+    }
+
+    const resendOtp = async () => {
+        if (otpTimer > 0 || submitting) return
+        setSubmitting(true)
+        try {
+            await sendRegisterOtp({ firstName: form.firstName, lastName: form.lastName, email: form.email.trim() || undefined, phone: form.phone, address: form.address, password: form.password })
+            setOtpTimer(60)
+            toast.success('New verification code sent')
         } catch (error) {
             toast.error(getErrorMessage(error))
         } finally {
@@ -85,29 +109,28 @@ export default function Signup() {
     }, [googleLogin, routeAfterAuth])
 
     return (
-        <div className='min-h-screen bg-[#fbf7f1] text-[#201711] lg:grid lg:min-h-screen lg:grid-cols-12'>
+        <div className='min-h-screen bg-[#FAF7F2] text-[#261C14] lg:grid lg:min-h-screen lg:grid-cols-12'>
 
             {/* Left Photo Panel (Desktop) */}
-            <div className='relative hidden h-full overflow-hidden bg-[#1c140e] lg:col-span-5 lg:block xl:col-span-4'>
+            <div className='relative hidden h-full overflow-hidden bg-[#261C14] lg:col-span-5 lg:block xl:col-span-4'>
                 <img
                     src={loginImage}
                     alt='Professional groomer at TimmyTails'
-                    className='h-full w-full object-cover object-center opacity-80'
+                    className='h-full w-full object-cover opacity-70'
                 />
-                <div className='absolute inset-0 bg-black/55' />
+                <div className='absolute inset-0 bg-gradient-to-t from-[#261C14] via-transparent to-transparent' />
 
-                <div className='absolute left-8 top-8 flex items-center gap-2 text-white/90'>
-                    <span className='grid h-8 w-8 place-items-center rounded-lg bg-[#bf5a31]'>
-                        <PawPrint size={16} />
+                <div className='absolute left-8 top-8'>
+                    <span className='font-serif text-2xl font-bold tracking-tight text-white'>
+                        TimmyTails
                     </span>
-                    <span className='font-serif text-sm font-bold tracking-wide'>TimmyTails</span>
                 </div>
 
-                <div className='absolute bottom-10 left-10 right-10 border-l-2 border-[#bf5a31] pl-5 text-white'>
+                <div className='absolute bottom-10 left-10 right-10 border-l-2 border-[#C25E2B] pl-4 text-white'>
                     <p className='font-serif text-xl leading-relaxed text-white/90'>
-                        &ldquo;Join thousands of pet owners who trust TimmyTails for professional grooming care.&rdquo;
+                        &ldquo;Join pet owners who trust TimmyTails for gentle, professional grooming.&rdquo;
                     </p>
-                    <p className='mt-3 text-xs font-semibold uppercase tracking-widest text-white/60'>
+                    <p className='mt-2 text-xs font-bold uppercase tracking-widest text-white/70'>
                         TimmyTails Pet Grooming
                     </p>
                 </div>
@@ -120,69 +143,68 @@ export default function Signup() {
                     {/* Back */}
                     <Link
                         to='/'
-                        className='group mb-7 inline-flex items-center gap-2 text-xs font-semibold text-[#806654] transition hover:text-[#bf5a31]'
+                        className='group mb-6 inline-flex items-center gap-1.5 text-xs font-bold text-[#68594E] transition hover:text-[#C25E2B]'
                     >
                         <ArrowLeft size={14} className='transition-transform duration-200 group-hover:-translate-x-1' />
-                        Back to Home
+                        <span>Back to Home</span>
                     </Link>
 
-                    {/* Card */}
-                    <div className='rounded-2xl border border-[#e0d3c3] bg-white p-7 shadow-sm sm:p-10'>
+                    {/* Card Container */}
+                    <div className='rounded-xl border border-[#E2D9C8] bg-white p-6 shadow-xs sm:p-10'>
 
                         {/* Brand */}
-                        <div className='mb-3 flex items-center gap-2.5'>
-                            <span className='grid h-8 w-8 place-items-center rounded-xl bg-[#bf5a31] text-white shadow-sm'>
-                                <PawPrint size={16} />
+                        <div className='mb-2'>
+                            <span className='font-serif text-xl font-bold tracking-tight text-[#261C14]'>
+                                TimmyTails
                             </span>
-                            <span className='font-serif text-base font-bold text-[#201711]'>TimmyTails</span>
                         </div>
-                        <h1 className='font-serif text-2xl font-bold tracking-tight text-[#201711] sm:text-3xl'>
-                            Create an account
+                        <h1 className='font-serif text-3xl font-bold tracking-tight text-[#261C14]'>
+                            Create Account
                         </h1>
-                        <p className='mt-1.5 text-sm leading-relaxed text-[#786150]'>
-                            Register using Google or create a password account verified through your mobile number.
+                        <p className='mt-1 text-sm text-[#68594E]'>
+                            Register with Google or verify your mobile number to get started.
                         </p>
 
                         {step === 'details' ? (
                             <>
-                                {/* Google */}
-                                <div className='mx-auto mt-7 flex w-full max-w-sm justify-center'>
+                                {/* Google SSO */}
+                                <div className='mx-auto mt-6 flex w-full max-w-sm justify-center'>
                                     <GoogleSignInButton onCredential={handleGoogle} disabled={submitting} text='signup_with' />
                                 </div>
 
                                 {/* Divider */}
-                                <div className='my-6 flex items-center gap-3 text-[11px] font-bold uppercase tracking-widest text-[#b5a090]'>
-                                    <span className='h-px flex-1 bg-[#e8ddd0]' />
+                                <div className='my-6 flex items-center gap-3 text-[11px] font-bold uppercase tracking-widest text-[#8C7A6D]'>
+                                    <span className='h-px flex-1 bg-[#E2D9C8]' />
                                     <span>or register manually</span>
-                                    <span className='h-px flex-1 bg-[#e8ddd0]' />
+                                    <span className='h-px flex-1 bg-[#E2D9C8]' />
                                 </div>
 
-                                {/* Form */}
+                                {/* Registration Form */}
                                 <form onSubmit={requestOtp} className='space-y-4'>
                                     <div className='grid gap-4 sm:grid-cols-2'>
-                                        <Field label='First name' name='firstName' value={form.firstName} onChange={update} />
-                                        <Field label='Last name' name='lastName' value={form.lastName} onChange={update} />
+                                        <Field label='First Name' name='firstName' value={form.firstName} onChange={update} />
+                                        <Field label='Last Name' name='lastName' value={form.lastName} onChange={update} />
                                     </div>
                                     <div className='grid gap-4 sm:grid-cols-2'>
                                         <Field
-                                            label='Email address'
+                                            label='Email Address'
                                             name='email'
                                             type='email'
                                             required={false}
                                             value={form.email}
                                             onChange={update}
                                             placeholder='example@gmail.com'
-                                            help='Optional — also enables email sign-in.'
+                                            help='Optional — enables email notifications.'
                                         />
-                                        <PhoneField label='Phone number' name='phone' value={form.phone} onChange={update} placeholder='917 123 4567' />
+                                        <PhoneField label='Mobile Number' name='phone' value={form.phone} onChange={update} placeholder='917 123 4567' />
                                     </div>
 
-                                    {/* Address */}
-                                    <div className='rounded-xl border border-[#e8ddd0] bg-[#faf7f3] px-5 py-4'>
-                                        <h2 className='font-serif text-base font-bold text-[#201711]'>Home Address</h2>
-                                        <p className='mt-0.5 text-xs text-[#9c7b68]'>Required for appointment scheduling.</p>
+                                    {/* Address Block */}
+                                    <div className='rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] p-5'>
+                                        <h2 className='font-serif text-base font-bold text-[#261C14]'>Home Address</h2>
+                                        <p className='mt-0.5 text-xs text-[#8C7A6D]'>Used for appointment confirmation.</p>
                                         <div className='mt-4 space-y-4'>
-                                            <Field label='Street / House number' name='street' value={form.address.street} onChange={updateAddress} placeholder='123 Pawsome Street' />
+                                            <Field label='Street / House Number' name='street' value={form.address.street} onChange={updateAddress} placeholder='e.g. 123 Grooming Street' />
                                             <div className='grid gap-4 sm:grid-cols-2'>
                                                 <Field label='Barangay' name='barangay' value={form.address.barangay} onChange={updateAddress} />
                                                 <Field label='City' name='city' value={form.address.city} onChange={updateAddress} />
@@ -191,19 +213,19 @@ export default function Signup() {
                                         </div>
                                     </div>
 
-                                    {/* Password */}
+                                    {/* Password Block */}
                                     <div className='grid gap-4 sm:grid-cols-2'>
                                         <Field label='Password' name='password' type='password' value={form.password} onChange={update} minLength={8} />
-                                        <Field label='Confirm password' name='confirmPassword' type='password' value={form.confirmPassword} onChange={update} minLength={8} />
+                                        <Field label='Confirm Password' name='confirmPassword' type='password' value={form.confirmPassword} onChange={update} minLength={8} />
                                     </div>
 
                                     <button
                                         type='submit'
                                         disabled={submitting}
-                                        className='flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#bf5a31] px-5 font-bold text-white shadow-xs transition hover:bg-[#a94723] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60'
+                                        className='flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-4 font-bold text-white shadow-xs transition hover:bg-[#A84E20] disabled:opacity-60'
                                     >
                                         {submitting ? (
-                                            <><Loader2 size={18} className='animate-spin' /><span>Sending code...</span></>
+                                            <><Loader2 size={16} className='animate-spin' /><span>Sending code...</span></>
                                         ) : (
                                             <span>Send Verification Code</span>
                                         )}
@@ -211,14 +233,14 @@ export default function Signup() {
                                 </form>
                             </>
                         ) : (
-                            <form onSubmit={verifyOtp} className='mt-7 space-y-4'>
-                                <div className='rounded-xl border border-[#e7c6b5] bg-[#fff4ed] p-4 text-sm font-medium text-[#725746]'>
-                                    Enter the 6-digit code sent to{' '}
-                                    <strong className='text-[#8c3d20]'>{form.phone}</strong>.
+                            <form onSubmit={verifyOtp} className='mt-6 space-y-4'>
+                                <div className='rounded-lg border border-[#C25E2B]/30 bg-[#C25E2B]/10 p-4 text-sm font-medium text-[#261C14]'>
+                                    Enter the 6-digit verification code sent to{' '}
+                                    <strong className='text-[#C25E2B]'>{form.phone}</strong>.
                                 </div>
 
                                 <Field
-                                    label='Verification code'
+                                    label='Six-Digit Verification Code'
                                     name='otp'
                                     value={otp}
                                     onChange={(e) => setOtp(e.target.value.replace(/\D/g, '').slice(0, 6))}
@@ -231,29 +253,41 @@ export default function Signup() {
                                 <button
                                     type='submit'
                                     disabled={submitting || otp.length !== 6}
-                                    className='flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-[#bf5a31] px-5 font-bold text-white shadow-xs transition hover:bg-[#a94723] active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60'
+                                    className='flex h-11 w-full items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-4 font-bold text-white shadow-xs transition hover:bg-[#A84E20] disabled:opacity-60'
                                 >
                                     {submitting ? (
-                                        <><Loader2 size={18} className='animate-spin' /><span>Creating account...</span></>
+                                        <><Loader2 size={16} className='animate-spin' /><span>Creating account...</span></>
                                     ) : (
                                         <span>Verify &amp; Create Account</span>
                                     )}
                                 </button>
 
+                                <div className='flex items-center justify-between rounded-lg bg-[#FAF7F2] p-3 text-xs text-[#68594E] border border-[#E2D9C8]'>
+                                    <span>{otpTimer > 0 ? `Resend code available in ${otpTimer}s` : "Didn't receive the code?"}</span>
+                                    <button
+                                        type='button'
+                                        onClick={resendOtp}
+                                        disabled={submitting || otpTimer > 0}
+                                        className='font-bold text-[#C25E2B] transition hover:underline disabled:opacity-50 disabled:no-underline'
+                                    >
+                                        {otpTimer > 0 ? `Resend (${otpTimer}s)` : 'Resend Code'}
+                                    </button>
+                                </div>
+
                                 <button
                                     type='button'
                                     onClick={() => setStep('details')}
-                                    className='w-full text-xs font-semibold text-[#8c4a2e] transition hover:underline'
+                                    className='w-full text-xs font-bold text-[#C25E2B] hover:underline'
                                 >
-                                    ← Edit account details
+                                    &larr; Edit Registration Details
                                 </button>
                             </form>
                         )}
 
-                        <p className='mt-8 text-center text-xs text-[#806654] sm:text-sm'>
+                        <p className='mt-6 text-center text-xs text-[#68594E] sm:text-sm'>
                             Already registered?{' '}
-                            <Link to='/login' state={{ returnTo: requestedReturnTo }} className='font-bold text-[#bf5a31] transition hover:underline'>
-                                Sign in
+                            <Link to='/login' state={{ returnTo: requestedReturnTo }} className='font-bold text-[#C25E2B] transition hover:underline'>
+                                Sign In
                             </Link>
                         </p>
                     </div>
@@ -266,13 +300,13 @@ export default function Signup() {
 function Field({ label, help, required = true, ...props }) {
     return (
         <label className='block'>
-            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#6e5645]'>{label}</span>
+            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#68594E]'>{label}</span>
             <input
                 required={required}
-                className='h-11 w-full rounded-xl border border-[#e0d3c3] bg-white px-4 text-sm font-medium text-[#201711] outline-none transition placeholder:text-[#b5a090] focus:border-[#bf5a31] focus:ring-2 focus:ring-[#bf5a31]/10'
+                className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-white px-3.5 text-sm font-medium text-[#261C14] outline-none transition focus:border-[#C25E2B] placeholder:text-[#A8988A]'
                 {...props}
             />
-            {help && <span className='mt-1.5 block text-[11px] text-[#9c7b68]'>{help}</span>}
+            {help && <span className='mt-1 block text-[11px] text-[#8C7A6D]'>{help}</span>}
         </label>
     )
 }
