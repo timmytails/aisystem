@@ -79,16 +79,16 @@ export default function ForgotPassword() {
     }
 
     return (
-        <div className='min-h-screen w-full bg-[#FAF7F2] text-[#261C14] lg:grid lg:h-screen lg:grid-cols-12 lg:overflow-hidden'>
+        <div className='min-h-screen w-full bg-[#F8F7F4] text-slate-900 lg:grid lg:h-screen lg:grid-cols-12 lg:overflow-hidden'>
 
             {/* Left Image Side */}
-            <div className='relative hidden h-full overflow-hidden bg-[#261C14] lg:col-span-5 lg:block xl:col-span-6'>
+            <div className='relative hidden h-full overflow-hidden bg-[#0F172A] lg:col-span-5 lg:block xl:col-span-6'>
                 <img
                     src={loginImage}
                     alt='A groomer caring for a pet'
-                    className='h-full w-full object-cover opacity-70'
+                    className='h-full w-full object-cover opacity-60'
                 />
-                <div className='absolute inset-0 bg-gradient-to-t from-[#261C14] via-transparent to-transparent' />
+                <div className='absolute inset-0 bg-slate-950/40' />
 
                 <div className='absolute left-8 top-8'>
                     <span className='font-serif text-2xl font-bold tracking-tight text-white'>
@@ -97,10 +97,10 @@ export default function ForgotPassword() {
                 </div>
 
                 <div className='absolute bottom-10 left-10 right-10 border-l-2 border-[#C25E2B] pl-4 text-white'>
-                    <p className='font-serif text-xl leading-relaxed text-white/90'>
+                    <p className='font-serif text-xl leading-relaxed text-slate-200'>
                         &ldquo;Recover your account securely using the mobile number connected to your profile.&rdquo;
                     </p>
-                    <p className='mt-2 text-xs font-bold uppercase tracking-widest text-white/70'>
+                    <p className='mt-2 text-xs font-bold uppercase tracking-widest text-slate-400'>
                         TimmyTails Pet Grooming
                     </p>
                 </div>
@@ -113,7 +113,7 @@ export default function ForgotPassword() {
                     {/* Back link */}
                     <Link
                         to='/login'
-                        className='group mb-6 inline-flex items-center gap-1.5 text-xs font-bold text-[#68594E] transition hover:text-[#C25E2B]'
+                        className='group mb-6 inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 transition hover:text-slate-900'
                     >
                         <ArrowLeft size={14} className='transition-transform duration-200 group-hover:-translate-x-1' />
                         <span>Back to Sign In</span>
@@ -121,25 +121,25 @@ export default function ForgotPassword() {
 
                     {/* Brand title */}
                     <div className='mb-2'>
-                        <span className='font-serif text-xl font-bold tracking-tight text-[#261C14]'>
+                        <span className='font-serif text-xl font-bold tracking-tight text-slate-900'>
                             TimmyTails
                         </span>
                     </div>
 
                     {/* Card Container */}
-                    <div className='rounded-xl border border-[#E2D9C8] bg-white p-6 shadow-xs sm:p-8'>
+                    <div className='rounded-xl border border-slate-200 bg-white p-6 sm:p-8'>
 
                         {/* Step: Request */}
                         {step === 'request' && (
                             <>
-                                <div className='mb-4 inline-grid h-10 w-10 place-items-center rounded-lg bg-[#FAF7F2] text-[#C25E2B]'>
+                                <div className='mb-4 inline-grid h-10 w-10 place-items-center rounded-lg bg-slate-100 text-[#C25E2B]'>
                                     <KeyRound size={20} />
                                 </div>
 
-                                <h1 className='font-serif text-2xl font-bold tracking-tight text-[#261C14]'>
+                                <h1 className='font-serif text-2xl font-bold tracking-tight text-slate-900'>
                                     Forgot Password?
                                 </h1>
-                                <p className='mt-1 text-sm text-[#68594E]'>
+                                <p className='mt-1 text-sm text-slate-600'>
                                     Enter your email or mobile number to receive a 6-digit recovery OTP code.
                                 </p>
 
@@ -154,7 +154,7 @@ export default function ForgotPassword() {
                                     />
                                     <button
                                         disabled={submitting}
-                                        className='h-11 w-full rounded-lg bg-[#C25E2B] font-bold text-white shadow-xs transition hover:bg-[#A84E20] disabled:opacity-60'
+                                        className='h-10 w-full rounded-lg bg-[#C25E2B] font-bold text-white transition hover:bg-[#A84E20] disabled:opacity-60 text-sm'
                                     >
                                         {submitting ? 'Sending code...' : 'Send Recovery Code'}
                                     </button>
@@ -169,10 +169,10 @@ export default function ForgotPassword() {
                                     <ShieldCheck size={20} />
                                 </div>
 
-                                <h1 className='font-serif text-2xl font-bold tracking-tight text-[#261C14]'>
+                                <h1 className='font-serif text-2xl font-bold tracking-tight text-slate-900'>
                                     Create New Password
                                 </h1>
-                                <p className='mt-1 text-sm text-[#68594E]'>
+                                <p className='mt-1 text-sm text-slate-600'>
                                     Enter the verification code sent to your phone, then choose a new password.
                                 </p>
 
@@ -206,12 +206,12 @@ export default function ForgotPassword() {
 
                                     <button
                                         disabled={submitting || !canReset}
-                                        className='h-11 w-full rounded-lg bg-[#C25E2B] font-bold text-white shadow-xs transition hover:bg-[#A84E20] disabled:opacity-60'
+                                        className='h-10 w-full rounded-lg bg-[#C25E2B] font-bold text-white transition hover:bg-[#A84E20] disabled:opacity-60 text-sm'
                                     >
                                         {submitting ? 'Updating password...' : 'Update Password'}
                                     </button>
 
-                                    <div className='flex items-center justify-between rounded-lg bg-[#FAF7F2] p-3 text-xs text-[#68594E] border border-[#E2D9C8]'>
+                                    <div className='flex items-center justify-between rounded-lg border border-slate-200 bg-slate-50 p-3 text-xs text-slate-600'>
                                         <span>{otpTimer > 0 ? `Resend code available in ${otpTimer}s` : "Didn't receive the code?"}</span>
                                         <button
                                             type='button'
@@ -240,13 +240,13 @@ export default function ForgotPassword() {
                                 <span className='mx-auto grid h-14 w-14 place-items-center rounded-xl bg-emerald-50 text-emerald-700'>
                                     <CheckCircle2 size={28} />
                                 </span>
-                                <h1 className='mt-4 font-serif text-2xl font-bold text-[#261C14]'>Password Updated!</h1>
-                                <p className='mt-1 text-sm text-[#68594E]'>
+                                <h1 className='mt-4 font-serif text-2xl font-bold text-slate-900'>Password Updated!</h1>
+                                <p className='mt-1 text-sm text-slate-600'>
                                     Your account password was changed successfully.
                                 </p>
                                 <button
                                     onClick={() => navigate('/login', { replace: true })}
-                                    className='mt-6 h-11 w-full rounded-lg bg-[#C25E2B] font-bold text-white shadow-xs transition hover:bg-[#A84E20]'
+                                    className='mt-6 h-10 w-full rounded-lg bg-[#C25E2B] font-bold text-white transition hover:bg-[#A84E20] text-sm'
                                 >
                                     Return to Sign In
                                 </button>
@@ -262,10 +262,10 @@ export default function ForgotPassword() {
 function Field({ label, ...props }) {
     return (
         <label className='block'>
-            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#68594E]'>{label}</span>
+            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700'>{label}</span>
             <input
                 required
-                className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-[#FFFFFF] px-3.5 text-sm outline-none transition focus:border-[#C25E2B] placeholder:text-[#A8988A]'
+                className='h-10 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20 placeholder:text-slate-400'
                 {...props}
             />
         </label>
@@ -275,19 +275,19 @@ function Field({ label, ...props }) {
 function PasswordField({ label, visible, toggle, ...props }) {
     return (
         <label className='block'>
-            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#68594E]'>{label}</span>
+            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700'>{label}</span>
             <span className='relative block'>
                 <input
                     required
                     type={visible ? 'text' : 'password'}
                     minLength={8}
-                    className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-[#FFFFFF] pl-3.5 pr-10 text-sm outline-none transition focus:border-[#C25E2B] placeholder:text-[#A8988A]'
+                    className='h-10 w-full rounded-lg border border-slate-300 bg-white pl-3.5 pr-10 text-sm font-medium text-slate-900 outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20 placeholder:text-slate-400'
                     {...props}
                 />
                 <button
                     type='button'
                     onClick={toggle}
-                    className='absolute right-2.5 top-1/2 -translate-y-1/2 text-[#8C7A6D] hover:text-[#261C14]'
+                    className='absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700'
                     aria-label={visible ? 'Hide password' : 'Show password'}
                 >
                     {visible ? <EyeOff size={16} /> : <Eye size={16} />}

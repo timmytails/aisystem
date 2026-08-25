@@ -327,7 +327,13 @@ app.use(
 
 app.use(
     '/api/admin',
-    require('./routes/admin')
+    (req, res, next) => {
+        try {
+            delete require.cache[require.resolve('./routes/admin')]
+        } catch (_) {}
+        const adminRouter = require('./routes/admin')
+        return adminRouter(req, res, next)
+    }
 )
 
 app.use(

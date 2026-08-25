@@ -7,7 +7,7 @@ const QUICK_REASONS = [
     'Groomer unavailable / sick leave',
     'Requested cancellation by customer',
     'Pet health or safety condition',
-    'Emergency studio closure'
+    'Emergency salon closure'
 ]
 
 export default function AdminCancelModal({

@@ -77,27 +77,27 @@ export default function CompleteProfile() {
     }
 
     return (
-        <div className='min-h-screen bg-[#FAF7F2] px-4 py-12 text-[#261C14] sm:px-6 lg:px-8'>
+        <div className='min-h-screen bg-[#F8F7F4] px-4 py-12 text-slate-900 sm:px-6 lg:px-8'>
             <div className='mx-auto max-w-2xl'>
 
                 {/* Brand title */}
                 <div className='mb-6'>
-                    <span className='font-serif text-2xl font-bold tracking-tight text-[#261C14]'>
+                    <span className='font-serif text-2xl font-bold tracking-tight text-slate-900'>
                         TimmyTails
                     </span>
                 </div>
 
-                <div className='rounded-xl border border-[#E2D9C8] bg-white p-6 shadow-xs sm:p-10'>
+                <div className='rounded-xl border border-slate-200 bg-white p-6 sm:p-10'>
                     {/* Step indicator */}
                     <div className='mb-6 flex items-center gap-3'>
-                        <span className='inline-flex items-center gap-1.5 rounded-full bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold text-[#C25E2B]'>
+                        <span className='inline-flex items-center gap-1.5 rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold text-[#C25E2B]'>
                             Step 2 of 2
                         </span>
-                        <span className='h-px flex-1 bg-[#E2D9C8]' />
+                        <span className='h-px flex-1 bg-slate-200' />
                     </div>
 
-                    <h1 className='font-serif text-3xl font-bold text-[#261C14]'>Complete Your Profile</h1>
-                    <p className='mt-1 text-sm text-[#68594E]'>
+                    <h1 className='font-serif text-3xl font-bold text-slate-900'>Complete Your Profile</h1>
+                    <p className='mt-1 text-sm text-slate-600'>
                         Your Google account is connected. Please fill in your contact details and verify your mobile number.
                     </p>
 
@@ -108,9 +108,9 @@ export default function CompleteProfile() {
                         </div>
 
                         <label className='block'>
-                            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#68594E]'>Email Address</span>
-                            <input value={user?.email || ''} readOnly className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] px-3.5 text-sm text-[#8C7A6D] cursor-not-allowed' />
-                            <span className='mt-1 block text-xs text-[#8C7A6D]'>Managed by your Google account.</span>
+                            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700'>Email Address</span>
+                            <input value={user?.email || ''} readOnly className='h-10 w-full rounded-lg border border-slate-200 bg-slate-100 px-3.5 text-sm text-slate-500 cursor-not-allowed' />
+                            <span className='mt-1 block text-xs text-slate-500'>Managed by your Google account.</span>
                         </label>
 
                         <div>
@@ -118,15 +118,15 @@ export default function CompleteProfile() {
                         </div>
 
                         {/* OTP Block */}
-                        <div className='rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] p-4'>
+                        <div className='rounded-lg border border-slate-200 bg-slate-50 p-4'>
                             <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                                 <div className='flex items-start gap-3'>
-                                    <span className={`mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg ${otpSent ? 'bg-emerald-100 text-emerald-700' : 'bg-[#F4EFE6] text-[#C25E2B]'}`}>
+                                    <span className={`mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg ${otpSent ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-[#C25E2B]'}`}>
                                         {otpSent ? <CheckCircle2 size={18} /> : <ShieldCheck size={18} />}
                                     </span>
                                     <div>
-                                        <p className='font-semibold text-[#261C14] text-sm'>Mobile Phone Verification</p>
-                                        <p className='mt-0.5 text-xs text-[#68594E]'>
+                                        <p className='font-semibold text-slate-900 text-sm'>Mobile Phone Verification</p>
+                                        <p className='mt-0.5 text-xs text-slate-600'>
                                             {otpSent ? (otpTimer > 0 ? `Code sent to ${form.phone}. Resend available in ${otpTimer}s.` : `A verification code was sent to ${form.phone}.`) : 'Request an OTP code before saving.'}
                                         </p>
                                     </div>
@@ -159,9 +159,9 @@ export default function CompleteProfile() {
                         </div>
 
                         {/* Address Block */}
-                        <div className='border-t border-[#E2D9C8] pt-5'>
-                            <h2 className='font-serif text-lg font-bold text-[#261C14]'>Home Address</h2>
-                            <p className='mt-0.5 text-xs text-[#8C7A6D]'>Required for grooming appointment confirmation.</p>
+                        <div className='border-t border-slate-200 pt-5'>
+                            <h2 className='font-serif text-lg font-bold text-slate-900'>Home Address</h2>
+                            <p className='mt-0.5 text-xs text-slate-500'>Required for grooming appointment confirmation.</p>
                             <div className='mt-4 space-y-4'>
                                 <Field label='Street / House Number' name='street' value={form.address.street} onChange={updateAddress} placeholder='e.g. 123 Grooming Street' autoComplete='street-address' />
                                 <div className='grid gap-4 sm:grid-cols-2'>
@@ -174,15 +174,15 @@ export default function CompleteProfile() {
 
                         <button
                             disabled={submitting || !otpSent || otp.length !== 6}
-                            className='h-11 w-full rounded-lg bg-[#C25E2B] px-5 font-bold text-white shadow-xs transition hover:bg-[#A84E20] disabled:opacity-60'
+                            className='h-10 w-full rounded-lg bg-[#C25E2B] px-5 font-bold text-white transition hover:bg-[#A84E20] disabled:opacity-60 text-sm'
                         >
-                            {submitting ? 'Saving Profile...' : 'Verify &amp; Save Profile'}
+                            {submitting ? 'Saving Profile...' : 'Verify & Save Profile'}
                         </button>
                     </form>
 
                     <button
                         onClick={() => { logout(); navigate('/login') }}
-                        className='mt-5 w-full text-xs font-bold text-[#68594E] hover:text-[#C25E2B]'
+                        className='mt-5 w-full text-xs font-bold text-slate-600 hover:text-slate-900'
                     >
                         Sign out and use another account
                     </button>
@@ -195,10 +195,10 @@ export default function CompleteProfile() {
 function Field({ label, required = true, ...props }) {
     return (
         <label className='block'>
-            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#68594E]'>{label}</span>
+            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700'>{label}</span>
             <input
                 required={required}
-                className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-white px-3.5 text-sm outline-none transition focus:border-[#C25E2B] placeholder:text-[#A8988A]'
+                className='h-10 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20 placeholder:text-slate-400'
                 {...props}
             />
         </label>

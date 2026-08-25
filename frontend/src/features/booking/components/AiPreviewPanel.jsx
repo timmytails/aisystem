@@ -39,31 +39,31 @@ export default function AiPreviewPanel({
     const [showCompareModal, setShowCompareModal] = useState(false)
 
     return (
-        <div className='space-y-7'>
-            <div className='flex items-start sm:items-center gap-3 rounded-xl border border-[#dce9e1] bg-[#f2f8f4] p-3 sm:p-4 text-xs sm:text-sm'>
-                <span className='grid h-9 w-9 shrink-0 place-items-center rounded-full bg-white text-[#24523f] shadow-xs'>
+        <div className='space-y-6'>
+            <div className='flex items-start sm:items-center gap-3 rounded-xl border border-slate-200 bg-slate-50 p-3.5 text-xs sm:text-sm'>
+                <span className='grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white text-[#C25E2B] border border-slate-200'>
                     <SeasonIcon size={18} />
                 </span>
                 <div>
                     <div className='flex flex-wrap items-center gap-2'>
-                        <p className='font-serif text-sm sm:text-base font-bold text-[#1f4536]'>{season?.label || 'Seasonal recommendations'}</p>
+                        <p className='font-serif text-sm sm:text-base font-bold text-slate-900'>{season?.label || 'Seasonal recommendations'}</p>
                         {season?.months && (
-                            <span className='rounded-full bg-white px-2 py-0.5 text-[10px] font-bold text-[#537162]'>{season.months}</span>
+                            <span className='rounded bg-slate-200 px-2 py-0.5 text-[10px] font-bold text-slate-700'>{season.months}</span>
                         )}
                     </div>
-                    <p className='mt-0.5 text-xs text-[#587064] leading-relaxed'>{season?.advice || 'Recommended styles are ordered for the current Philippine season.'}</p>
+                    <p className='mt-0.5 text-xs text-slate-600 leading-relaxed'>{season?.advice || 'Recommended styles are ordered for the current Philippine season.'}</p>
                 </div>
             </div>
 
             <section>
                 <div className='mb-3'>
-                    <p className='text-[10px] font-bold uppercase tracking-[0.18em] text-[#a94723]'>Start here</p>
-                    <h3 className='mt-0.5 font-serif text-lg sm:text-xl font-bold'>Upload your pet’s photo</h3>
-                    <p className='mt-0.5 text-xs text-[#806654]'>One clear photo creates the top suggestion first; other styles generate only when selected.</p>
+                    <p className='text-[10px] font-bold uppercase tracking-wider text-[#C25E2B]'>Start here</p>
+                    <h3 className='mt-0.5 font-serif text-lg sm:text-xl font-bold text-slate-900'>Upload your pet’s photo</h3>
+                    <p className='mt-0.5 text-xs text-slate-600'>One clear photo creates the top suggestion first; other styles generate only when selected.</p>
                 </div>
 
                 <div className='grid gap-3 lg:grid-cols-[minmax(0,1.05fr)_minmax(290px,0.8fr)]'>
-                    <div className='relative flex min-h-44 sm:min-h-56 flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-[#E2D9C8] bg-white text-center transition hover:border-[#C25E2B]'>
+                    <div className='relative flex min-h-44 sm:min-h-56 flex-col items-center justify-center overflow-hidden rounded-xl border-2 border-dashed border-slate-300 bg-white text-center transition hover:border-[#C25E2B]'>
                         {photoPreview ? (
                             <div className='relative h-44 sm:h-56 w-full group'>
                                 <img
@@ -71,7 +71,7 @@ export default function AiPreviewPanel({
                                     alt='Uploaded pet before grooming'
                                     className='h-44 sm:h-56 w-full object-contain p-2'
                                 />
-                                <label className='absolute bottom-2.5 right-2.5 flex cursor-pointer items-center gap-1.5 rounded-lg border border-[#E2D9C8] bg-white/95 px-3 py-1 text-xs font-bold text-[#C25E2B] shadow-md backdrop-blur-xs transition hover:bg-[#C25E2B] hover:text-white'>
+                                <label className='absolute bottom-2.5 right-2.5 flex cursor-pointer items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-bold text-[#C25E2B] shadow-xs transition hover:bg-[#C25E2B] hover:text-white'>
                                     <Upload size={13} />
                                     <span>Change Photo</span>
                                     <input
@@ -84,11 +84,11 @@ export default function AiPreviewPanel({
                             </div>
                         ) : (
                             <label className='flex h-44 sm:h-56 w-full cursor-pointer flex-col items-center justify-center p-3 sm:p-4'>
-                                <span className='grid h-10 w-10 sm:h-12 sm:w-12 place-items-center rounded-full bg-[#FAF7F2] text-[#C25E2B] border border-[#E2D9C8]'>
+                                <span className='grid h-10 w-10 sm:h-12 sm:w-12 place-items-center rounded-full bg-slate-100 text-[#C25E2B] border border-slate-200'>
                                     <Upload size={20} />
                                 </span>
-                                <strong className='mt-2 text-xs sm:text-sm text-[#261C14]'>Choose a clear pet photo</strong>
-                                <span className='mt-1 text-[11px] sm:text-xs text-[#68594E]'>Front or 3/4 view · JPG, PNG, WEBP · max 7 MB</span>
+                                <strong className='mt-2 text-xs sm:text-sm text-slate-900'>Choose a clear pet photo</strong>
+                                <span className='mt-1 text-[11px] sm:text-xs text-slate-500'>Front or 3/4 view · JPG, PNG, WEBP · max 7 MB</span>
                                 <input
                                     type='file'
                                     accept='image/jpeg,image/png,image/webp'

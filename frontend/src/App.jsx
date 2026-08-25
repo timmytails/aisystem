@@ -41,7 +41,7 @@ function AppLayout() {
     const showFooter = publicFooterRoutes.has(location.pathname)
 
     return (
-        <div className='min-h-screen bg-[#FAF7F2] text-[#261C14] antialiased selection:bg-[#C25E2B] selection:text-white pb-16 md:pb-0'>
+        <div className='min-h-screen bg-[#F8F7F4] text-[#0F172A] antialiased selection:bg-[#C25E2B] selection:text-white pb-16 md:pb-0'>
             <Header />
             <main><Outlet /></main>
             {showFooter && <Footer />}
@@ -72,7 +72,7 @@ export default function App() {
         warmupBackendServer()
 
         // Prefetch grooming services in background so booking loads instantly
-        appointmentsApi.getServices().catch(() => {})
+        appointmentsApi.getServices().catch(() => { })
 
         // Send a heartbeat ping every 4 minutes to keep Render backend container warm while user browses
         const interval = setInterval(() => {

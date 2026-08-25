@@ -3,8 +3,8 @@ import { Clock, Mail, MapPin, Phone } from 'lucide-react'
 
 export default function Footer() {
     return (
-        <footer className='border-t border-[#E2D9C8] bg-[#261C14] text-[#FAF7F2]'>
-            <div className='mx-auto grid max-w-7xl gap-10 px-6 py-14 md:grid-cols-[1.4fr_1fr_1fr]'>
+        <footer className='border-t border-slate-800 bg-[#0F172A] text-slate-100'>
+            <div className='mx-auto grid max-w-7xl gap-10 px-6 py-12 md:grid-cols-[1.4fr_1fr_1fr]'>
                 {/* Brand */}
                 <div>
                     <div className='mb-4 flex items-center gap-2'>
@@ -12,15 +12,15 @@ export default function Footer() {
                             TimmyTails
                         </span>
                     </div>
-                    <p className='max-w-sm text-sm leading-relaxed text-[#D5C9B7]'>
-                        Professional grooming committed to keeping your pets healthy, comfortable, and happy. Schedule tailored haircut styles and care sessions with ease.
+                    <p className='max-w-sm text-sm leading-relaxed text-slate-400'>
+                        Professional pet grooming committed to keeping your companions healthy, comfortable, and well-styled. Schedule tailored grooming sessions with ease.
                     </p>
                 </div>
 
                 {/* Contact Information */}
                 <div>
                     <h3 className='mb-4 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>Contact &amp; Location</h3>
-                    <div className='space-y-3 text-sm text-[#D5C9B7]'>
+                    <div className='space-y-3 text-sm text-slate-300'>
                         <p className='flex items-start gap-2.5'>
                             <MapPin size={16} className='mt-0.5 shrink-0 text-[#C25E2B]' />
                             <span>Baliuag City, Bulacan, Philippines</span>
@@ -43,7 +43,7 @@ export default function Footer() {
                 {/* Navigation Links */}
                 <div>
                     <h3 className='mb-4 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>Quick Links</h3>
-                    <div className='flex flex-col gap-2.5 text-sm text-[#D5C9B7]'>
+                    <div className='flex flex-col gap-2 text-sm text-slate-400'>
                         <Link to='/services' className='transition-colors hover:text-white'>Services &amp; Pricing</Link>
                         <Link to='/about' className='transition-colors hover:text-white'>About Our Salon</Link>
                         <Link to='/contact' className='transition-colors hover:text-white'>Get in Touch</Link>
@@ -53,7 +53,7 @@ export default function Footer() {
                 </div>
             </div>
 
-            <div className='border-t border-white/10 px-6 py-5 text-center text-xs text-[#A8988A]'>
+            <div className='border-t border-slate-800 px-6 py-4 text-center text-xs text-slate-500'>
                 &copy; {new Date().getFullYear()} TimmyTails Pet Grooming. All rights reserved.
             </div>
         </footer>

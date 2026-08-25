@@ -115,38 +115,38 @@ export default function RescheduleModal({
 
     return (
         <div
-            className='fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150 overflow-y-auto'
+            className='fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-150 overflow-y-auto'
             onMouseDown={(e) => { if (e.target === e.currentTarget && !submitting) onClose() }}
         >
-            <div className='w-full max-w-md max-h-[90vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl bg-white p-5 sm:p-6 shadow-2xl border border-[#eadcc9] space-y-4 text-[#201711] my-0 sm:my-auto pb-safe'>
+            <div className='w-full max-w-md max-h-[90vh] overflow-y-auto rounded-t-2xl sm:rounded-xl bg-white p-5 sm:p-6 border border-slate-200 space-y-4 text-slate-900 my-0 sm:my-auto pb-safe'>
                 {/* Header */}
-                <div className='flex items-center gap-3 border-b border-[#eadcc9] pb-3.5'>
-                    <span className='grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-[#fff2ec] text-[#bf5a31] border border-[#e8d2c2] shadow-xs'>
+                <div className='flex items-center gap-3 border-b border-slate-200 pb-3.5'>
+                    <span className='grid h-10 w-10 shrink-0 place-items-center rounded-lg bg-slate-100 text-[#C25E2B] border border-slate-200'>
                         <CalendarIcon size={20} />
                     </span>
                     <div>
-                        <h3 className='font-serif text-xl font-bold text-[#201711] leading-tight'>
+                        <h3 className='font-serif text-xl font-bold text-slate-900 leading-tight'>
                             Reschedule Booking
                         </h3>
-                        <p className='text-xs text-[#765b49] font-medium mt-0.5'>
-                            {appointment.service} for <strong className='text-[#201711]'>{appointment.petName}</strong>
+                        <p className='text-xs text-slate-600 font-medium mt-0.5'>
+                            {appointment.service} for <strong className='text-slate-900'>{appointment.petName}</strong>
                         </p>
                     </div>
                 </div>
 
                 {/* 3-Minute Timer Banner */}
                 {!isExpired ? (
-                    <div className='flex items-center justify-between rounded-2xl border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-950 shadow-xs'>
+                    <div className='flex items-center justify-between rounded-lg border border-amber-200 bg-amber-50 px-3.5 py-2.5 text-xs text-amber-950'>
                         <div className='flex items-center gap-2 font-semibold'>
                             <Clock size={15} className='text-amber-700 shrink-0 animate-pulse' />
                             <span>Edit window remaining:</span>
                         </div>
-                        <span className='font-mono font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-lg text-xs'>
+                        <span className='font-mono font-bold text-amber-800 bg-amber-100 border border-amber-300 px-2.5 py-0.5 rounded-md text-xs'>
                             {formatRemainingTime(secondsLeft)}
                         </span>
                     </div>
                 ) : (
-                    <div className='flex items-center gap-2 rounded-2xl border border-red-200 bg-red-50 p-3 text-xs text-red-800 font-medium'>
+                    <div className='flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 p-3 text-xs text-red-800 font-medium'>
                         <AlertCircle size={16} className='text-red-600 shrink-0' />
                         <span>The 3-minute edit window for this booking has expired.</span>
                     </div>
@@ -155,7 +155,7 @@ export default function RescheduleModal({
                 <form onSubmit={handleSubmit} className='space-y-4'>
                     {/* Custom Interactive Calendar */}
                     <div>
-                        <label className='block text-xs font-bold uppercase tracking-[0.14em] text-[#7b5f4c] mb-2 flex items-center gap-1.5'>
+                        <label className='block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2 flex items-center gap-1.5'>
                             <CalendarIcon size={14} /> 1. Select New Date
                         </label>
                         <CustomCalendar
@@ -171,12 +171,12 @@ export default function RescheduleModal({
 
                     {/* Time Slot Picker */}
                     <div>
-                        <label className='block text-xs font-bold uppercase tracking-[0.14em] text-[#7b5f4c] mb-2 flex items-center gap-1.5'>
+                        <label className='block text-xs font-bold uppercase tracking-wider text-slate-700 mb-2 flex items-center gap-1.5'>
                             <Clock size={14} /> 2. Select Time Slot
                         </label>
 
                         {loadingSlots ? (
-                            <div className='rounded-2xl border border-[#eadcc9] bg-[#faf6f0] p-4 text-center text-xs text-[#806654] italic'>
+                            <div className='rounded-lg border border-slate-200 bg-slate-50 p-4 text-center text-xs text-slate-500 italic'>
                                 Checking slot availability...
                             </div>
                         ) : (
@@ -198,12 +198,12 @@ export default function RescheduleModal({
                                             type='button'
                                             disabled={isExpired || submitting || !isAvailable}
                                             onClick={() => setSelectedTime(slot.value)}
-                                            className={`rounded-2xl border p-2.5 text-left text-xs transition-all duration-150 ${
+                                            className={`rounded-lg border p-2.5 text-left text-xs transition ${
                                                 isSelected
-                                                    ? 'border-[#bf5a31] bg-[#bf5a31] text-white font-bold shadow-sm'
+                                                    ? 'border-[#C25E2B] bg-[#C25E2B] text-white font-bold'
                                                     : isAvailable
-                                                        ? 'border-[#eadcc9] bg-[#faf6f0] text-[#201711] hover:border-[#bf5a31]/50 hover:bg-[#f6ede2]'
-                                                        : 'border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed opacity-40 line-through'
+                                                        ? 'border-slate-200 bg-white text-slate-900 hover:border-slate-300'
+                                                        : 'border-slate-200 bg-slate-100 text-slate-400 cursor-not-allowed opacity-40 line-through'
                                             }`}
                                         >
                                             <div className='font-mono font-semibold'>{slot.label}</div>
@@ -218,19 +218,19 @@ export default function RescheduleModal({
                     </div>
 
                     {/* Action Buttons */}
-                    <div className='flex flex-col-reverse sm:grid sm:grid-cols-2 gap-2.5 pt-3 border-t border-[#eadcc9]'>
+                    <div className='flex flex-col-reverse sm:grid sm:grid-cols-2 gap-2.5 pt-3 border-t border-slate-200'>
                         <button
                             type='button'
                             onClick={onClose}
                             disabled={submitting}
-                            className='w-full rounded-2xl border border-[#eadcc9] bg-white px-4 py-3 text-xs font-bold text-[#4e382b] text-center transition-colors hover:bg-[#faf6f0] disabled:opacity-50'
+                            className='w-full rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-bold text-slate-700 text-center transition hover:bg-slate-50 disabled:opacity-50'
                         >
                             Keep Date
                         </button>
                         <button
                             type='submit'
                             disabled={isExpired || submitting || !selectedDate || !selectedTime}
-                            className='inline-flex items-center justify-center gap-1.5 w-full rounded-2xl bg-[#bf5a31] px-4 py-3 text-xs font-bold text-white text-center shadow-xs transition-colors hover:bg-[#a94723] active:scale-[0.98] disabled:opacity-50'
+                            className='inline-flex items-center justify-center gap-1.5 w-full rounded-lg bg-[#C25E2B] px-4 py-2.5 text-xs font-bold text-white text-center transition hover:bg-[#A84E20] active:scale-[0.98] disabled:opacity-50'
                         >
                             <CheckCircle2 size={15} />
                             <span>{submitting ? 'Saving...' : 'Save New Date'}</span>

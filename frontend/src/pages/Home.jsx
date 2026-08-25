@@ -2,6 +2,8 @@ import { Link, useNavigate } from 'react-router-dom'
 import { CalendarDays, Check, Clock3, Scissors, Sparkles, UserRound } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { rememberReturnTo } from '../utils/authRouting'
+import StyleCarousel from '../components/StyleCarousel'
+import HeroCarousel from '../components/HeroCarousel'
 import heroImage from '../assets/images/hero-grooming.png'
 import salonImage from '../assets/images/salon-grooming.png'
 import shihTzu from '../assets/images/style-shih-tzu.png'
@@ -50,35 +52,28 @@ export default function Home() {
     }
 
     return (
-        <div className='bg-[#FAF7F2] text-[#261C14]'>
+        <div className='bg-[#F8F7F4] text-slate-900'>
 
             {/* ── Hero Section ── */}
-            <section className='relative min-h-[calc(100vh-64px)] overflow-hidden bg-[#261C14]'>
-                <img
-                    src={heroImage}
-                    alt='A pet receiving gentle grooming care'
-                    className='absolute inset-0 h-full w-full object-cover opacity-65'
-                />
-                <div className='absolute inset-0 bg-gradient-to-r from-[#261C14]/90 via-[#261C14]/65 to-transparent' />
-
-                <div className='relative mx-auto flex min-h-[calc(100vh-64px)] max-w-7xl items-center px-6 py-20'>
-                    <div className='max-w-xl text-white'>
-                        <span className='mb-4 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-amber-200 backdrop-blur-xs'>
+            <section className='relative border-b border-slate-800 bg-[#0F172A] text-white'>
+                <div className='mx-auto grid max-w-7xl items-center gap-10 lg:gap-16 px-6 py-16 lg:py-20 lg:grid-cols-2'>
+                    <div>
+                        <span className='inline-flex items-center gap-2 rounded-md bg-[#C25E2B]/15 border border-[#C25E2B]/30 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
                             <Sparkles size={14} />
                             <span>Professional Pet Care</span>
                         </span>
 
-                        <h1 className='font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl'>
+                        <h1 className='mt-4 font-serif text-4xl font-bold leading-tight sm:text-5xl lg:text-6xl text-white tracking-tight'>
                             Gentle care &amp; tailored grooming for your pets.
                         </h1>
-                        <p className='mt-4 max-w-lg text-base leading-relaxed text-white/85 sm:text-lg'>
-                            Preview species-appropriate haircut styles with our visual generator, choose your favorite service, and book your appointment with confidence.
+                        <p className='mt-4 text-base leading-relaxed text-slate-300 sm:text-lg max-w-xl'>
+                            Preview species-appropriate haircut styles with our visual generator, select your service package, and book your appointment in minutes.
                         </p>
 
-                        <div className='mt-8 flex flex-wrap items-center gap-4'>
+                        <div className='mt-8 flex flex-wrap items-center gap-3.5'>
                             <button
                                 onClick={book}
-                                className='inline-flex items-center gap-2.5 rounded-lg bg-[#C25E2B] px-7 py-3.5 text-base font-bold text-white shadow-sm transition hover:bg-[#A84E20] active:scale-[0.98]'
+                                className='inline-flex items-center gap-2.5 rounded-lg bg-[#C25E2B] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#A84E20] active:scale-[0.98] shadow-md'
                             >
                                 <CalendarDays size={18} />
                                 <span>Book an Appointment</span>
@@ -87,7 +82,7 @@ export default function Home() {
                             {!user && (
                                 <Link
                                     to='/login'
-                                    className='inline-flex items-center gap-2 rounded-lg border border-white/30 bg-white/10 px-6 py-3.5 text-base font-bold text-white transition hover:bg-white/20'
+                                    className='inline-flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/80 px-5 py-3.5 text-sm font-bold text-slate-200 transition hover:bg-slate-700 hover:text-white'
                                 >
                                     <UserRound size={18} />
                                     <span>Sign In</span>
@@ -95,19 +90,21 @@ export default function Home() {
                             )}
                         </div>
                     </div>
+
+                    <HeroCarousel />
                 </div>
             </section>
 
             {/* ── Services Showcase ── */}
             <section id='services' className='mx-auto max-w-7xl px-6 py-16 sm:py-20'>
                 <div className='mx-auto mb-12 max-w-2xl text-center'>
-                    <span className='inline-block rounded-full bg-[#C25E2B]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
+                    <span className='inline-block rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
                         Grooming Menu
                     </span>
-                    <h2 className='mt-2 font-serif text-3xl font-bold tracking-tight text-[#261C14] sm:text-4xl'>
+                    <h2 className='mt-2 font-serif text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl'>
                         Services Tailored for Every Pet
                     </h2>
-                    <p className='mt-3 text-sm text-[#68594E] sm:text-base'>
+                    <p className='mt-3 text-sm text-slate-600 sm:text-base'>
                         We provide compassionate, hygienic grooming treatments for dogs and cats of all breeds.
                     </p>
                 </div>
@@ -116,27 +113,33 @@ export default function Home() {
                     {services.map((s) => (
                         <article
                             key={s.name}
-                            className={`flex flex-col justify-between rounded-xl border p-6 transition-all hover:shadow-xs ${
-                                s.featured
-                                    ? 'border-[#2B4C3F] bg-[#2B4C3F] text-white'
-                                    : 'border-[#E2D9C8] bg-white hover:border-[#C25E2B]'
-                            }`}
+                            className={`flex flex-col justify-between rounded-xl border p-6 transition-all ${s.featured
+                                    ? 'border-[#C25E2B] bg-white ring-1 ring-[#C25E2B]'
+                                    : 'border-slate-200 bg-white hover:border-slate-300'
+                                }`}
                         >
                             <div>
-                                <div className={`mb-4 inline-grid h-10 w-10 place-items-center rounded-lg ${s.featured ? 'bg-white/15 text-white' : 'bg-[#FAF7F2] text-[#C25E2B]'}`}>
-                                    <Scissors size={20} />
+                                <div className='mb-4 flex items-center justify-between'>
+                                    <div className='inline-grid h-10 w-10 place-items-center rounded-lg bg-slate-100 text-[#C25E2B]'>
+                                        <Scissors size={20} />
+                                    </div>
+                                    {s.featured && (
+                                        <span className='rounded bg-[#C25E2B] px-2.5 py-0.5 text-[10px] font-bold uppercase text-white'>
+                                            Popular
+                                        </span>
+                                    )}
                                 </div>
-                                <h3 className='font-serif text-xl font-bold'>{s.name}</h3>
-                                <p className={`mt-2 text-sm leading-relaxed ${s.featured ? 'text-white/85' : 'text-[#68594E]'}`}>
+                                <h3 className='font-serif text-xl font-bold text-slate-900'>{s.name}</h3>
+                                <p className='mt-2 text-sm leading-relaxed text-slate-600'>
                                     {s.desc}
                                 </p>
                             </div>
 
-                            <div className={`mt-6 flex items-center justify-between border-t pt-4 ${s.featured ? 'border-white/15' : 'border-[#E2D9C8]'}`}>
-                                <span className={`font-serif text-xl font-bold ${s.featured ? 'text-amber-200' : 'text-[#C25E2B]'}`}>
+                            <div className='mt-6 flex items-center justify-between border-t border-slate-100 pt-4'>
+                                <span className='font-serif text-xl font-bold text-[#C25E2B]'>
                                     {s.price}
                                 </span>
-                                <span className={`flex items-center gap-1.5 text-xs font-semibold ${s.featured ? 'text-white/80' : 'text-[#68594E]'}`}>
+                                <span className='flex items-center gap-1.5 text-xs font-semibold text-slate-500'>
                                     <Clock3 size={14} />
                                     <span>{s.duration}</span>
                                 </span>
@@ -147,13 +150,13 @@ export default function Home() {
             </section>
 
             {/* ── How It Works ── */}
-            <section id='how-it-works' className='bg-[#2B4C3F] text-white'>
+            <section id='how-it-works' className='border-y border-slate-200 bg-[#0F172A] text-white'>
                 <div className='mx-auto max-w-7xl px-6 py-16 sm:py-20'>
                     <div className='mx-auto mb-12 max-w-2xl text-center'>
-                        <span className='inline-block rounded-full bg-white/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-amber-200'>
+                        <span className='inline-block rounded-md bg-slate-800 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
                             Simple Workflow
                         </span>
-                        <h2 className='mt-2 font-serif text-3xl font-bold tracking-tight sm:text-4xl'>
+                        <h2 className='mt-2 font-serif text-3xl font-bold tracking-tight text-white sm:text-4xl'>
                             How Booking Works
                         </h2>
                     </div>
@@ -162,13 +165,13 @@ export default function Home() {
                         {steps.map(([number, title, body]) => (
                             <div
                                 key={number}
-                                className='rounded-xl border border-white/15 bg-white/5 p-6 transition hover:bg-white/10'
+                                className='rounded-xl border border-slate-800 bg-slate-900/60 p-6'
                             >
                                 <span className='inline-grid h-9 w-9 place-items-center rounded-lg bg-[#C25E2B] font-mono text-sm font-bold text-white'>
                                     {number}
                                 </span>
-                                <h3 className='mt-4 font-serif text-lg font-bold'>{title}</h3>
-                                <p className='mt-1.5 text-xs leading-relaxed text-white/80'>{body}</p>
+                                <h3 className='mt-4 font-serif text-lg font-bold text-white'>{title}</h3>
+                                <p className='mt-1.5 text-xs leading-relaxed text-slate-300'>{body}</p>
                             </div>
                         ))}
                     </div>
@@ -177,48 +180,29 @@ export default function Home() {
 
             {/* ── Haircut Gallery Showcase ── */}
             <section id='gallery' className='mx-auto max-w-7xl px-6 py-16 sm:py-20'>
-                <div className='mx-auto mb-12 max-w-2xl text-center'>
-                    <span className='inline-block rounded-full bg-[#C25E2B]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
+                <div className='mx-auto mb-10 max-w-2xl text-center'>
+                    <span className='inline-block rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
                         Style Catalog
                     </span>
-                    <h2 className='mt-2 font-serif text-3xl font-bold tracking-tight text-[#261C14] sm:text-4xl'>
+                    <h2 className='mt-2 font-serif text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl'>
                         Popular Haircut Styles
                     </h2>
-                    <p className='mt-3 text-sm text-[#68594E] sm:text-base'>
-                        Reference styles crafted by our professional grooming team.
+                    <p className='mt-3 text-sm text-slate-600 sm:text-base'>
+                        Reference styles crafted by our professional grooming team for dogs and cats.
                     </p>
                 </div>
 
-                <div className='grid gap-6 sm:grid-cols-2 lg:grid-cols-3'>
-                    {gallery.map(([image, style, breed]) => (
-                        <figure
-                            key={style}
-                            className='group relative overflow-hidden rounded-xl border border-[#E2D9C8] bg-white shadow-xs'
-                        >
-                            <div className='h-60 overflow-hidden bg-[#FAF7F2]'>
-                                <img
-                                    src={image}
-                                    alt={`${style} reference cut`}
-                                    className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-105'
-                                />
-                            </div>
-                            <figcaption className='p-4'>
-                                <p className='font-serif text-base font-bold text-[#261C14]'>{style}</p>
-                                <p className='mt-0.5 text-xs font-medium text-[#C25E2B]'>{breed}</p>
-                            </figcaption>
-                        </figure>
-                    ))}
-                </div>
+                <StyleCarousel />
             </section>
 
             {/* ── Salon Commitment & CTA ── */}
-            <section id='about' className='border-t border-[#E2D9C8] bg-white text-[#261C14]'>
+            <section id='about' className='border-t border-slate-200 bg-white text-slate-900'>
                 <div className='mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 lg:grid-cols-2 sm:py-20'>
                     <div>
-                        <span className='inline-block rounded-full bg-[#C25E2B]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
+                        <span className='inline-block rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
                             Visit TimmyTails
                         </span>
-                        <h2 className='mt-3 font-serif text-3xl font-bold leading-tight text-[#261C14] sm:text-4xl'>
+                        <h2 className='mt-3 font-serif text-3xl font-bold leading-tight text-slate-900 sm:text-4xl'>
                             Ready to schedule your pet&apos;s grooming visit?
                         </h2>
 
@@ -228,8 +212,8 @@ export default function Home() {
                                 'Visual style selection and haircut customizer before booking.',
                                 'Guaranteed 2-hour appointment slots with immediate confirmation.'
                             ].map((item) => (
-                                <p key={item} className='flex items-start gap-2.5 text-sm text-[#68594E]'>
-                                    <span className='mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-[#2B4C3F] text-white'>
+                                <p key={item} className='flex items-start gap-2.5 text-sm text-slate-600'>
+                                    <span className='mt-0.5 grid h-5 w-5 shrink-0 place-items-center rounded-full bg-slate-900 text-white'>
                                         <Check size={12} />
                                     </span>
                                     <span>{item}</span>
@@ -239,14 +223,14 @@ export default function Home() {
 
                         <button
                             onClick={book}
-                            className='mt-8 inline-flex items-center gap-2.5 rounded-lg bg-[#C25E2B] px-7 py-3.5 text-base font-bold text-white shadow-xs transition hover:bg-[#A84E20] active:scale-[0.98]'
+                            className='mt-8 inline-flex items-center gap-2.5 rounded-lg bg-[#C25E2B] px-6 py-3.5 text-sm font-bold text-white transition hover:bg-[#A84E20] active:scale-[0.98]'
                         >
                             <CalendarDays size={18} />
                             <span>Schedule Appointment</span>
                         </button>
                     </div>
 
-                    <div className='overflow-hidden rounded-xl border border-[#E2D9C8] bg-[#FAF7F2] shadow-xs'>
+                    <div className='overflow-hidden rounded-xl border border-slate-200 bg-slate-100'>
                         <img
                             src={salonImage}
                             alt='Professional groomer caring for a dog at TimmyTails'

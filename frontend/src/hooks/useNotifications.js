@@ -15,7 +15,24 @@ export function useNotifications() {
         setLoading(true)
         try {
             const { data } = await notificationsApi.getMine()
-            setNotifications(data.notifications || [])
+            const list = data.notifications || []
+            setNotifications(list)
+
+            // Instant Ban Eviction Check
+            const banNotif = list.find((n) => String(n.title || '').toLowerCase().includes('banned'))
+            const restoredNotif = list.find((n) => String(n.title || '').toLowerCase().includes('restored'))
+
+            if (banNotif) {
+                const banTime = new Date(banNotif.createdAt).getTime()
+                const restoreTime = restoredNotif ? new Date(restoredNotif.createdAt).getTime() : 0
+                if (banTime > restoreTime) {
+                    localStorage.removeItem('token')
+                    const notifMsg = encodeURIComponent(banNotif.message || 'Your customer account has been suspended by salon administration.')
+                    if (window.location.pathname !== '/login') {
+                        window.location.href = `/login?reason=banned&msg=${notifMsg}`
+                    }
+                }
+            }
         } catch {
             // silently fail – non-critical
         } finally {

@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import {
     AlertTriangle,
+    Ban,
     CalendarDays,
     Check,
     ChevronLeft,
@@ -160,8 +161,12 @@ const runStyleQueue = async (items, worker) => {
 }
 
 export default function Booking() {
-    const { user } = useAuth()
+    const { user, refreshUser } = useAuth()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        if (refreshUser) refreshUser()
+    }, [refreshUser])
     const season = getPhilippineSeason()
     const today = useMemo(() => new Date(), [])
     const minDate = useMemo(() => toDateKey(today), [today])
@@ -999,6 +1004,13 @@ export default function Booking() {
     }
 
     const validateStep1 = () => {
+        if (user?.accountStatus === 'booking_blocked' || user?.accountStatus === 'banned') {
+            toast.error(user.accountStatus === 'banned'
+                ? 'Your customer account has been permanently suspended.'
+                : `Your booking access is currently blocked by salon administration. ${user.statusReason || ''}`
+            )
+            return false
+        }
         if (!selectedService) { toast.error('Please select a grooming service'); return false }
         if (!activePet?.name || !activePet?.breed || !activePet?.type) { toast.error('Please complete the pet information'); return false }
         if (isPetTooYoung) { toast.error('Pets must be at least 3 months old to be booked'); return false }
@@ -1007,16 +1019,31 @@ export default function Booking() {
     }
 
     const validateStep2 = () => {
+        if (user?.accountStatus === 'booking_blocked' || user?.accountStatus === 'banned') {
+            toast.error('Your booking privileges are currently blocked by salon administration.')
+            return false
+        }
         if (aiEnabled && !selectedStyle) { toast.error('Please select a haircut style preview'); return false }
         return true
     }
 
     const validateStep3 = () => {
+        if (user?.accountStatus === 'booking_blocked' || user?.accountStatus === 'banned') {
+            toast.error('Your booking privileges are currently blocked by salon administration.')
+            return false
+        }
         if (!selectedDate || !selectedSlot) { toast.error('Please select an available date and time slot'); return false }
         return true
     }
 
     const submitBooking = async () => {
+        if (user?.accountStatus === 'booking_blocked' || user?.accountStatus === 'banned') {
+            toast.error(user.accountStatus === 'banned'
+                ? 'Your customer account has been permanently suspended.'
+                : `Your booking privileges are currently blocked by salon administration. ${user.statusReason || ''}`
+            )
+            return
+        }
         const error = validate()
         if (error) {
             toast.error(error.message)
@@ -1126,6 +1153,34 @@ export default function Booking() {
                         Select your service, pet profile, haircut style preview, and schedule date.
                     </p>
                 </div>
+
+                {/* Account Enforcement Status Banner */}
+                {user?.accountStatus === 'warned' && (
+                    <div className='mb-6 rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950 flex items-start gap-3 shadow-xs'>
+                        <AlertTriangle className='h-5 w-5 shrink-0 text-amber-600 mt-0.5' />
+                        <div className='space-y-1'>
+                            <p className='font-bold text-amber-900 text-sm'>Account Policy Notice</p>
+                            <p className='text-amber-800 leading-relaxed'>
+                                {user.warningMessage || user.statusReason || 'You have received a formal warning regarding multiple booking cancellations or no-show policy violations. Please attend scheduled appointments on time.'}
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                {(user?.accountStatus === 'booking_blocked' || user?.accountStatus === 'banned') && (
+                    <div className='mb-6 rounded-xl border border-red-300 bg-red-50 p-5 text-xs text-red-950 flex items-start gap-3 shadow-md'>
+                        <Ban className='h-6 w-6 shrink-0 text-red-600 mt-0.5' />
+                        <div className='space-y-1.5'>
+                            <p className='font-bold text-red-900 text-base'>Booking Privileges Suspended</p>
+                            <p className='text-red-800 leading-relaxed text-sm'>
+                                {user.statusReason || user.warningMessage || 'Your customer account has been blocked from scheduling new grooming appointments by salon administration due to repeated cancellations or policy violations.'}
+                            </p>
+                            <p className='text-xs font-semibold text-red-900 pt-1'>
+                                If you believe this is an error, please contact TimmyTails salon support at +63 975 669 2647.
+                            </p>
+                        </div>
+                    </div>
+                )}
 
                 {/* Stepper Progress Header */}
                 <div className='mb-6 rounded-xl border border-[#E2D9C8] bg-white p-3 shadow-xs'>

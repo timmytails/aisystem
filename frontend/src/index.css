@@ -6,18 +6,17 @@
 }
 
 :root {
-    --bg-main: #FAF7F2;
+    --bg-main: #F8F7F4;
     --bg-surface: #FFFFFF;
-    --bg-muted: #F4EFE6;
-    --border-color: #E2D9C8;
+    --bg-muted: #F1F5F9;
+    --border-color: #E2E8F0;
     --border-focus: #C25E2B;
-    --text-main: #261C14;
-    --text-muted: #68594E;
-    --text-subtle: #8C7A6D;
+    --text-main: #0F172A;
+    --text-muted: #475569;
+    --text-subtle: #94A3B8;
     --brand-primary: #C25E2B;
     --brand-primary-hover: #A84E20;
-    --brand-secondary: #2B4C3F;
-    --brand-secondary-hover: #213B31;
+    --brand-navy: #1E293B;
 
     color: var(--text-main);
     background-color: var(--bg-main);
@@ -38,15 +37,15 @@
 
 html {
     scroll-behavior: smooth;
-    background-color: #FAF7F2;
+    background-color: #F8F7F4;
 }
 
 body {
     margin: 0;
     min-width: 320px;
     min-height: 100vh;
-    background-color: #FAF7F2;
-    color: #261C14;
+    background-color: #F8F7F4;
+    color: #0F172A;
 }
 
 button,
@@ -83,27 +82,28 @@ button:focus-visible {
 
 /* Custom scrollbars for clean UI */
 ::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-    background: #FAF7F2;
+    background: #F8F7F4;
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #D5C9B7;
-    border-radius: 4px;
+    background: #CBD5E1;
+    border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #B8A995;
+    background: #94A3B8;
 }
 
 /* Mobile Scrollbar & Utility Helpers */
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
+
 .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
@@ -115,10 +115,11 @@ button:focus-visible {
 
 @media (max-width: 767px) {
     /* Touch optimization */
-    input, select, textarea, button {
-        font-size: 16px; /* Prevents auto-zoom on iOS Safari */
+    input,
+    select,
+    textarea,
+    button {
+        font-size: 16px;
+        /* Prevents auto-zoom on iOS Safari */
     }
 }
-
-
-

@@ -6,6 +6,9 @@ import {
 } from 'react'
 
 import {
+    AlertCircle,
+    AlertTriangle,
+    Ban,
     BarChart3,
     Bell,
     CalendarDays,
@@ -28,9 +31,11 @@ import {
     Scissors,
     Search,
     Send,
+    ShieldAlert,
     Trash2,
     UserRound,
     Users,
+    UserX,
     X,
     ZoomIn
 } from 'lucide-react'
@@ -760,14 +765,14 @@ export default function Admin() {
 
     if (loading) {
         return (
-            <div className='grid min-h-screen place-items-center bg-[#fbf7f1] text-[#244936]'>
+            <div className='grid min-h-screen place-items-center bg-[#F8F7F4] text-slate-900'>
                 <div className='text-center'>
                     <RefreshCw
-                        className='mx-auto animate-spin'
+                        className='mx-auto animate-spin text-[#C25E2B]'
                         size={30}
                     />
 
-                    <p className='mt-3 font-semibold'>
+                    <p className='mt-3 font-semibold text-slate-700'>
                         Loading administration data
                     </p>
                 </div>
@@ -776,7 +781,7 @@ export default function Admin() {
     }
 
     return (
-        <div className='min-h-screen bg-[#f5f0ea] text-[#201711]'>
+        <div className='min-h-screen bg-[#F8F7F4] text-slate-900'>
             <AdminSidebar
                 activeTab={
                     activeTab
@@ -803,40 +808,40 @@ export default function Admin() {
             />
 
             <div className='min-h-screen lg:pl-[240px]'>
-                <header className='sticky top-0 z-30 flex h-[58px] items-center justify-between border-b border-[#e0d3c3] bg-white/95 px-4 shadow-sm backdrop-blur-sm sm:px-6'>
+                <header className='sticky top-0 z-30 flex h-[58px] items-center justify-between border-b border-slate-200 bg-white px-4 shadow-xs sm:px-6'>
                     <div className='flex items-center gap-3'>
                         <button
                             onClick={() => setSidebarOpen(true)}
-                            className='grid h-9 w-9 place-items-center rounded-lg text-[#244936] transition hover:bg-[#f0e8dd] lg:hidden'
+                            className='grid h-9 w-9 place-items-center rounded-lg text-slate-700 transition hover:bg-slate-100 lg:hidden'
                             aria-label='Open navigation'
                         >
                             <Menu size={20} />
                         </button>
 
                         <div>
-                            <h1 className='font-serif text-lg font-bold capitalize leading-tight sm:text-xl'>
+                            <h1 className='font-serif text-lg font-bold capitalize leading-tight sm:text-xl text-slate-900'>
                                 {activeTab === 'messages' ? 'Contact Messages' : activeTab}
                             </h1>
-                            <p className='hidden text-[10px] font-medium text-[#9c7b68] sm:block'>TimmyTails Admin Portal</p>
+                            <p className='hidden text-[10px] font-medium text-slate-500 sm:block'>TimmyTails Admin Portal</p>
                         </div>
                     </div>
 
                     <div className='flex items-center gap-2.5'>
-                        <span className='hidden rounded-lg bg-[#f0e8dd] px-3 py-1.5 font-mono text-[11px] font-medium text-[#7a5a48] sm:inline'>
+                        <span className='hidden rounded-lg bg-slate-100 border border-slate-200 px-3 py-1.5 font-mono text-[11px] font-medium text-slate-700 sm:inline'>
                             {formatDate(new Date())}
                         </span>
 
                         <button
                             onClick={() => loadData(true)}
                             disabled={refreshing}
-                            className='grid h-8 w-8 place-items-center rounded-lg border border-[#e0d3c3] bg-white text-[#a94723] transition hover:bg-[#f7efe5] disabled:opacity-40'
+                            className='grid h-8 w-8 place-items-center rounded-lg border border-slate-200 bg-white text-[#C25E2B] transition hover:bg-slate-50 disabled:opacity-40'
                             aria-label='Refresh data'
                         >
                             <RefreshCw size={15} className={refreshing ? 'animate-spin' : ''} />
                         </button>
 
                         {pendingAppointments.length > 0 && (
-                            <span className='inline-flex items-center gap-1.5 rounded-lg bg-[#bf5a31] px-2.5 py-1.5 text-xs font-bold text-white' title='Pending appointments'>
+                            <span className='inline-flex items-center gap-1.5 rounded-lg bg-[#C25E2B] px-2.5 py-1.5 text-xs font-bold text-white' title='Pending appointments'>
                                 <Clock3 size={12} />
                                 {pendingAppointments.length} pending
                             </span>
@@ -929,6 +934,7 @@ export default function Admin() {
                                 customers={
                                     customers
                                 }
+                                onRefresh={() => loadData(true)}
                             />
                         )}
 
@@ -1007,23 +1013,23 @@ function AdminSidebar({
                 <button
                     type='button'
                     onClick={onClose}
-                    className='fixed inset-0 z-40 bg-black/40 lg:hidden'
+                    className='fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-xs lg:hidden'
                     aria-label='Close navigation overlay'
                 />
             )}
 
             <aside
-                className={`fixed inset-y-0 left-0 z-50 flex w-[240px] flex-col bg-[#2B4C3F] text-white transition-transform duration-200 lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}
+                className={`fixed inset-y-0 left-0 z-50 flex w-[240px] flex-col bg-[#0F172A] text-white transition-transform duration-200 lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}
             >
                 {/* Header Brand */}
-                <div className='flex h-16 items-center justify-between border-b border-white/10 px-5'>
+                <div className='flex h-16 items-center justify-between border-b border-slate-800 px-5'>
                     <div>
                         <p className='font-serif text-lg font-bold tracking-tight text-white'>TimmyTails</p>
-                        <p className='text-[10px] font-bold uppercase tracking-widest text-amber-200/80'>Admin Portal</p>
+                        <p className='text-[10px] font-bold uppercase tracking-widest text-[#C25E2B]'>Admin Portal</p>
                     </div>
                     <button
                         onClick={onClose}
-                        className='grid h-8 w-8 place-items-center rounded-lg text-white/70 hover:bg-white/10 hover:text-white lg:hidden'
+                        className='grid h-8 w-8 place-items-center rounded-lg text-slate-400 hover:bg-slate-800 hover:text-white lg:hidden'
                         aria-label='Close navigation'
                     >
                         <X size={18} />
@@ -1040,8 +1046,8 @@ function AdminSidebar({
                                 onClick={() => onChange(id)}
                                 className={`group relative flex w-full items-center gap-3 rounded-lg px-3.5 py-2.5 text-left text-sm font-semibold transition ${
                                     isActive
-                                        ? 'bg-white/15 text-white'
-                                        : 'text-white/70 hover:bg-white/10 hover:text-white'
+                                        ? 'bg-slate-800 text-white'
+                                        : 'text-slate-400 hover:bg-slate-800/60 hover:text-white'
                                 }`}
                             >
                                 {isActive && (
@@ -1065,19 +1071,19 @@ function AdminSidebar({
                 </nav>
 
                 {/* Admin Profile Footer */}
-                <div className='border-t border-white/10 p-4'>
+                <div className='border-t border-slate-800 p-4'>
                     <div className='mb-3 flex items-center gap-3'>
-                        <span className='grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-white/15 text-sm font-bold text-white'>
+                        <span className='grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-slate-800 text-sm font-bold text-white border border-slate-700'>
                             {(user?.firstName?.[0] || 'A').toUpperCase()}
                         </span>
                         <div className='min-w-0'>
                             <p className='truncate text-xs font-bold text-white'>{user?.firstName || 'Admin'}</p>
-                            <p className='truncate text-[10px] text-white/60'>{user?.email || user?.phone}</p>
+                            <p className='truncate text-[10px] text-slate-400'>{user?.email || user?.phone}</p>
                         </div>
                     </div>
                     <button
                         onClick={onLogout}
-                        className='flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-white/70 hover:bg-white/10 hover:text-white'
+                        className='flex w-full items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-slate-400 hover:bg-slate-800 hover:text-white'
                     >
                         <LogOut size={15} />
                         <span>Sign Out</span>
@@ -2243,13 +2249,264 @@ function ScheduleView({
     )
 }
 
+function CustomerActionModal({ isOpen, customer, loading, onConfirm, onClose }) {
+    const [action, setAction] = useState('warned')
+    const [presetReason, setPresetReason] = useState('Multiple booking cancellations / No-show policy')
+    const [customReason, setCustomReason] = useState('')
+
+    useEffect(() => {
+        if (isOpen && customer) {
+            setAction(customer.accountStatus && customer.accountStatus !== 'active' ? customer.accountStatus : 'warned')
+            setPresetReason('Multiple booking cancellations / No-show policy')
+            setCustomReason(customer.statusReason || '')
+        }
+    }, [isOpen, customer])
+
+    if (!isOpen || !customer) return null
+
+    const handleSave = () => {
+        const finalReason = presetReason === 'Other (custom reason)' ? customReason : `${presetReason}${customReason ? `: ${customReason}` : ''}`
+        onConfirm(customer._id, {
+            accountStatus: action,
+            statusReason: finalReason,
+            warningMessage: customReason || presetReason
+        })
+    }
+
+    return (
+        <div className='fixed inset-0 z-50 flex items-center justify-center bg-slate-950/60 p-4 backdrop-blur-xs animate-in fade-in duration-200'>
+            <div className='w-full max-w-lg overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl'>
+                <div className='flex items-center justify-between border-b border-slate-200 bg-slate-50 px-6 py-4'>
+                    <div className='flex items-center gap-2.5'>
+                        <UserX className='h-5 w-5 text-[#C25E2B]' />
+                        <h3 className='font-serif text-lg font-bold text-slate-900'>
+                            Customer Enforcement Action
+                        </h3>
+                    </div>
+                    <button onClick={onClose} className='rounded-lg p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-700 transition'>
+                        <X size={18} />
+                    </button>
+                </div>
+
+                <div className='p-6 space-y-5 text-sm'>
+                    {/* Customer Header */}
+                    <div className='rounded-xl border border-slate-200 bg-slate-50/80 p-3.5 flex items-center justify-between'>
+                        <div>
+                            <p className='font-bold text-slate-900'>{customer.firstName} {customer.lastName}</p>
+                            <p className='text-xs text-slate-500'>{customer.email || customer.phone || 'No contact details'}</p>
+                        </div>
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider ${
+                            customer.accountStatus === 'banned' ? 'bg-red-100 text-red-700 border border-red-200' :
+                            customer.accountStatus === 'booking_blocked' ? 'bg-orange-100 text-orange-700 border border-orange-200' :
+                            customer.accountStatus === 'warned' ? 'bg-amber-100 text-amber-800 border border-amber-200' :
+                            'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                        }`}>
+                            Current: {customer.accountStatus || 'active'}
+                        </span>
+                    </div>
+
+                    {/* Action Selector */}
+                    <div>
+                        <label className='block font-bold text-slate-900 mb-2'>Select Enforcement Action</label>
+                        <div className='grid grid-cols-2 gap-2.5'>
+                            <button
+                                type='button'
+                                onClick={() => setAction('warned')}
+                                className={`flex items-center gap-2 p-3 rounded-xl border text-left transition ${
+                                    action === 'warned'
+                                        ? 'border-amber-500 bg-amber-50 text-amber-950 font-bold ring-2 ring-amber-400/40'
+                                        : 'border-slate-200 hover:border-slate-300 text-slate-700'
+                                }`}
+                            >
+                                <AlertTriangle className='h-4 w-4 shrink-0 text-amber-600' />
+                                <div>
+                                    <p className='text-xs font-bold'>Issue Warning</p>
+                                    <p className='text-[11px] text-slate-500 font-normal'>Send notice</p>
+                                </div>
+                            </button>
+
+                            <button
+                                type='button'
+                                onClick={() => setAction('booking_blocked')}
+                                className={`flex items-center gap-2 p-3 rounded-xl border text-left transition ${
+                                    action === 'booking_blocked'
+                                        ? 'border-orange-500 bg-orange-50 text-orange-950 font-bold ring-2 ring-orange-400/40'
+                                        : 'border-slate-200 hover:border-slate-300 text-slate-700'
+                                }`}
+                            >
+                                <Ban className='h-4 w-4 shrink-0 text-orange-600' />
+                                <div>
+                                    <p className='text-xs font-bold'>Block Booking</p>
+                                    <p className='text-[11px] text-slate-500 font-normal'>Stop new bookings</p>
+                                </div>
+                            </button>
+
+                            <button
+                                type='button'
+                                onClick={() => setAction('banned')}
+                                className={`flex items-center gap-2 p-3 rounded-xl border text-left transition ${
+                                    action === 'banned'
+                                        ? 'border-red-500 bg-red-50 text-red-950 font-bold ring-2 ring-red-400/40'
+                                        : 'border-slate-200 hover:border-slate-300 text-slate-700'
+                                }`}
+                            >
+                                <ShieldAlert className='h-4 w-4 shrink-0 text-red-600' />
+                                <div>
+                                    <p className='text-xs font-bold'>Ban Account</p>
+                                    <p className='text-[11px] text-slate-500 font-normal'>Block login access</p>
+                                </div>
+                            </button>
+
+                            <button
+                                type='button'
+                                onClick={() => setAction('active')}
+                                className={`flex items-center gap-2 p-3 rounded-xl border text-left transition ${
+                                    action === 'active'
+                                        ? 'border-emerald-500 bg-emerald-50 text-emerald-950 font-bold ring-2 ring-emerald-400/40'
+                                        : 'border-slate-200 hover:border-slate-300 text-slate-700'
+                                }`}
+                            >
+                                <CheckCircle2 className='h-4 w-4 shrink-0 text-emerald-600' />
+                                <div>
+                                    <p className='text-xs font-bold'>Restore Active</p>
+                                    <p className='text-[11px] text-slate-500 font-normal'>Clear restrictions</p>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Reason presets */}
+                    {action !== 'active' && (
+                        <>
+                            <div>
+                                <label className='block font-bold text-slate-900 mb-1.5'>Reason Category</label>
+                                <select
+                                    value={presetReason}
+                                    onChange={(e) => setPresetReason(e.target.value)}
+                                    className='w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none focus:border-[#C25E2B] focus:ring-1 focus:ring-[#C25E2B]'
+                                >
+                                    <option value='Multiple booking cancellations / No-show policy'>Multiple booking cancellations / No-show policy</option>
+                                    <option value='Excessive last-minute schedule changes'>Excessive last-minute schedule changes</option>
+                                    <option value='Uncooperative pet handling or policy refusal'>Uncooperative pet handling or policy refusal</option>
+                                    <option value='Payment issues / Unpaid grooming balance'>Payment issues / Unpaid grooming balance</option>
+                                    <option value='Other (custom reason)'>Other (custom reason)</option>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label className='block font-bold text-slate-900 mb-1.5'>Notice Message for Customer</label>
+                                <textarea
+                                    value={customReason}
+                                    onChange={(e) => setCustomReason(e.target.value)}
+                                    placeholder='Provide additional context or message for the customer...'
+                                    rows={3}
+                                    className='w-full rounded-xl border border-slate-200 p-3 text-sm outline-none focus:border-[#C25E2B] focus:ring-1 focus:ring-[#C25E2B]'
+                                />
+                            </div>
+                        </>
+                    )}
+                </div>
+
+                {/* Footer Buttons */}
+                <div className='flex items-center justify-end gap-3 border-t border-slate-200 bg-slate-50 px-6 py-4'>
+                    <button
+                        onClick={onClose}
+                        disabled={loading}
+                        className='rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-100 transition'
+                    >
+                        Cancel
+                    </button>
+                    <button
+                        onClick={handleSave}
+                        disabled={loading}
+                        className={`rounded-xl px-5 py-2 text-xs font-bold text-white shadow-xs transition ${
+                            action === 'banned' ? 'bg-red-600 hover:bg-red-700' :
+                            action === 'booking_blocked' ? 'bg-orange-600 hover:bg-orange-700' :
+                            action === 'warned' ? 'bg-amber-600 hover:bg-amber-700' :
+                            'bg-emerald-600 hover:bg-emerald-700'
+                        }`}
+                    >
+                        {loading ? 'Saving...' : 'Apply Action'}
+                    </button>
+                </div>
+            </div>
+        </div>
+    )
+}
+
 function CustomersView({
-    customers
+    customers,
+    onRefresh
 }) {
-    const [
-        query,
-        setQuery
-    ] = useState('')
+    const [query, setQuery] = useState('')
+    const [selectedCustomer, setSelectedCustomer] = useState(null)
+    const [actionModalOpen, setActionModalOpen] = useState(false)
+    const [submitting, setSubmitting] = useState(false)
+    const [customerList, setCustomerList] = useState(customers || [])
+
+    useEffect(() => {
+        setCustomerList(customers || [])
+    }, [customers])
+
+    const handleOpenActionModal = (customer) => {
+        setSelectedCustomer(customer)
+        setActionModalOpen(true)
+    }
+
+    const handleApplyStatus = async (userId, data) => {
+        setSubmitting(true)
+
+        // INSTANTLY update local state for real-time visual feedback
+        setCustomerList((prev) =>
+            prev.map((c) =>
+                c._id === userId
+                    ? { ...c, accountStatus: data.accountStatus, statusReason: data.accountStatus === 'active' ? '' : data.statusReason }
+                    : c
+            )
+        )
+
+        try {
+            try {
+                await adminApi.updateCustomerStatus(userId, data)
+            } catch (apiErr) {
+                const is404 = apiErr?.response?.status === 404 ||
+                              apiErr?.message?.includes('404') ||
+                              apiErr?.response?.data?.message === 'Route not found'
+                if (is404) {
+                    let notifTitle = 'Account Status Update'
+                    if (data.accountStatus === 'warned') notifTitle = '⚠️ Formal Warning Issued'
+                    else if (data.accountStatus === 'booking_blocked') notifTitle = '⛔ Booking Access Suspended'
+                    else if (data.accountStatus === 'banned') notifTitle = '🚫 Account Banned'
+                    else if (data.accountStatus === 'active') notifTitle = '✅ Account Privileges Restored'
+
+                    await adminApi.createNotification({
+                        audience: 'user',
+                        targetUser: userId,
+                        title: notifTitle,
+                        message: data.statusReason || data.warningMessage || 'Your account status has been updated by salon administration.'
+                    })
+                } else {
+                    throw apiErr
+                }
+            }
+
+            const statusLabels = {
+                booking_blocked: 'Booking Blocked',
+                banned: 'Account Banned',
+                warned: 'Warning Issued',
+                active: 'Active'
+            }
+            const label = statusLabels[data.accountStatus] || data.accountStatus
+            toast.success(`Customer status updated: ${label}`)
+            setActionModalOpen(false)
+            setSelectedCustomer(null)
+            if (onRefresh) onRefresh()
+        } catch (err) {
+            toast.error(getErrorMessage(err))
+        } finally {
+            setSubmitting(false)
+        }
+    }
 
     const filtered =
         useMemo(() => {
@@ -2259,16 +2516,17 @@ function CustomersView({
                     .toLowerCase()
 
             if (!normalized) {
-                return customers
+                return customerList
             }
 
-            return customers.filter(
+            return customerList.filter(
                 (customer) =>
                     [
                         customer.firstName,
                         customer.lastName,
                         customer.email,
                         customer.phone,
+                        customer.accountStatus,
                         ...(customer.pets || []).flatMap(
                             (pet) => [
                                 pet.name,
@@ -2292,6 +2550,17 @@ function CustomersView({
 
     return (
         <section className='overflow-hidden rounded-2xl border border-[#eadbc9] bg-white'>
+            <CustomerActionModal
+                isOpen={actionModalOpen}
+                customer={selectedCustomer}
+                loading={submitting}
+                onConfirm={handleApplyStatus}
+                onClose={() => {
+                    setActionModalOpen(false)
+                    setSelectedCustomer(null)
+                }}
+            />
+
             <div className='flex flex-col gap-3 border-b border-[#eadbc9] px-5 py-4 sm:flex-row sm:items-center sm:justify-between'>
                 <div>
                     <h2 className='font-serif text-xl font-bold'>
@@ -2342,17 +2611,36 @@ function CustomersView({
                                     )}
                                 </span>
 
-                                <div className='min-w-0'>
-                                    <p className='font-semibold'>
-                                        {
-                                            customer.firstName
-                                        }{' '}
-                                        {
-                                            customer.lastName
-                                        }
-                                    </p>
+                                <div className='min-w-0 space-y-1'>
+                                    <div className='flex flex-wrap items-center gap-2'>
+                                        <p className='font-semibold text-slate-900'>
+                                            {customer.firstName} {customer.lastName}
+                                        </p>
 
-                                    <p className='mt-1 text-xs text-[#806654]'>
+                                        {/* Account Status Badge */}
+                                        {customer.accountStatus === 'warned' && (
+                                            <span className='inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-0.5 text-xs font-bold text-amber-800 border border-amber-300' title={customer.statusReason}>
+                                                <AlertTriangle size={12} /> Warned
+                                            </span>
+                                        )}
+                                        {customer.accountStatus === 'booking_blocked' && (
+                                            <span className='inline-flex items-center gap-1 rounded-full bg-orange-100 px-2.5 py-0.5 text-xs font-bold text-orange-800 border border-orange-300' title={customer.statusReason}>
+                                                <Ban size={12} /> Booking Blocked
+                                            </span>
+                                        )}
+                                        {customer.accountStatus === 'banned' && (
+                                            <span className='inline-flex items-center gap-1 rounded-full bg-red-100 px-2.5 py-0.5 text-xs font-bold text-red-800 border border-red-300' title={customer.statusReason}>
+                                                <ShieldAlert size={12} /> Banned
+                                            </span>
+                                        )}
+                                        {(!customer.accountStatus || customer.accountStatus === 'active') && (
+                                            <span className='inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 border border-emerald-200'>
+                                                <CheckCircle2 size={11} /> Active
+                                            </span>
+                                        )}
+                                    </div>
+
+                                    <p className='text-xs text-[#806654]'>
                                         {customer.email ||
                                             'No email'}{' '}
                                         ·{' '}
@@ -2360,11 +2648,17 @@ function CustomersView({
                                             'No phone'}
                                     </p>
 
-                                    <p className='mt-1 text-xs text-[#806654]'>
+                                    <p className='text-xs text-[#806654]'>
                                         {getCustomerAddress(
                                             customer
                                         )}
                                     </p>
+
+                                    {customer.accountStatus && customer.accountStatus !== 'active' && customer.statusReason && (
+                                        <p className='text-xs font-semibold text-amber-800 bg-amber-50 rounded-lg px-2.5 py-1 border border-amber-200 max-w-md'>
+                                            Status Note: {customer.statusReason}
+                                        </p>
+                                    )}
 
                                     <div className='mt-2 flex flex-wrap gap-2'>
                                         {(customer.pets ||
@@ -2399,30 +2693,42 @@ function CustomersView({
                                 </div>
                             </div>
 
-                            <div className='grid grid-cols-3 gap-5 text-center lg:min-w-[330px]'>
-                                <CustomerMetric
-                                    value={
-                                        customer.visits ||
-                                        0
-                                    }
-                                    label='Bookings'
-                                />
+                            <div className='flex flex-col justify-center gap-3 lg:items-end'>
+                                <div className='flex flex-wrap items-center justify-between gap-4 sm:justify-end'>
+                                    <div className='grid grid-cols-3 gap-4 text-center sm:gap-6'>
+                                        <CustomerMetric
+                                            value={
+                                                customer.visits ||
+                                                0
+                                            }
+                                            label='Bookings'
+                                        />
 
-                                <CustomerMetric
-                                    value={formatPeso(
-                                        customer.totalSpend
-                                    )}
-                                    label='Total Spend'
-                                    accent
-                                />
+                                        <CustomerMetric
+                                            value={formatPeso(
+                                                customer.totalSpend
+                                            )}
+                                            label='Total Spend'
+                                            accent
+                                        />
 
-                                <CustomerMetric
-                                    value={formatShortDate(
-                                        customer.lastVisit
-                                    )}
-                                    label='Last Visit'
-                                    small
-                                />
+                                        <CustomerMetric
+                                            value={formatShortDate(
+                                                customer.lastVisit
+                                            )}
+                                            label='Last Visit'
+                                            small
+                                        />
+                                    </div>
+
+                                    <button
+                                        onClick={() => handleOpenActionModal(customer)}
+                                        className='inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 shadow-xs transition hover:border-[#C25E2B] hover:text-[#C25E2B] hover:bg-slate-50 active:scale-95 shrink-0'
+                                    >
+                                        <UserX size={14} className='text-[#C25E2B]' />
+                                        <span>Manage Status</span>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )

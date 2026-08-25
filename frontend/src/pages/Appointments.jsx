@@ -67,24 +67,24 @@ export default function Appointments() {
     }
 
     return (
-        <div className='min-h-screen bg-[#FAF7F2] px-4 py-8 text-[#261C14] sm:px-6 lg:px-8'>
+        <div className='min-h-screen bg-[#F8F7F4] px-4 py-8 text-slate-900 sm:px-6 lg:px-8'>
             <div className='mx-auto max-w-5xl'>
 
                 {/* Page Header */}
-                <div className='mb-8 border-b border-[#E2D9C8] pb-6'>
-                    <span className='inline-block rounded-full bg-[#C25E2B]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
+                <div className='mb-8 border-b border-slate-200 pb-6'>
+                    <span className='inline-block rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
                         My Schedule
                     </span>
-                    <h1 className='mt-2 font-serif text-3xl font-bold tracking-tight text-[#261C14] sm:text-4xl'>
+                    <h1 className='mt-2 font-serif text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl'>
                         Grooming Appointments
                     </h1>
-                    <p className='mt-1 text-sm text-[#68594E]'>
+                    <p className='mt-1 text-sm text-slate-600'>
                         Review your upcoming grooming sessions and appointment history.
                     </p>
                 </div>
 
                 {loading ? (
-                    <div className='rounded-xl border border-[#E2D9C8] bg-white p-12 text-center text-sm font-medium text-[#68594E]'>
+                    <div className='rounded-xl border border-slate-200 bg-white p-12 text-center text-sm font-medium text-slate-600'>
                         Loading your grooming appointments...
                     </div>
                 ) : (
@@ -157,10 +157,10 @@ export default function Appointments() {
 
 function SectionHeader({ title, count }) {
     return (
-        <div className='flex items-center gap-3 border-b border-[#E2D9C8] pb-3'>
-            <h2 className='font-serif text-xl font-bold text-[#261C14]'>{title}</h2>
+        <div className='flex items-center gap-3 border-b border-slate-200 pb-3'>
+            <h2 className='font-serif text-xl font-bold text-slate-900'>{title}</h2>
             {count > 0 && (
-                <span className='rounded-full bg-[#C25E2B]/10 px-2.5 py-0.5 text-xs font-bold text-[#C25E2B]'>
+                <span className='rounded-md bg-[#C25E2B]/10 px-2.5 py-0.5 text-xs font-bold text-[#C25E2B]'>
                     {count}
                 </span>
             )}
@@ -176,16 +176,16 @@ function AppointmentCard({ appointment: a, onClick, onCancel, onReschedule }) {
     return (
         <article
             onClick={onClick}
-            className='group relative cursor-pointer overflow-hidden rounded-xl border border-[#E2D9C8] bg-white p-5 shadow-xs transition hover:border-[#C25E2B]/60 hover:shadow-sm'
+            className='group relative cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white p-5 transition hover:border-slate-300'
         >
             <div className='flex flex-col justify-between gap-5 sm:flex-row sm:items-center'>
                 <div className='flex items-start gap-4'>
                     {/* Pet Image Display */}
-                    <div className='h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-[#E2D9C8] bg-[#F4EFE6]'>
+                    <div className='h-16 w-16 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100'>
                         {petPhoto ? (
                             <img src={petPhoto} alt={a.petName} className='h-full w-full object-cover' />
                         ) : (
-                            <div className='flex h-full w-full items-center justify-center text-[#8C7A6D]'>
+                            <div className='flex h-full w-full items-center justify-center text-slate-400'>
                                 {a.petType === 'cat' ? <Cat size={26} /> : <Dog size={26} />}
                             </div>
                         )}
@@ -193,14 +193,14 @@ function AppointmentCard({ appointment: a, onClick, onCancel, onReschedule }) {
 
                     <div className='min-w-0 flex-1'>
                         <div className='flex flex-wrap items-center gap-2.5'>
-                            <h3 className='font-serif text-xl font-bold text-[#261C14] transition-colors group-hover:text-[#C25E2B]'>
+                            <h3 className='font-serif text-xl font-bold text-slate-900 transition-colors group-hover:text-[#C25E2B]'>
                                 {a.petName}
                             </h3>
-                            <span className={`inline-block rounded-full border px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide ${s.pill}`}>
+                            <span className={`inline-block rounded-md border px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide ${s.pill}`}>
                                 {s.label}
                             </span>
                         </div>
-                        <p className='mt-0.5 text-sm font-medium text-[#68594E]'>
+                        <p className='mt-0.5 text-sm font-medium text-slate-600'>
                             {a.service}{a.haircutStyle ? ` · Style: ${a.haircutStyle}` : ''}
                         </p>
                         <div className='mt-2 flex flex-wrap gap-4 text-xs font-bold text-[#C25E2B]'>
@@ -208,7 +208,7 @@ function AppointmentCard({ appointment: a, onClick, onCancel, onReschedule }) {
                                 <CalendarDays size={14} />
                                 {formatDateLong(a.date)}
                             </span>
-                            <span className='flex items-center gap-1.5 font-semibold text-[#68594E]'>
+                            <span className='flex items-center gap-1.5 font-semibold text-slate-600'>
                                 <Clock3 size={14} />
                                 {formatTimeRange(a.time, a.endTime)}
                             </span>
@@ -221,10 +221,10 @@ function AppointmentCard({ appointment: a, onClick, onCancel, onReschedule }) {
                     </div>
                 </div>
 
-                <div className='flex flex-col gap-3 border-t border-[#E2D9C8] pt-4 sm:flex-col sm:items-end sm:justify-center sm:border-t-0 sm:pt-0'>
+                <div className='flex flex-col gap-3 border-t border-slate-100 pt-4 sm:flex-col sm:items-end sm:justify-center sm:border-t-0 sm:pt-0'>
                     <div className='flex items-center justify-between sm:justify-end w-full sm:w-auto'>
-                        <span className='text-xs text-[#68594E] sm:hidden font-medium'>Total Amount</span>
-                        <span className='font-serif text-2xl font-bold text-[#261C14]'>
+                        <span className='text-xs text-slate-500 sm:hidden font-medium'>Total Amount</span>
+                        <span className='font-serif text-2xl font-bold text-slate-900'>
                             ₱{Number(a.price).toLocaleString('en-PH')}
                         </span>
                     </div>
@@ -232,7 +232,7 @@ function AppointmentCard({ appointment: a, onClick, onCancel, onReschedule }) {
                         {onReschedule && isEditable && (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onReschedule() }}
-                                className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-xs font-bold text-amber-900 transition hover:bg-amber-100 active:scale-[0.98] whitespace-nowrap min-w-0'
+                                className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-3.5 py-2 text-xs font-bold text-amber-900 transition hover:bg-amber-100 whitespace-nowrap min-w-0'
                             >
                                 <Calendar size={14} className='shrink-0' />
                                 <span className='whitespace-nowrap'>Edit Date</span>
@@ -241,7 +241,7 @@ function AppointmentCard({ appointment: a, onClick, onCancel, onReschedule }) {
                         {onCancel && (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onCancel() }}
-                                className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1.5 rounded-xl border border-red-200 bg-white px-3.5 py-2.5 text-xs font-bold text-red-600 transition hover:bg-red-50 hover:border-red-300 active:scale-[0.98] whitespace-nowrap min-w-0'
+                                className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1.5 rounded-lg border border-red-200 bg-white px-3.5 py-2 text-xs font-bold text-red-600 transition hover:bg-red-50 hover:border-red-300 whitespace-nowrap min-w-0'
                             >
                                 <XCircle size={14} className='shrink-0' />
                                 <span className='whitespace-nowrap'>Cancel</span>
@@ -249,7 +249,7 @@ function AppointmentCard({ appointment: a, onClick, onCancel, onReschedule }) {
                         )}
                         <button
                             onClick={(e) => { e.stopPropagation(); onClick && onClick() }}
-                            className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1.5 rounded-xl border border-[#C25E2B] bg-[#C25E2B] px-3.5 py-2.5 text-xs font-bold text-white transition hover:bg-[#A84E20] active:scale-[0.98] whitespace-nowrap min-w-0'
+                            className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1.5 rounded-lg bg-[#C25E2B] px-3.5 py-2 text-xs font-bold text-white transition hover:bg-[#A84E20] whitespace-nowrap min-w-0'
                         >
                             <Eye size={14} className='shrink-0' />
                             <span className='whitespace-nowrap'>Details</span>
@@ -264,11 +264,11 @@ function AppointmentCard({ appointment: a, onClick, onCancel, onReschedule }) {
 
 function EmptyCard({ text }) {
     return (
-        <div className='rounded-xl border border-dashed border-[#E2D9C8] bg-white px-8 py-10 text-center'>
-            <div className='mx-auto grid h-12 w-12 place-items-center rounded-full bg-[#FAF7F2] text-[#C25E2B]'>
+        <div className='rounded-xl border border-dashed border-slate-300 bg-white px-8 py-10 text-center'>
+            <div className='mx-auto grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-[#C25E2B]'>
                 <CalendarDays size={22} />
             </div>
-            <p className='mt-3 text-sm font-medium text-[#68594E]'>{text}</p>
+            <p className='mt-3 text-sm font-medium text-slate-600'>{text}</p>
         </div>
     )
 }

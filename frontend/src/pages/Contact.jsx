@@ -49,17 +49,17 @@ export default function Contact() {
     }
 
     return (
-        <div className='min-h-screen bg-[#FAF7F2] text-[#261C14]'>
+        <div className='min-h-screen bg-[#F8F7F4] text-slate-900'>
             {/* Page Header */}
-            <div className='border-b border-[#E2D9C8] bg-white px-6 py-12'>
+            <div className='border-b border-slate-200 bg-white px-6 py-12'>
                 <div className='mx-auto max-w-6xl'>
-                    <span className='inline-block rounded-full bg-[#C25E2B]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
+                    <span className='inline-block rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
                         Get in Touch
                     </span>
-                    <h1 className='mt-2 font-serif text-3xl font-bold tracking-tight text-[#261C14] sm:text-5xl'>
+                    <h1 className='mt-2 font-serif text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl'>
                         We&apos;re Here to Help
                     </h1>
-                    <p className='mt-2 max-w-xl text-sm text-[#68594E] sm:text-base'>
+                    <p className='mt-2 max-w-xl text-sm text-slate-600 sm:text-base'>
                         Have a question about our grooming services or special pet handling? Send us a message and our salon team will get back to you promptly.
                     </p>
                 </div>
@@ -70,8 +70,8 @@ export default function Contact() {
 
                 {/* Details Panel */}
                 <section className='space-y-4'>
-                    <h2 className='font-serif text-xl font-bold text-[#261C14]'>Contact Details</h2>
-                    <p className='text-sm text-[#68594E]'>
+                    <h2 className='font-serif text-xl font-bold text-slate-900'>Contact Details</h2>
+                    <p className='text-sm text-slate-600'>
                         Looking to schedule an appointment? Visit our{' '}
                         <Link to='/booking' className='font-bold text-[#C25E2B] hover:underline'>Booking Page</Link>.
                     </p>
@@ -85,10 +85,10 @@ export default function Contact() {
                 </section>
 
                 {/* Contact Form Panel */}
-                <form onSubmit={submit} className='space-y-4 rounded-xl border border-[#E2D9C8] bg-white p-6 shadow-xs sm:p-8'>
+                <form onSubmit={submit} className='space-y-4 rounded-xl border border-slate-200 bg-white p-6 sm:p-8'>
                     <div>
-                        <h2 className='font-serif text-xl font-bold text-[#261C14]'>Send a Message</h2>
-                        <p className='mt-0.5 text-xs text-[#8C7A6D]'>We usually reply within one business day.</p>
+                        <h2 className='font-serif text-xl font-bold text-slate-900'>Send a Message</h2>
+                        <p className='mt-0.5 text-xs text-slate-500'>We usually reply within one business day.</p>
                     </div>
 
                     <div className='grid gap-4 sm:grid-cols-2'>
@@ -115,14 +115,14 @@ export default function Contact() {
                             maxLength={1000}
                             rows={4}
                             placeholder='Write your inquiry or question here...'
-                            className='w-full rounded-lg border border-[#E2D9C8] bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-[#C25E2B] placeholder:text-[#A8988A]'
+                            className='w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20 placeholder:text-slate-400'
                         />
-                        <p className='mt-1 text-right text-[11px] font-medium text-[#8C7A6D]'>{form.message.length}/1000</p>
+                        <p className='mt-1 text-right text-[11px] font-medium text-slate-500'>{form.message.length}/1000</p>
                     </div>
 
                     <button
                         disabled={submitting}
-                        className='inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-6 py-3 font-bold text-white shadow-xs transition hover:bg-[#A84E20] disabled:opacity-60 sm:w-auto'
+                        className='inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-6 py-3 font-bold text-white transition hover:bg-[#A84E20] disabled:opacity-60 sm:w-auto text-sm'
                     >
                         <Send size={15} />
                         <span>{submitting ? 'Sending Message...' : 'Send Message'}</span>
@@ -135,20 +135,20 @@ export default function Contact() {
 
 function InfoCard({ icon, label, text }) {
     return (
-        <div className='flex items-center gap-3.5 rounded-xl border border-[#E2D9C8] bg-white p-4 shadow-xs'>
-            <span className='grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[#FAF7F2] text-[#C25E2B]'>
+        <div className='flex items-center gap-3.5 rounded-xl border border-slate-200 bg-white p-4'>
+            <span className='grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-slate-100 text-[#C25E2B]'>
                 {createElement(icon, { size: 18 })}
             </span>
             <div>
-                <p className='text-[10px] font-bold uppercase tracking-wider text-[#8C7A6D]'>{label}</p>
-                <p className='mt-0.5 text-sm font-semibold text-[#261C14]'>{text}</p>
+                <p className='text-[10px] font-bold uppercase tracking-wider text-slate-500'>{label}</p>
+                <p className='mt-0.5 text-sm font-semibold text-slate-900'>{text}</p>
             </div>
         </div>
     )
 }
 
 function Label({ children }) {
-    return <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#68594E]'>{children}</span>
+    return <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700'>{children}</span>
 }
 
 function Field({ label, ...props }) {
@@ -157,7 +157,7 @@ function Field({ label, ...props }) {
             <Label>{label}</Label>
             <input
                 required
-                className='h-11 w-full rounded-lg border border-[#E2D9C8] bg-white px-3.5 text-sm outline-none transition focus:border-[#C25E2B] placeholder:text-[#A8988A]'
+                className='h-10 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20 placeholder:text-slate-400'
                 {...props}
             />
         </label>

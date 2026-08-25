@@ -19,6 +19,13 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const config = error.config
+        if (error.response?.status === 403 && (error.response?.data?.isBanned || error.response?.data?.message?.includes('suspended') || error.response?.data?.message?.includes('banned'))) {
+            localStorage.removeItem('token')
+            const msg = encodeURIComponent(error.response?.data?.message || 'Your customer account has been suspended by salon administration.')
+            if (window.location.pathname !== '/login') {
+                window.location.href = `/login?reason=banned&msg=${msg}`
+            }
+        }
         if (error.response?.status === 429 && config && (!config._retryCount || config._retryCount < 2)) {
             config._retryCount = (config._retryCount || 0) + 1
             const retryAfterSeconds = Number(error.response.headers?.['retry-after']) || 4
@@ -88,6 +95,7 @@ export const adminApi = {
     markContactRead: (id) => api.patch(`/admin/contacts/${id}/read`),
     deleteContact: (id) => api.delete(`/admin/contacts/${id}`),
     getUsers: () => api.get('/admin/users'),
+    updateCustomerStatus: (id, data) => api.patch(`/admin/users/${id}/status`, data),
     getNotifications: () => api.get('/admin/notifications'),
     createNotification: (data) => api.post('/admin/notifications', data)
 }

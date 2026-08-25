@@ -102,6 +102,23 @@ const userSchema = new mongoose.Schema(
             type: String,
             enum: ['user', 'admin'],
             default: 'user'
+        },
+        accountStatus: {
+            type: String,
+            enum: ['active', 'warned', 'booking_blocked', 'banned'],
+            default: 'active'
+        },
+        statusReason: {
+            type: String,
+            default: ''
+        },
+        warningMessage: {
+            type: String,
+            default: ''
+        },
+        statusUpdatedAt: {
+            type: Date,
+            default: Date.now
         }
     },
     { timestamps: true }

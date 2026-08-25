@@ -885,6 +885,41 @@ router.post(
             .optional()
     ],
     async (req, res) => {
+        // Bulletproof Account Enforcement Check: Query DB for fresh User & recent enforcement notifications
+        const freshUser = await User.findById(req.user._id).select('accountStatus statusReason warningMessage')
+        const lastNotif = await Notification.findOne({ audience: 'user', targetUser: req.user._id }).sort({ createdAt: -1 })
+
+        let isBlockedOrBanned = false
+        let reasonMsg = ''
+
+        if (freshUser && ['booking_blocked', 'banned'].includes(freshUser.accountStatus)) {
+            isBlockedOrBanned = true
+            reasonMsg = freshUser.accountStatus === 'banned'
+                ? 'Your customer account has been permanently suspended by salon administration.'
+                : `Your booking access is currently blocked by salon administration. ${freshUser.statusReason || ''}`
+        }
+
+        if (!isBlockedOrBanned && lastNotif) {
+            const title = String(lastNotif.title || '').toLowerCase()
+            if (title.includes('banned') || title.includes('suspended') || title.includes('blocked')) {
+                isBlockedOrBanned = true
+                reasonMsg = `Your booking access is currently blocked by salon administration. ${lastNotif.message || ''}`
+
+                if (freshUser) {
+                    freshUser.accountStatus = title.includes('banned') ? 'banned' : 'booking_blocked'
+                    freshUser.statusReason = lastNotif.message || ''
+                    await freshUser.save()
+                }
+            }
+        }
+
+        if (isBlockedOrBanned) {
+            return res.status(403).json({
+                success: false,
+                message: reasonMsg
+            })
+        }
+
         const errors =
             validationResult(req)
 

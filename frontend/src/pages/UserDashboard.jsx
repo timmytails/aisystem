@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-    CalendarDays, ChevronRight, Clock3, Eye,
+    AlertTriangle, Ban, CalendarDays, ChevronRight, Clock3, Eye,
     Plus, Scissors, Settings, Dog, Cat
 } from 'lucide-react'
 import toast from 'react-hot-toast'
@@ -28,7 +28,7 @@ const STATUS_STYLES = {
 }
 
 export default function UserDashboard() {
-    const { user } = useAuth()
+    const { user, refreshUser } = useAuth()
     const [appointments, setAppointments] = useState([])
     const [pets, setPets] = useState([])
     const [loading, setLoading] = useState(true)
@@ -37,11 +37,32 @@ export default function UserDashboard() {
     const [rescheduleAppointment, setRescheduleAppointment] = useState(null)
     const [cancelling, setCancelling] = useState(false)
 
+    useEffect(() => {
+        if (refreshUser) refreshUser()
+    }, [refreshUser])
+
+    useEffect(() => {
+        if (user?.accountStatus === 'banned') {
+            localStorage.removeItem('token')
+            const msg = encodeURIComponent(user.statusReason || 'Your customer account has been suspended by salon administration.')
+            if (window.location.pathname !== '/login') {
+                window.location.href = `/login?reason=banned&msg=${msg}`
+            }
+        }
+    }, [user])
+
     const loadData = () => {
         Promise.all([appointmentsApi.getMy(), petsApi.getMine()])
             .then(([ar, pr]) => {
                 setAppointments(ar.data.appointments || [])
                 setPets(pr.data.pets || [])
+            })
+            .catch((err) => {
+                if (err.response?.status === 403) {
+                    localStorage.removeItem('token')
+                    const msg = encodeURIComponent(err.response?.data?.message || 'Your customer account has been suspended by salon administration.')
+                    window.location.href = `/login?reason=banned&msg=${msg}`
+                }
             })
             .finally(() => setLoading(false))
     }
@@ -72,21 +93,21 @@ export default function UserDashboard() {
     const completedCount = appointments.filter((a) => a.status === 'completed').length
 
     return (
-        <div className='min-h-screen bg-[#FAF7F2] px-4 py-8 text-[#261C14] sm:px-6 sm:py-10'>
+        <div className='min-h-screen bg-[#F8F7F4] px-4 py-8 text-slate-900 sm:px-6 sm:py-10'>
             <div className='mx-auto max-w-6xl space-y-8'>
 
                 {/* ── Welcome Banner ── */}
-                <section className='overflow-hidden rounded-xl border border-[#E2D9C8] bg-[#2B4C3F] text-white shadow-sm'>
-                    <div className='px-5 py-6 sm:px-10 sm:py-10'>
+                <section className='overflow-hidden rounded-xl border border-slate-800 bg-[#0F172A] text-white'>
+                    <div className='px-5 py-6 sm:px-8 sm:py-8'>
                         <div className='flex flex-col justify-between gap-6 md:flex-row md:items-center'>
                             <div>
-                                <span className='mb-2 inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white/90'>
-                                    Customer Dashboard
+                                <span className='mb-2 inline-block rounded-md bg-slate-800 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
+                                    Customer Workspace
                                 </span>
-                                <h1 className='font-serif text-2xl font-bold tracking-tight sm:text-4xl'>
+                                <h1 className='font-serif text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl text-white'>
                                     Welcome back, {user.firstName}!
                                 </h1>
-                                <p className='mt-2 max-w-lg text-xs sm:text-sm text-white/80'>
+                                <p className='mt-2 max-w-lg text-xs sm:text-sm text-slate-300'>
                                     {upcoming.length
                                         ? `You have ${upcoming.length} upcoming grooming appointment${upcoming.length === 1 ? '' : 's'} scheduled.`
                                         : 'You currently have no upcoming grooming appointments.'}
@@ -96,14 +117,14 @@ export default function UserDashboard() {
                             <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:shrink-0 w-full sm:w-auto'>
                                 <Link
                                     to='/profile'
-                                    className='inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/10 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-white/20 active:scale-[0.98]'
+                                    className='inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-xs font-bold text-slate-200 transition hover:bg-slate-700 hover:text-white'
                                 >
                                     <Settings size={15} />
                                     <span>Profile Settings</span>
                                 </Link>
                                 <Link
                                     to='/booking'
-                                    className='inline-flex items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-[#A84E20] active:scale-[0.98]'
+                                    className='inline-flex items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#A84E20]'
                                 >
                                     <Plus size={16} />
                                     <span>Book Appointment</span>
@@ -113,19 +134,47 @@ export default function UserDashboard() {
                     </div>
                 </section>
 
+                {/* Account Enforcement Status Banner */}
+                {user?.accountStatus === 'warned' && (
+                    <div className='rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950 flex items-start gap-3 shadow-xs'>
+                        <AlertTriangle className='h-5 w-5 shrink-0 text-amber-600 mt-0.5' />
+                        <div className='space-y-1'>
+                            <p className='font-bold text-amber-900 text-sm'>Account Policy Notice</p>
+                            <p className='text-amber-800 leading-relaxed'>
+                                {user.warningMessage || user.statusReason || 'You have received a formal warning regarding multiple booking cancellations or no-show policy violations. Please attend scheduled appointments on time.'}
+                            </p>
+                        </div>
+                    </div>
+                )}
+
+                {(user?.accountStatus === 'booking_blocked' || user?.accountStatus === 'banned') && (
+                    <div className='rounded-xl border border-red-300 bg-red-50 p-5 text-xs text-red-950 flex items-start gap-3 shadow-md'>
+                        <Ban className='h-6 w-6 shrink-0 text-red-600 mt-0.5' />
+                        <div className='space-y-1.5'>
+                            <p className='font-bold text-red-900 text-base'>Booking Privileges Suspended</p>
+                            <p className='text-red-800 leading-relaxed text-sm'>
+                                {user.statusReason || user.warningMessage || 'Your customer account has been blocked from scheduling new grooming appointments by salon administration due to repeated cancellations or policy violations.'}
+                            </p>
+                            <p className='text-xs font-semibold text-red-900 pt-1'>
+                                Contact TimmyTails salon support at +63 975 669 2647 for assistance.
+                            </p>
+                        </div>
+                    </div>
+                )}
+
                 {/* ── Metric Cards ── */}
                 <section className='grid gap-4 sm:grid-cols-3'>
                     <StatCard icon={CalendarDays} label='Upcoming Bookings' value={upcoming.length} accent='#C25E2B' />
-                    <StatCard icon={Dog} label='Saved Pets' value={pets.length} accent='#2B4C3F' />
-                    <StatCard icon={Scissors} label='Completed Groomings' value={completedCount} accent='#68594E' />
+                    <StatCard icon={Dog} label='Saved Pets' value={pets.length} accent='#0F172A' />
+                    <StatCard icon={Scissors} label='Completed Groomings' value={completedCount} accent='#475569' />
                 </section>
 
                 {/* ── Upcoming Appointments Section ── */}
                 <section>
-                    <div className='mb-4 flex items-center justify-between border-b border-[#E2D9C8] pb-3'>
+                    <div className='mb-4 flex items-center justify-between border-b border-slate-200 pb-3'>
                         <div className='flex items-center gap-2'>
                             <CalendarDays size={18} className='text-[#C25E2B]' />
-                            <h2 className='font-serif text-xl font-bold text-[#261C14]'>Upcoming Appointments</h2>
+                            <h2 className='font-serif text-xl font-bold text-slate-900'>Upcoming Appointments</h2>
                         </div>
                         <Link
                             to='/appointments'
@@ -146,16 +195,16 @@ export default function UserDashboard() {
                                     <article
                                         key={a._id}
                                         onClick={() => setSelectedAppointment(a)}
-                                        className='group relative cursor-pointer overflow-hidden rounded-xl border border-[#E2D9C8] bg-white p-5 shadow-xs transition hover:border-[#C25E2B]/60 hover:shadow-sm'
+                                        className='group cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white p-5 transition hover:border-slate-300'
                                     >
                                         <div className='flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
                                             <div className='flex items-center gap-4'>
                                                 {/* Pet Photo / Avatar */}
-                                                <div className='h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-[#E2D9C8] bg-[#F4EFE6]'>
+                                                <div className='h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100'>
                                                     {petPhoto ? (
                                                         <img src={petPhoto} alt={a.petName} className='h-full w-full object-cover' />
                                                     ) : (
-                                                        <div className='flex h-full w-full items-center justify-center text-[#8C7A6D]'>
+                                                        <div className='flex h-full w-full items-center justify-center text-slate-400'>
                                                             {a.petType === 'cat' ? <Cat size={22} /> : <Dog size={22} />}
                                                         </div>
                                                     )}
@@ -163,17 +212,17 @@ export default function UserDashboard() {
 
                                                 <div>
                                                     <div className='flex flex-wrap items-center gap-2'>
-                                                        <h3 className='font-serif text-lg font-bold text-[#261C14] group-hover:text-[#C25E2B] transition-colors'>
+                                                        <h3 className='font-serif text-lg font-bold text-slate-900 group-hover:text-[#C25E2B] transition-colors'>
                                                             {a.petName}
                                                         </h3>
                                                         <StatusPill status={a.status} />
                                                     </div>
-                                                    <p className='mt-0.5 text-xs font-medium text-[#68594E]'>
+                                                    <p className='mt-0.5 text-xs font-medium text-slate-600'>
                                                         {a.service}{a.haircutStyle ? ` · Style: ${a.haircutStyle}` : ''}
                                                     </p>
                                                     <div className='mt-2 flex flex-wrap items-center gap-4 text-xs font-bold text-[#C25E2B]'>
                                                         <span>{formatDateLong(a.date)}</span>
-                                                        <span className='flex items-center gap-1 font-semibold text-[#68594E]'>
+                                                        <span className='flex items-center gap-1 font-semibold text-slate-600'>
                                                             <Clock3 size={13} />
                                                             {formatTimeRange(a.time, a.endTime)}
                                                         </span>
@@ -181,11 +230,11 @@ export default function UserDashboard() {
                                                 </div>
                                             </div>
 
-                                            <div className='flex items-center justify-between border-t border-[#E2D9C8] pt-3 sm:flex-col sm:items-end sm:border-t-0 sm:pt-0'>
-                                                <span className='font-serif text-xl font-bold text-[#261C14]'>
+                                            <div className='flex items-center justify-between border-t border-slate-100 pt-3 sm:flex-col sm:items-end sm:border-t-0 sm:pt-0'>
+                                                <span className='font-serif text-xl font-bold text-slate-900'>
                                                     ₱{Number(a.price).toLocaleString('en-PH')}
                                                 </span>
-                                                <span className='inline-flex items-center gap-1 rounded-md border border-[#E2D9C8] bg-[#FAF7F2] px-3 py-1 text-xs font-bold text-[#C25E2B] group-hover:bg-[#C25E2B] group-hover:text-white group-hover:border-[#C25E2B] transition'>
+                                                <span className='inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700 group-hover:bg-[#C25E2B] group-hover:text-white group-hover:border-[#C25E2B] transition'>
                                                     <Eye size={13} />
                                                     <span>View Details</span>
                                                 </span>
@@ -202,10 +251,10 @@ export default function UserDashboard() {
 
                 {/* ── My Pets Overview Section ── */}
                 <section>
-                    <div className='mb-4 flex items-center justify-between border-b border-[#E2D9C8] pb-3'>
+                    <div className='mb-4 flex items-center justify-between border-b border-slate-200 pb-3'>
                         <div className='flex items-center gap-2'>
                             <Dog size={18} className='text-[#C25E2B]' />
-                            <h2 className='font-serif text-xl font-bold text-[#261C14]'>My Pets</h2>
+                            <h2 className='font-serif text-xl font-bold text-slate-900'>My Pets</h2>
                         </div>
                         <Link
                             to='/my-pets'
@@ -220,20 +269,20 @@ export default function UserDashboard() {
                         {pets.slice(0, 5).map((pet) => (
                             <article
                                 key={pet._id}
-                                className='group flex items-center gap-3.5 rounded-xl border border-[#E2D9C8] bg-white p-4 shadow-xs transition hover:border-[#C25E2B]/50'
+                                className='group flex items-center gap-3.5 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-slate-300'
                             >
-                                <div className='h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-[#E2D9C8] bg-[#F4EFE6]'>
+                                <div className='h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100'>
                                     {pet.photoUrl ? (
                                         <img src={pet.photoUrl} alt={pet.name} className='h-full w-full object-cover' />
                                     ) : (
-                                        <div className='flex h-full w-full items-center justify-center text-[#8C7A6D]'>
+                                        <div className='flex h-full w-full items-center justify-center text-slate-400'>
                                             {pet.type === 'cat' ? <Cat size={22} /> : <Dog size={22} />}
                                         </div>
                                     )}
                                 </div>
                                 <div className='min-w-0 flex-1'>
-                                    <h3 className='truncate font-serif text-base font-bold text-[#261C14]'>{pet.name}</h3>
-                                    <p className='truncate text-xs text-[#68594E]'>
+                                    <h3 className='truncate font-serif text-base font-bold text-slate-900'>{pet.name}</h3>
+                                    <p className='truncate text-xs text-slate-600'>
                                         {pet.type === 'cat' ? 'Cat' : 'Dog'} · {pet.breed}
                                     </p>
                                 </div>
@@ -242,7 +291,7 @@ export default function UserDashboard() {
 
                         <Link
                             to='/my-pets'
-                            className='group flex min-h-[72px] items-center justify-center rounded-xl border border-dashed border-[#E2D9C8] bg-[#FAF7F2] p-4 text-center transition hover:border-[#C25E2B] hover:bg-white'
+                            className='group flex min-h-[72px] items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-center transition hover:border-[#C25E2B] hover:bg-white'
                         >
                             <div className='flex items-center gap-2 text-xs font-bold text-[#C25E2B]'>
                                 <Plus size={16} />
@@ -289,14 +338,14 @@ export default function UserDashboard() {
 
 function StatCard({ icon: Icon, label, value, accent }) {
     return (
-        <div className='rounded-xl border border-[#E2D9C8] bg-white p-5 shadow-xs'>
+        <div className='rounded-xl border border-slate-200 bg-white p-5'>
             <div className='flex items-center justify-between'>
-                <span className='text-xs font-bold uppercase tracking-wider text-[#68594E]'>{label}</span>
-                <span className='grid h-9 w-9 place-items-center rounded-lg bg-[#FAF7F2]' style={{ color: accent }}>
+                <span className='text-xs font-bold uppercase tracking-wider text-slate-500'>{label}</span>
+                <span className='grid h-9 w-9 place-items-center rounded-lg bg-slate-100' style={{ color: accent }}>
                     <Icon size={18} />
                 </span>
             </div>
-            <p className='mt-2 font-serif text-3xl font-bold text-[#261C14]'>{value}</p>
+            <p className='mt-2 font-serif text-3xl font-bold text-slate-900'>{value}</p>
         </div>
     )
 }
@@ -305,7 +354,7 @@ function StatusPill({ status }) {
     const s = STATUS_STYLES[status] ?? STATUS_STYLES.pending
     const label = status === 'confirmed' ? 'Approved' : status === 'completed' ? 'Completed' : status === 'cancelled' ? 'Cancelled' : 'Pending'
     return (
-        <span className={`rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${s.pill}`}>
+        <span className={`rounded-md border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${s.pill}`}>
             {label}
         </span>
     )
@@ -313,7 +362,7 @@ function StatusPill({ status }) {
 
 function LoadingCard({ text }) {
     return (
-        <div className='rounded-xl border border-[#E2D9C8] bg-white p-8 text-center text-sm font-medium text-[#68594E]'>
+        <div className='rounded-xl border border-slate-200 bg-white p-8 text-center text-sm font-medium text-slate-600'>
             {text}
         </div>
     )
@@ -321,15 +370,15 @@ function LoadingCard({ text }) {
 
 function EmptyAppointments() {
     return (
-        <div className='rounded-xl border border-dashed border-[#E2D9C8] bg-white p-10 text-center'>
-            <div className='mx-auto grid h-12 w-12 place-items-center rounded-full bg-[#FAF7F2] text-[#C25E2B]'>
+        <div className='rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center'>
+            <div className='mx-auto grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-[#C25E2B]'>
                 <CalendarDays size={24} />
             </div>
-            <h3 className='mt-3 font-serif text-lg font-bold text-[#261C14]'>No Upcoming Appointments</h3>
-            <p className='mt-1 text-xs text-[#68594E]'>Schedule a grooming session for your pet whenever you are ready.</p>
+            <h3 className='mt-3 font-serif text-lg font-bold text-slate-900'>No Upcoming Appointments</h3>
+            <p className='mt-1 text-xs text-slate-600'>Schedule a grooming session for your pet whenever you are ready.</p>
             <Link
                 to='/booking'
-                className='mt-4 inline-flex items-center gap-2 rounded-lg bg-[#C25E2B] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-[#A84E20]'
+                className='mt-4 inline-flex items-center gap-2 rounded-lg bg-[#C25E2B] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#A84E20]'
             >
                 <Plus size={15} />
                 <span>Book Appointment</span>

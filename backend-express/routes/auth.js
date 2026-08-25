@@ -210,7 +210,11 @@ const serializeUser = (user) => {
         profileImage: user.profileImage || '',
         profileCompleted: Boolean(user.profileCompleted),
         authProvider: user.authProvider,
-        role: user.role
+        role: user.role,
+        accountStatus: user.accountStatus || 'active',
+        statusReason: user.statusReason || '',
+        warningMessage: user.warningMessage || '',
+        statusUpdatedAt: user.statusUpdatedAt || user.createdAt
     }
 }
 
@@ -522,18 +526,39 @@ router.post(
                     profileCompleted: false
                 })
             } else {
-                user.googleId = payload.sub
-                user.email = email
-                user.profileImage =
-                    user.profileImage ||
-                    payload.picture ||
-                    ''
+                await User.findByIdAndUpdate(user._id, {
+                    $set: {
+                        googleId: payload.sub,
+                        email,
+                        profileImage: user.profileImage || payload.picture || '',
+                        authProvider: user.authProvider === 'phone' ? 'phone' : 'google'
+                    }
+                })
+            }
 
-                if (user.authProvider !== 'phone') {
-                    user.authProvider = 'google'
+            // Fresh check from DB for accountStatus & enforcement notifications
+            const freshUser = await User.findById(user._id).select('accountStatus statusReason warningMessage')
+            const Notification = require('../models/Notification')
+            const lastNotif = await Notification.findOne({ audience: 'user', targetUser: user._id }).sort({ createdAt: -1 })
+
+            let isBanned = freshUser?.accountStatus === 'banned'
+            let banReason = freshUser?.statusReason || ''
+
+            if (!isBanned && lastNotif) {
+                const title = String(lastNotif.title || '').toLowerCase()
+                if (title.includes('banned')) {
+                    isBanned = true
+                    banReason = lastNotif.message || ''
+                    await User.findByIdAndUpdate(user._id, { accountStatus: 'banned', statusReason: banReason })
                 }
+            }
 
-                await user.save()
+            if (isBanned) {
+                return res.status(403).json({
+                    success: false,
+                    isBanned: true,
+                    message: `Your customer account has been permanently suspended by salon administration. ${banReason ? `Reason: ${banReason}` : ''}`
+                })
             }
 
             res.json({
@@ -579,6 +604,30 @@ router.post(
                 return res.status(401).json({
                     success: false,
                     message: 'Invalid email, phone number, or password'
+                })
+            }
+
+            const freshUser = await User.findById(user._id).select('accountStatus statusReason warningMessage')
+            const Notification = require('../models/Notification')
+            const lastNotif = await Notification.findOne({ audience: 'user', targetUser: user._id }).sort({ createdAt: -1 })
+
+            let isBanned = freshUser?.accountStatus === 'banned'
+            let banReason = freshUser?.statusReason || ''
+
+            if (!isBanned && lastNotif) {
+                const title = String(lastNotif.title || '').toLowerCase()
+                if (title.includes('banned')) {
+                    isBanned = true
+                    banReason = lastNotif.message || ''
+                    await User.findByIdAndUpdate(user._id, { accountStatus: 'banned', statusReason: banReason })
+                }
+            }
+
+            if (isBanned) {
+                return res.status(403).json({
+                    success: false,
+                    isBanned: true,
+                    message: `Your customer account has been permanently suspended by salon administration. ${banReason ? `Reason: ${banReason}` : ''}`
                 })
             }
 

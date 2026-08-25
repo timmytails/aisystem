@@ -282,10 +282,10 @@ router.use(protect, adminOnly)
 router.get('/users', async (req, res) => {
     try {
         const users = await User.find({
-            role: 'user'
+            role: { $ne: 'admin' }
         })
             .select(
-                '_id firstName lastName email phone address homeAddress createdAt'
+                '_id firstName lastName email phone address homeAddress createdAt accountStatus statusReason warningMessage statusUpdatedAt'
             )
             .sort({
                 firstName: 1,
@@ -409,8 +409,41 @@ router.get('/users', async (req, res) => {
                 {}
             )
 
-        const customerRecords =
-            users.map((user) => {
+        const customerRecords = await Promise.all(
+            users.map(async (user) => {
+                let status = user.accountStatus && user.accountStatus !== 'active' ? user.accountStatus : 'active'
+                let reason = user.statusReason || ''
+
+                // Check most recent notification sent to this user
+                const lastNotif = await Notification.findOne({
+                    targetUser: user._id
+                }).sort({ createdAt: -1 })
+
+                if (lastNotif) {
+                    const text = (String(lastNotif.title || '') + ' ' + String(lastNotif.message || '')).toLowerCase()
+
+                    if (text.includes('banned') || text.includes('ban account')) {
+                        status = 'banned'
+                        reason = lastNotif.message || reason
+                    } else if (text.includes('suspended') || text.includes('blocked') || text.includes('booking access')) {
+                        status = 'booking_blocked'
+                        reason = lastNotif.message || reason
+                    } else if (text.includes('warning') || text.includes('warned')) {
+                        status = 'warned'
+                        reason = lastNotif.message || reason
+                    } else if (text.includes('restored') || text.includes('privileges restored')) {
+                        status = 'active'
+                        reason = ''
+                    }
+
+                    if (user.accountStatus !== status) {
+                        await User.findByIdAndUpdate(user._id, {
+                            accountStatus: status,
+                            statusReason: reason
+                        }).catch(() => {})
+                    }
+                }
+
                 const summary =
                     summariesByUser[
                         String(user._id)
@@ -423,6 +456,8 @@ router.get('/users', async (req, res) => {
 
                 return {
                     ...user,
+                    accountStatus: status,
+                    statusReason: reason,
                     pets:
                         petsByOwner[
                             String(user._id)
@@ -437,6 +472,7 @@ router.get('/users', async (req, res) => {
                         summary.lastVisit
                 }
             })
+        )
 
         res.json({
             success: true,
@@ -451,6 +487,86 @@ router.get('/users', async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'Server error'
+        })
+    }
+})
+
+// ─────────────────────────────────────────────────────────────
+// PATCH /api/admin/users/:id/status
+// ─────────────────────────────────────────────────────────────
+
+router.patch('/users/:id/status', async (req, res) => {
+    const { accountStatus, statusReason, warningMessage } = req.body
+
+    const validStatuses = ['active', 'warned', 'booking_blocked', 'banned']
+    if (!accountStatus || !validStatuses.includes(accountStatus)) {
+        return res.status(400).json({
+            success: false,
+            message: 'Invalid account status option'
+        })
+    }
+
+    try {
+        const user = await User.findByIdAndUpdate(
+            req.params.id,
+            {
+                $set: {
+                    accountStatus: accountStatus,
+                    statusReason: statusReason || warningMessage || '',
+                    warningMessage: warningMessage || statusReason || '',
+                    statusUpdatedAt: new Date()
+                }
+            },
+            { new: true, runValidators: false }
+        )
+
+        // Create in-app Notification for the customer if warned, blocked, banned, or unblocked
+        if (['warned', 'booking_blocked', 'banned', 'active'].includes(accountStatus)) {
+            let notifTitle = 'Account Status Update'
+            let notifMessage = statusReason || warningMessage || 'Your account status has been updated by salon administration.'
+
+            if (accountStatus === 'warned') {
+                notifTitle = '⚠️ Formal Warning Issued'
+                notifMessage = warningMessage || statusReason || 'You have received a formal warning regarding multiple booking cancellations or no-show policy violations.'
+            } else if (accountStatus === 'booking_blocked') {
+                notifTitle = '⛔ Booking Access Suspended'
+                notifMessage = statusReason || warningMessage || 'Your booking privileges have been suspended due to policy violations.'
+            } else if (accountStatus === 'banned') {
+                notifTitle = '🚫 Account Banned'
+                notifMessage = statusReason || warningMessage || 'Your customer account has been permanently suspended due to terms violations.'
+            } else if (accountStatus === 'active') {
+                notifTitle = '✅ Account Privileges Restored'
+                notifMessage = 'Your customer account status is active. You may now book appointments.'
+            }
+
+            await Notification.create({
+                title: notifTitle,
+                message: notifMessage,
+                audience: 'user',
+                targetUser: user._id,
+                type: 'appointment-status',
+                createdBy: req.user._id
+            })
+        }
+
+        res.json({
+            success: true,
+            message: `Customer status updated to ${accountStatus}`,
+            user: {
+                _id: user._id,
+                firstName: user.firstName,
+                lastName: user.lastName,
+                accountStatus: user.accountStatus,
+                statusReason: user.statusReason,
+                warningMessage: user.warningMessage,
+                statusUpdatedAt: user.statusUpdatedAt
+            }
+        })
+    } catch (error) {
+        console.error('Update customer status error:', error)
+        res.status(500).json({
+            success: false,
+            message: 'Server error updating customer status'
         })
     }
 })
@@ -1534,18 +1650,33 @@ router.post('/notifications', async (req, res) => {
                 })
             }
 
-            recipient = await User.findOne({
-                _id: targetUser,
-                role: 'user'
-            }).select(
-                '_id firstName lastName email'
-            )
+            recipient = await User.findById(targetUser)
 
             if (!recipient) {
                 return res.status(404).json({
                     success: false,
                     message: 'Selected user was not found'
                 })
+            }
+
+            // Sync recipient accountStatus in MongoDB if title indicates an enforcement action
+            const lowerTitle = cleanTitle.toLowerCase()
+            if (lowerTitle.includes('banned')) {
+                recipient.accountStatus = 'banned'
+                recipient.statusReason = cleanMessage
+                await recipient.save()
+            } else if (lowerTitle.includes('suspended') || lowerTitle.includes('blocked')) {
+                recipient.accountStatus = 'booking_blocked'
+                recipient.statusReason = cleanMessage
+                await recipient.save()
+            } else if (lowerTitle.includes('warning')) {
+                recipient.accountStatus = 'warned'
+                recipient.statusReason = cleanMessage
+                await recipient.save()
+            } else if (lowerTitle.includes('restored') || lowerTitle.includes('active')) {
+                recipient.accountStatus = 'active'
+                recipient.statusReason = ''
+                await recipient.save()
             }
         }
 
