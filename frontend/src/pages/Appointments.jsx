@@ -221,15 +221,18 @@ function AppointmentCard({ appointment: a, onClick, onCancel, onReschedule }) {
                     </div>
                 </div>
 
-                <div className='flex items-center justify-between border-t border-[#E2D9C8] pt-4 sm:flex-col sm:items-end sm:justify-center sm:border-t-0 sm:pt-0 gap-3'>
-                    <span className='font-serif text-2xl font-bold text-[#261C14]'>
-                        ₱{Number(a.price).toLocaleString('en-PH')}
-                    </span>
-                    <div className='flex items-center gap-2'>
+                <div className='flex flex-col gap-3 border-t border-[#E2D9C8] pt-4 sm:flex-col sm:items-end sm:justify-center sm:border-t-0 sm:pt-0'>
+                    <div className='flex items-center justify-between sm:justify-end w-full sm:w-auto'>
+                        <span className='text-xs text-[#68594E] sm:hidden font-medium'>Total Amount</span>
+                        <span className='font-serif text-2xl font-bold text-[#261C14]'>
+                            ₱{Number(a.price).toLocaleString('en-PH')}
+                        </span>
+                    </div>
+                    <div className='flex flex-wrap items-center gap-2 justify-end w-full sm:w-auto'>
                         {onReschedule && isEditable && (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onReschedule() }}
-                                className='inline-flex items-center gap-1 rounded-lg border border-amber-300 bg-amber-50 px-3 py-1.5 text-xs font-bold text-amber-900 transition hover:bg-amber-100'
+                                className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1 rounded-lg border border-amber-300 bg-amber-50 px-3 py-2 text-xs font-bold text-amber-900 transition hover:bg-amber-100 active:scale-[0.98]'
                             >
                                 <Calendar size={13} />
                                 <span>Edit Date</span>
@@ -238,13 +241,13 @@ function AppointmentCard({ appointment: a, onClick, onCancel, onReschedule }) {
                         {onCancel && (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onCancel() }}
-                                className='inline-flex items-center gap-1 rounded-lg border border-red-200 bg-white px-3 py-1.5 text-xs font-bold text-red-600 transition hover:bg-red-50 hover:border-red-300'
+                                className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1 rounded-lg border border-red-200 bg-white px-3 py-2 text-xs font-bold text-red-600 transition hover:bg-red-50 hover:border-red-300 active:scale-[0.98]'
                             >
                                 <XCircle size={14} />
                                 <span>Cancel</span>
                             </button>
                         )}
-                        <span className='inline-flex items-center gap-1 rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] px-3 py-1.5 text-xs font-bold text-[#C25E2B] transition group-hover:bg-[#C25E2B] group-hover:text-white group-hover:border-[#C25E2B]'>
+                        <span className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1 rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] px-3 py-2 text-xs font-bold text-[#C25E2B] transition group-hover:bg-[#C25E2B] group-hover:text-white group-hover:border-[#C25E2B] active:scale-[0.98]'>
                             <Eye size={13} />
                             <span>Details</span>
                             <ChevronRight size={13} />

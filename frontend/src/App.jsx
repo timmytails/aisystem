@@ -23,7 +23,9 @@ import ForgotPassword from './pages/ForgotPassword'
 import PrivacyPolicy from './pages/PrivacyPolicy'
 import TermsOfService from './pages/TermsOfService'
 import { useAuth } from './context/AuthContext'
-import { warmupBackendServer } from './utils/api'
+import { appointmentsApi, warmupBackendServer } from './utils/api'
+
+import BottomNav from './components/BottomNav'
 
 const publicFooterRoutes = new Set([
     '/',
@@ -39,10 +41,11 @@ function AppLayout() {
     const showFooter = publicFooterRoutes.has(location.pathname)
 
     return (
-        <div className='min-h-screen bg-[#FAF7F2] text-[#261C14] antialiased selection:bg-[#C25E2B] selection:text-white'>
+        <div className='min-h-screen bg-[#FAF7F2] text-[#261C14] antialiased selection:bg-[#C25E2B] selection:text-white pb-16 md:pb-0'>
             <Header />
             <main><Outlet /></main>
             {showFooter && <Footer />}
+            <BottomNav />
         </div>
     )
 }
@@ -67,6 +70,9 @@ export default function App() {
     useEffect(() => {
         // Trigger silent background health check to wake up Render free tier container immediately on app mount
         warmupBackendServer()
+
+        // Prefetch grooming services in background so booking loads instantly
+        appointmentsApi.getServices().catch(() => {})
 
         // Send a heartbeat ping every 4 minutes to keep Render backend container warm while user browses
         const interval = setInterval(() => {

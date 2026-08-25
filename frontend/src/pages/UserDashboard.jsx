@@ -77,33 +77,33 @@ export default function UserDashboard() {
 
                 {/* ── Welcome Banner ── */}
                 <section className='overflow-hidden rounded-xl border border-[#E2D9C8] bg-[#2B4C3F] text-white shadow-sm'>
-                    <div className='px-6 py-8 sm:px-10 sm:py-10'>
+                    <div className='px-5 py-6 sm:px-10 sm:py-10'>
                         <div className='flex flex-col justify-between gap-6 md:flex-row md:items-center'>
                             <div>
                                 <span className='mb-2 inline-block rounded-full bg-white/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-white/90'>
                                     Customer Dashboard
                                 </span>
-                                <h1 className='font-serif text-3xl font-bold tracking-tight sm:text-4xl'>
+                                <h1 className='font-serif text-2xl font-bold tracking-tight sm:text-4xl'>
                                     Welcome back, {user.firstName}!
                                 </h1>
-                                <p className='mt-2 max-w-lg text-sm text-white/80'>
+                                <p className='mt-2 max-w-lg text-xs sm:text-sm text-white/80'>
                                     {upcoming.length
                                         ? `You have ${upcoming.length} upcoming grooming appointment${upcoming.length === 1 ? '' : 's'} scheduled.`
                                         : 'You currently have no upcoming grooming appointments.'}
                                 </p>
                             </div>
 
-                            <div className='flex flex-wrap items-center gap-3 sm:shrink-0'>
+                            <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:shrink-0 w-full sm:w-auto'>
                                 <Link
                                     to='/profile'
-                                    className='inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/10 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-white/20'
+                                    className='inline-flex items-center justify-center gap-2 rounded-lg border border-white/30 bg-white/10 px-4 py-2.5 text-xs font-bold text-white transition hover:bg-white/20 active:scale-[0.98]'
                                 >
                                     <Settings size={15} />
                                     <span>Profile Settings</span>
                                 </Link>
                                 <Link
                                     to='/booking'
-                                    className='inline-flex items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-[#A84E20]'
+                                    className='inline-flex items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-5 py-2.5 text-xs font-bold text-white shadow-xs transition hover:bg-[#A84E20] active:scale-[0.98]'
                                 >
                                     <Plus size={16} />
                                     <span>Book Appointment</span>

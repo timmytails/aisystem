@@ -37,10 +37,10 @@ export default function AppointmentDetailsModal({ appointment, onClose, onCancel
 
     return (
         <div
-            className='fixed inset-0 z-[80] grid place-items-center bg-black/60 p-4 animate-in fade-in duration-150'
+            className='fixed inset-0 z-[80] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150 overflow-y-auto'
             onMouseDown={(e) => { if (e.target === e.currentTarget) onClose() }}
         >
-            <div className='w-full max-w-lg max-h-[85vh] overflow-y-auto rounded-2xl bg-white p-5 sm:p-6 shadow-xl border border-[#eadcc9] space-y-4 text-[#201711]'>
+            <div className='w-full max-w-lg max-h-[90vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl bg-white p-5 sm:p-6 shadow-xl border border-[#eadcc9] space-y-4 text-[#201711] pb-safe'>
                 {/* Header */}
                 <div className='flex items-start justify-between border-b border-[#eadcc9] pb-3.5 gap-3'>
                     <div>

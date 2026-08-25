@@ -100,4 +100,25 @@ button:focus-visible {
     background: #B8A995;
 }
 
+/* Mobile Scrollbar & Utility Helpers */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+.no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.pb-safe {
+    padding-bottom: calc(1rem + env(safe-area-inset-bottom, 0px));
+}
+
+@media (max-width: 767px) {
+    /* Touch optimization */
+    input, select, textarea, button {
+        font-size: 16px; /* Prevents auto-zoom on iOS Safari */
+    }
+}
+
+
 

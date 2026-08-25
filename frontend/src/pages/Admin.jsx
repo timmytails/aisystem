@@ -1404,12 +1404,12 @@ function BookingsView({
     return (
         <div>
             <div className='mb-4 flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between'>
-                <div className='flex items-center gap-1 rounded-xl border border-[#e0d3c3] bg-white p-1 shadow-xs'>
+                <div className='flex items-center gap-1 overflow-x-auto no-scrollbar rounded-xl border border-[#e0d3c3] bg-white p-1 shadow-xs w-full xl:w-auto'>
                     {BOOKING_FILTERS.map((item) => (
                         <button
                             key={item.id || 'all'}
                             onClick={() => onFilter(item.id)}
-                            className={`rounded-lg px-3.5 py-1.5 text-xs font-semibold transition ${
+                            className={`shrink-0 rounded-lg px-3 py-1.5 text-xs font-semibold transition ${
                                 filter === item.id
                                     ? 'bg-[#1c3329] text-white shadow-xs'
                                     : 'text-[#5f4637] hover:bg-[#f5ede3]'

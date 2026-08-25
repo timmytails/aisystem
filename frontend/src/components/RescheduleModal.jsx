@@ -115,10 +115,10 @@ export default function RescheduleModal({
 
     return (
         <div
-            className='fixed inset-0 z-[100] grid place-items-center bg-black/60 p-4 animate-in fade-in duration-150 overflow-y-auto'
+            className='fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150 overflow-y-auto'
             onMouseDown={(e) => { if (e.target === e.currentTarget && !submitting) onClose() }}
         >
-            <div className='w-full max-w-md overflow-hidden rounded-3xl bg-white p-5 sm:p-6 shadow-2xl border border-[#eadcc9] space-y-4 text-[#201711] my-auto'>
+            <div className='w-full max-w-md max-h-[90vh] overflow-y-auto rounded-t-3xl sm:rounded-3xl bg-white p-5 sm:p-6 shadow-2xl border border-[#eadcc9] space-y-4 text-[#201711] my-0 sm:my-auto pb-safe'>
                 {/* Header */}
                 <div className='flex items-center gap-3 border-b border-[#eadcc9] pb-3.5'>
                     <span className='grid h-10 w-10 shrink-0 place-items-center rounded-2xl bg-[#fff2ec] text-[#bf5a31] border border-[#e8d2c2] shadow-xs'>

@@ -236,16 +236,13 @@ export default function MyPets() {
 
             {/* Pet Form Modal */}
             {open && (
-                <div
-                    className='fixed inset-0 z-[70] grid place-items-center bg-black/50 p-4 backdrop-blur-xs'
-                    onMouseDown={(e) => { if (e.target === e.currentTarget) setOpen(false) }}
-                >
+                <div className='fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/50 backdrop-blur-xs overflow-y-auto'>
                     <form
                         onSubmit={save}
-                        className='w-full max-w-lg rounded-xl border border-[#E2D9C8] bg-white p-6 shadow-xl sm:p-8'
+                        className='relative w-full max-w-lg rounded-t-2xl sm:rounded-xl border border-[#E2D9C8] bg-white p-5 sm:p-6 shadow-xl max-h-[90vh] overflow-y-auto pb-safe'
                     >
                         <div className='mb-6 flex items-center justify-between border-b border-[#E2D9C8] pb-4'>
-                            <h2 className='font-serif text-2xl font-bold text-[#261C14]'>
+                            <h2 className='font-serif text-xl font-bold text-[#261C14]'>
                                 {editingId ? 'Edit Pet Profile' : 'Add New Pet'}
                             </h2>
                             <button

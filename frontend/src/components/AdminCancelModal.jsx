@@ -34,10 +34,10 @@ export default function AdminCancelModal({
 
     return (
         <div
-            className='fixed inset-0 z-[100] grid place-items-center bg-black/60 p-4 animate-in fade-in duration-150'
+            className='fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-150 overflow-y-auto'
             onMouseDown={(e) => { if (e.target === e.currentTarget && !loading) onClose() }}
         >
-            <div className='w-full max-w-md overflow-hidden rounded-2xl bg-white p-5 shadow-xl border border-[#eadcc9] space-y-4 text-[#201711]'>
+            <div className='w-full max-w-md max-h-[90vh] overflow-y-auto rounded-t-2xl sm:rounded-2xl bg-white p-5 shadow-xl border border-[#eadcc9] space-y-4 text-[#201711] pb-safe sm:pb-5'>
                 {/* Header */}
                 <div className='flex items-center gap-3 border-b border-[#eadcc9] pb-3'>
                     <span className='grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-red-50 text-red-600 border border-red-200'>
