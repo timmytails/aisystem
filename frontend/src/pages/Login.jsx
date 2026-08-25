@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Eye, EyeOff, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
-import { getErrorMessage } from '../utils/api'
+import { getErrorMessage, warmupBackendServer } from '../utils/api'
 import { consumeReturnTo, peekReturnTo, rememberReturnTo, resolvePostLoginRoute } from '../utils/authRouting'
 import GoogleSignInButton from '../features/auth/components/GoogleSignInButton'
 import loginImage from '../assets/images/login-groomer.png'
@@ -17,6 +17,11 @@ export default function Login() {
     const { login, googleLogin } = useAuth()
     const location = useLocation()
     const navigate = useNavigate()
+
+    useEffect(() => {
+        // Pre-warm backend container as soon as user opens Login page
+        warmupBackendServer()
+    }, [])
 
     const requestedReturnTo = useMemo(() => {
         const statePath = location.state?.returnTo || location.state?.from

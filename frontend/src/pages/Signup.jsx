@@ -1,9 +1,9 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { ArrowLeft, Loader2 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
-import { getErrorMessage } from '../utils/api'
+import { getErrorMessage, warmupBackendServer } from '../utils/api'
 import { normalizePhilippinePhone } from '../utils/phone'
 import PhoneField from '../components/PhoneField'
 import { consumeReturnTo, peekReturnTo, rememberReturnTo, resolvePostLoginRoute } from '../utils/authRouting'
@@ -21,6 +21,10 @@ export default function Signup() {
     const [otpTimer, setOtpTimer] = useState(0)
     const [step, setStep] = useState('details')
     const [submitting, setSubmitting] = useState(false)
+
+    useEffect(() => {
+        warmupBackendServer()
+    }, [])
 
     useEffect(() => {
         if (otpTimer <= 0) return
