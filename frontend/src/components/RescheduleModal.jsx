@@ -218,7 +218,7 @@ export default function RescheduleModal({
                     </div>
 
                     {/* Action Buttons */}
-                    <div className='grid grid-cols-2 gap-2.5 pt-3 border-t border-[#eadcc9]'>
+                    <div className='flex flex-col-reverse sm:grid sm:grid-cols-2 gap-2.5 pt-3 border-t border-[#eadcc9]'>
                         <button
                             type='button'
                             onClick={onClose}

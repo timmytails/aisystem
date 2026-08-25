@@ -277,7 +277,7 @@ export default function UserDashboard() {
                     ? `Are you sure you want to cancel the ${confirmCancelAppointment.service} appointment for ${confirmCancelAppointment.petName}?`
                     : ''}
                 confirmText='Cancel Appointment'
-                cancelText='Keep Appointment'
+                cancelText='Keep Booking'
                 variant='danger'
                 loading={cancelling}
                 onConfirm={handleConfirmCancel}

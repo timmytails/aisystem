@@ -35,12 +35,12 @@ export default function ConfirmModal({
                     </div>
                 </div>
 
-                <div className='grid grid-cols-2 gap-2.5 pt-3 border-t border-[#eadcc9]'>
+                <div className='flex flex-col-reverse sm:flex-row items-center justify-end gap-2.5 pt-3 border-t border-[#eadcc9]'>
                     <button
                         type='button'
                         onClick={onClose}
                         disabled={loading}
-                        className='w-full rounded-xl border border-[#eadcc9] bg-white px-3 py-2.5 text-xs font-bold text-[#4e382b] text-center transition-colors hover:bg-[#faf6f0] disabled:opacity-50 truncate'
+                        className='w-full sm:w-auto rounded-xl border border-[#eadcc9] bg-white px-4 py-2.5 text-xs font-bold text-[#4e382b] text-center transition-colors hover:bg-[#faf6f0] disabled:opacity-50 whitespace-nowrap shrink-0'
                     >
                         {cancelText}
                     </button>
@@ -48,7 +48,7 @@ export default function ConfirmModal({
                         type='button'
                         onClick={onConfirm}
                         disabled={loading}
-                        className={`w-full rounded-xl px-3 py-2.5 text-xs font-bold text-white text-center shadow-xs transition-colors active:scale-[0.98] disabled:opacity-60 truncate ${
+                        className={`w-full sm:w-auto rounded-xl px-4 py-2.5 text-xs font-bold text-white text-center shadow-xs transition-colors active:scale-[0.98] disabled:opacity-60 whitespace-nowrap shrink-0 ${
                             isDanger
                                 ? 'bg-red-600 hover:bg-red-700'
                                 : 'bg-[#bf5a31] hover:bg-[#a94723]'

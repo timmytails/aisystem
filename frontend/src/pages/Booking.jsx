@@ -1144,35 +1144,35 @@ export default function Booking() {
                     </div>
 
                     <div className='grid grid-cols-4 gap-1 sm:gap-2'>
-                        <button type='button' onClick={() => scrollToSection('booking-section-1', 1)} className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2 rounded-lg p-2 sm:p-2.5 text-xs font-bold transition ${mobileStep === 1 ? 'bg-[#C25E2B] text-white shadow-xs' : selectedService && activePet?.name ? 'bg-emerald-50 text-emerald-800' : 'bg-[#FAF7F2] text-[#68594E]'}`}>
-                            <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] font-bold ${mobileStep === 1 ? 'bg-white text-[#C25E2B]' : selectedService && activePet?.name ? 'bg-emerald-700 text-white' : 'bg-[#E2D9C8] text-[#68594E]'}`}>
-                                {selectedService && activePet?.name ? <Check size={11} /> : '1'}
+                        <button type='button' onClick={() => scrollToSection('booking-section-1', 1)} className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2 rounded-lg p-1.5 sm:p-2.5 text-[11px] sm:text-xs font-bold transition min-w-0 ${mobileStep === 1 ? 'bg-[#C25E2B] text-white shadow-xs' : selectedService && activePet?.name ? 'bg-emerald-50 text-emerald-800' : 'bg-[#FAF7F2] text-[#68594E]'}`}>
+                            <span className={`grid h-4 w-4 sm:h-5 sm:w-5 shrink-0 place-items-center rounded-full text-[9px] sm:text-[10px] font-bold ${mobileStep === 1 ? 'bg-white text-[#C25E2B]' : selectedService && activePet?.name ? 'bg-emerald-700 text-white' : 'bg-[#E2D9C8] text-[#68594E]'}`}>
+                                {selectedService && activePet?.name ? <Check size={10} /> : '1'}
                             </span>
-                            <span className='sm:hidden truncate'>Pet</span>
+                            <span className='sm:hidden font-bold'>Pet</span>
                             <span className='hidden sm:inline truncate'>1. Pet &amp; Service</span>
                         </button>
 
-                        <button type='button' onClick={() => scrollToSection('booking-section-2', 2)} className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2 rounded-lg p-2 sm:p-2.5 text-xs font-bold transition ${mobileStep === 2 ? 'bg-[#C25E2B] text-white shadow-xs' : selectedStyle ? 'bg-emerald-50 text-emerald-800' : 'bg-[#FAF7F2] text-[#68594E]'}`}>
-                            <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] font-bold ${mobileStep === 2 ? 'bg-white text-[#C25E2B]' : selectedStyle ? 'bg-emerald-700 text-white' : 'bg-[#E2D9C8] text-[#68594E]'}`}>
-                                {selectedStyle ? <Check size={11} /> : '2'}
+                        <button type='button' onClick={() => scrollToSection('booking-section-2', 2)} className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2 rounded-lg p-1.5 sm:p-2.5 text-[11px] sm:text-xs font-bold transition min-w-0 ${mobileStep === 2 ? 'bg-[#C25E2B] text-white shadow-xs' : selectedStyle ? 'bg-emerald-50 text-emerald-800' : 'bg-[#FAF7F2] text-[#68594E]'}`}>
+                            <span className={`grid h-4 w-4 sm:h-5 sm:w-5 shrink-0 place-items-center rounded-full text-[9px] sm:text-[10px] font-bold ${mobileStep === 2 ? 'bg-white text-[#C25E2B]' : selectedStyle ? 'bg-emerald-700 text-white' : 'bg-[#E2D9C8] text-[#68594E]'}`}>
+                                {selectedStyle ? <Check size={10} /> : '2'}
                             </span>
-                            <span className='sm:hidden truncate'>Style</span>
+                            <span className='sm:hidden font-bold'>Style</span>
                             <span className='hidden sm:inline truncate'>2. AI Cut Preview</span>
                         </button>
 
-                        <button type='button' onClick={() => scrollToSection('booking-section-3', 3)} className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2 rounded-lg p-2 sm:p-2.5 text-xs font-bold transition ${mobileStep === 3 ? 'bg-[#C25E2B] text-white shadow-xs' : selectedDate && selectedSlot ? 'bg-emerald-50 text-emerald-800' : 'bg-[#FAF7F2] text-[#68594E]'}`}>
-                            <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] font-bold ${mobileStep === 3 ? 'bg-white text-[#C25E2B]' : selectedDate && selectedSlot ? 'bg-emerald-700 text-white' : 'bg-[#E2D9C8] text-[#68594E]'}`}>
-                                {selectedDate && selectedSlot ? <Check size={11} /> : '3'}
+                        <button type='button' onClick={() => scrollToSection('booking-section-3', 3)} className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2 rounded-lg p-1.5 sm:p-2.5 text-[11px] sm:text-xs font-bold transition min-w-0 ${mobileStep === 3 ? 'bg-[#C25E2B] text-white shadow-xs' : selectedDate && selectedSlot ? 'bg-emerald-50 text-emerald-800' : 'bg-[#FAF7F2] text-[#68594E]'}`}>
+                            <span className={`grid h-4 w-4 sm:h-5 sm:w-5 shrink-0 place-items-center rounded-full text-[9px] sm:text-[10px] font-bold ${mobileStep === 3 ? 'bg-white text-[#C25E2B]' : selectedDate && selectedSlot ? 'bg-emerald-700 text-white' : 'bg-[#E2D9C8] text-[#68594E]'}`}>
+                                {selectedDate && selectedSlot ? <Check size={10} /> : '3'}
                             </span>
-                            <span className='sm:hidden truncate'>Schedule</span>
+                            <span className='sm:hidden font-bold'>Date</span>
                             <span className='hidden sm:inline truncate'>3. Date &amp; Schedule</span>
                         </button>
 
-                        <button type='button' onClick={() => scrollToSection('booking-section-4', 4)} className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2 rounded-lg p-2 sm:p-2.5 text-xs font-bold transition ${mobileStep === 4 ? 'bg-[#C25E2B] text-white shadow-xs' : validate() === null ? 'bg-emerald-50 text-emerald-800' : 'bg-[#FAF7F2] text-[#68594E]'}`}>
-                            <span className={`grid h-5 w-5 shrink-0 place-items-center rounded-full text-[10px] font-bold ${mobileStep === 4 ? 'bg-white text-[#C25E2B]' : validate() === null ? 'bg-emerald-700 text-white' : 'bg-[#E2D9C8] text-[#68594E]'}`}>
+                        <button type='button' onClick={() => scrollToSection('booking-section-4', 4)} className={`flex items-center justify-center sm:justify-start gap-1 sm:gap-2 rounded-lg p-1.5 sm:p-2.5 text-[11px] sm:text-xs font-bold transition min-w-0 ${mobileStep === 4 ? 'bg-[#C25E2B] text-white shadow-xs' : validate() === null ? 'bg-emerald-50 text-emerald-800' : 'bg-[#FAF7F2] text-[#68594E]'}`}>
+                            <span className={`grid h-4 w-4 sm:h-5 sm:w-5 shrink-0 place-items-center rounded-full text-[9px] sm:text-[10px] font-bold ${mobileStep === 4 ? 'bg-white text-[#C25E2B]' : validate() === null ? 'bg-emerald-700 text-white' : 'bg-[#E2D9C8] text-[#68594E]'}`}>
                                 4
                             </span>
-                            <span className='sm:hidden truncate'>Review</span>
+                            <span className='sm:hidden font-bold'>Review</span>
                             <span className='hidden sm:inline truncate'>4. Confirmation</span>
                         </button>
                     </div>
