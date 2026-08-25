@@ -234,7 +234,11 @@ export default function Booking() {
             if (petsResult.status === 'fulfilled') {
                 const loadedPets = petsResult.value.data?.pets || []
                 setPets(loadedPets)
-                if (!loadedPets.length) setPetMode('new')
+                if (loadedPets.length) {
+                    setSelectedPetId(loadedPets[0]._id)
+                } else {
+                    setPetMode('new')
+                }
             }
         })
     }, [])
@@ -407,6 +411,21 @@ export default function Booking() {
         }
     }
 
+    const resetForPetChange = () => {
+        setRecommendations([])
+        setRecommendationsReady(false)
+        if (activePet?.photoUrl) {
+            resetStyleGallery({ clearPhoto: false })
+            setPhotoPreview(activePet.photoUrl)
+            setPhotoDataUrl(activePet.photoUrl)
+            setPhotoHash(`pet-profile-${activePet._id || activePet.name}-${String(activePet.photoUrl).slice(-20)}`)
+            setConsent(true)
+        } else {
+            setConsent(false)
+            resetStyleGallery({ clearPhoto: true })
+        }
+    }
+
     const selectService = (serviceId) => {
         setSelectedServiceId(serviceId)
         setSelectedDate('')
@@ -414,8 +433,17 @@ export default function Booking() {
         setSlots([])
         setRecommendations([])
         setRecommendationsReady(false)
-        setConsent(false)
-        resetStyleGallery({ clearPhoto: true })
+
+        if (activePet?.photoUrl) {
+            resetStyleGallery({ clearPhoto: false })
+            setPhotoPreview(activePet.photoUrl)
+            setPhotoDataUrl(activePet.photoUrl)
+            setPhotoHash(`pet-profile-${activePet._id || activePet.name}-${String(activePet.photoUrl).slice(-20)}`)
+            setConsent(true)
+        } else {
+            setConsent(false)
+            resetStyleGallery({ clearPhoto: true })
+        }
     }
 
     const selectStyle = (styleId) => {
@@ -497,13 +525,6 @@ export default function Booking() {
         } catch {
             toast.error('Unable to prepare this pet photo')
         }
-    }
-
-    const resetForPetChange = () => {
-        setRecommendations([])
-        setRecommendationsReady(false)
-        setConsent(false)
-        resetStyleGallery({ clearPhoto: true })
     }
 
     const handleConsentChange = (value) => {
