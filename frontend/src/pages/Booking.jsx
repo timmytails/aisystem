@@ -436,9 +436,9 @@ export default function Booking() {
 
         if (activePet?.photoUrl) {
             resetStyleGallery({ clearPhoto: false })
-            setPhotoPreview(activePet.photoUrl)
-            setPhotoDataUrl(activePet.photoUrl)
-            setPhotoHash(`pet-profile-${activePet._id || activePet.name}-${String(activePet.photoUrl).slice(-20)}`)
+            setPhotoPreview((prev) => prev || activePet.photoUrl)
+            setPhotoDataUrl((prev) => prev || activePet.photoUrl)
+            setPhotoHash((prev) => prev || `pet-profile-${activePet._id || activePet.name}-${String(activePet.photoUrl).slice(-20)}`)
             setConsent(true)
         } else {
             setConsent(false)
@@ -919,8 +919,7 @@ export default function Booking() {
             activePet.coatType || '',
             photoHash,
             previewVersion,
-            compatibleStyles.map((style) => style.id).join(','),
-            recommendations.map((item) => item.id).join(',')
+            compatibleStyles.map((style) => style.id).join(',')
         ].join('|')
         : ''
     const hasStyleFailures = Object.values(
