@@ -228,30 +228,33 @@ function AppointmentCard({ appointment: a, onClick, onCancel, onReschedule }) {
                             ₱{Number(a.price).toLocaleString('en-PH')}
                         </span>
                     </div>
-                    <div className='flex flex-wrap items-center gap-2 justify-end w-full sm:w-auto'>
+                    <div className='flex items-center gap-2 justify-end w-full sm:w-auto'>
                         {onReschedule && isEditable && (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onReschedule() }}
-                                className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1.5 rounded-lg border border-amber-300 bg-amber-50 px-2.5 py-2 text-xs font-bold text-amber-900 transition hover:bg-amber-100 active:scale-[0.98] whitespace-nowrap'
+                                className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1.5 rounded-xl border border-amber-300 bg-amber-50 px-3.5 py-2.5 text-xs font-bold text-amber-900 transition hover:bg-amber-100 active:scale-[0.98] whitespace-nowrap min-w-0'
                             >
-                                <Calendar size={13} className='shrink-0' />
+                                <Calendar size={14} className='shrink-0' />
                                 <span className='whitespace-nowrap'>Edit Date</span>
                             </button>
                         )}
                         {onCancel && (
                             <button
                                 onClick={(e) => { e.stopPropagation(); onCancel() }}
-                                className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1.5 rounded-lg border border-red-200 bg-white px-2.5 py-2 text-xs font-bold text-red-600 transition hover:bg-red-50 hover:border-red-300 active:scale-[0.98] whitespace-nowrap'
+                                className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1.5 rounded-xl border border-red-200 bg-white px-3.5 py-2.5 text-xs font-bold text-red-600 transition hover:bg-red-50 hover:border-red-300 active:scale-[0.98] whitespace-nowrap min-w-0'
                             >
                                 <XCircle size={14} className='shrink-0' />
                                 <span className='whitespace-nowrap'>Cancel</span>
                             </button>
                         )}
-                        <span className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1.5 rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] px-2.5 py-2 text-xs font-bold text-[#C25E2B] transition group-hover:bg-[#C25E2B] group-hover:text-white group-hover:border-[#C25E2B] active:scale-[0.98] whitespace-nowrap'>
-                            <Eye size={13} className='shrink-0' />
+                        <button
+                            onClick={(e) => { e.stopPropagation(); onClick && onClick() }}
+                            className='inline-flex flex-1 sm:flex-initial justify-center items-center gap-1.5 rounded-xl border border-[#C25E2B] bg-[#C25E2B] px-3.5 py-2.5 text-xs font-bold text-white transition hover:bg-[#A84E20] active:scale-[0.98] whitespace-nowrap min-w-0'
+                        >
+                            <Eye size={14} className='shrink-0' />
                             <span className='whitespace-nowrap'>Details</span>
-                            <ChevronRight size={13} className='shrink-0' />
-                        </span>
+                            <ChevronRight size={14} className='shrink-0' />
+                        </button>
                     </div>
                 </div>
             </div>
