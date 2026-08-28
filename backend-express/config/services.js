@@ -165,8 +165,8 @@ const STYLE_OPTIONS = [
     {
         id: 'natural-trim',
         name: 'Natural Trim & Tidy',
-        description: 'A gentle outline tidy-up that preserves your pet’s natural coat beauty and length.',
-        petTypes: ['dog', 'cat'],
+        description: 'An outline tidy-up that preserves your dog’s natural coat beauty and length.',
+        petTypes: ['dog'],
         coatTypes: ['double', 'long', 'medium', 'short'],
         generationInstructions:
             'Preserve almost all natural coat length and texture. Only clean the outline, remove visibly uneven wisps, and neaten paws.',
@@ -214,7 +214,7 @@ const STYLE_OPTIONS = [
             'cool-dry': 'Keeps your kitty cozy, cuddly, and looking adorable.'
         },
         seasonPriority: { 'cool-dry': 0 },
-        coatSafety: 'A gentle favorite for healthy long-haired cats.'
+        coatSafety: 'A popular favorite for healthy long-haired cats.'
     },
     {
         id: 'lion-cut',
@@ -231,7 +231,7 @@ const STYLE_OPTIONS = [
             'hot-dry': 'Perfect for long-haired cats during peak summer heat.'
         },
         seasonPriority: { 'hot-dry': 1 },
-        coatSafety: 'Specialized style for long-haired cats. Our groomers ensure gentle, safe handling.'
+        coatSafety: 'Specialized style for long-haired cats. Our groomers ensure patient, safe handling.'
     }
 ]
 

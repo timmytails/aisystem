@@ -70,10 +70,10 @@ test('keeps dog-only styles away from cats', () => {
     assert.deepEqual(catStyleIds.sort(), [
         'cat-teddy-bear-trim',
         'comb-cut',
-        'lion-cut',
-        'natural-trim'
+        'lion-cut'
     ])
     assert.equal(isStyleCompatibleWithPet(findStyle('puppy-cut'), 'cat'), false)
+    assert.equal(isStyleCompatibleWithPet(findStyle('natural-trim'), 'cat'), false)
 })
 
 test('makes every cat clip style cat-only', () => {
@@ -198,16 +198,13 @@ test('changes cat recommendations by season', () => {
 
     assert.deepEqual(hotRecommendations, [
         'lion-cut',
-        'comb-cut',
-        'natural-trim'
+        'comb-cut'
     ])
     assert.deepEqual(wetRecommendations, [
-        'comb-cut',
-        'natural-trim'
+        'comb-cut'
     ])
     assert.deepEqual(coolRecommendations, [
-        'cat-teddy-bear-trim',
-        'natural-trim'
+        'cat-teddy-bear-trim'
     ])
 })
 
@@ -226,9 +223,7 @@ test('does not suggest clip-heavy styles for a short-haired cat', () => {
                 season
             }).map((style) => style.id)
 
-        assert.deepEqual(recommendationIds, [
-            'natural-trim'
-        ])
+        assert.deepEqual(recommendationIds, [])
     })
 })
 
