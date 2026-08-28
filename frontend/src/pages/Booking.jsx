@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useLocation, useNavigate } from 'react-router-dom'
 import {
     AlertTriangle,
     Ban,
@@ -163,6 +163,7 @@ const runStyleQueue = async (items, worker) => {
 export default function Booking() {
     const { user, refreshUser } = useAuth()
     const navigate = useNavigate()
+    const location = useLocation()
 
     useEffect(() => {
         if (refreshUser) refreshUser()
@@ -247,6 +248,20 @@ export default function Booking() {
             }
         })
     }, [])
+
+    useEffect(() => {
+        const reqServiceId = location.state?.serviceId || new URLSearchParams(location.search).get('service')
+        const reqServiceName = location.state?.serviceName
+        if (reqServiceId || reqServiceName) {
+            const matched = services.find((s) =>
+                (reqServiceId && s.id === reqServiceId) ||
+                (reqServiceName && s.name.toLowerCase() === reqServiceName.toLowerCase())
+            )
+            if (matched) {
+                setSelectedServiceId(matched.id)
+            }
+        }
+    }, [location.state, location.search, services])
 
     useEffect(() => {
         const petType = String(

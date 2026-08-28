@@ -2,12 +2,12 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, Bath, CalendarDays, Clock3, Ear, Scissors, Sparkles, WandSparkles } from 'lucide-react'
 
 const services = [
-    { icon: Bath, name: 'Basic Grooming', price: 500, duration: '60 min', desc: 'A practical maintenance visit with bath, conditioner, brush-out, nail trim, ear hygiene, and fluff dry.', category: 'Routine care' },
-    { icon: Sparkles, name: 'Full Grooming', price: 1200, duration: '120 min', desc: 'Complete grooming with bath, haircut, sanitary trim, pad cleaning, finishing, and style consultation.', category: 'Complete care', featured: true, ai: true },
-    { icon: WandSparkles, name: 'Custom Styling', price: 1000, duration: '90 min', desc: 'A haircut session built around a chosen visual reference, coat goals, and your pet’s practical needs.', category: 'Haircut', ai: true },
-    { icon: Bath, name: 'Bath & Blow Dry', price: 800, duration: '90 min', desc: 'Deep cleansing, conditioner, thorough drying, and coat brushing for a clean, comfortable reset.', category: 'Coat care' },
-    { icon: Scissors, name: 'Nail Trimming', price: 200, duration: '30 min', desc: 'Careful nail clipping and edge smoothing to maintain paw comfort and everyday mobility.', category: 'Add-on' },
-    { icon: Ear, name: 'Ear Cleaning', price: 250, duration: '30 min', desc: 'Gentle external ear cleaning and wax removal to keep ears clean and fresh.', category: 'Add-on' }
+    { id: 'basic-grooming', icon: Bath, name: 'Basic Grooming', price: 500, duration: '60 min', desc: 'A practical maintenance visit with bath, conditioner, brush-out, nail trim, ear hygiene, and fluff dry.', category: 'Routine care' },
+    { id: 'full-grooming', icon: Sparkles, name: 'Full Grooming', price: 1200, duration: '120 min', desc: 'Complete grooming with bath, haircut, sanitary trim, pad cleaning, finishing, and style consultation.', category: 'Complete care', featured: true, ai: true },
+    { id: 'custom-styling', icon: WandSparkles, name: 'Custom Styling', price: 1000, duration: '90 min', desc: 'A haircut session built around a chosen visual reference, coat goals, and your pet’s practical needs.', category: 'Haircut', ai: true },
+    { id: 'bath-blow-dry', icon: Bath, name: 'Bath & Blow Dry', price: 800, duration: '90 min', desc: 'Deep cleansing, conditioner, thorough drying, and coat brushing for a clean, comfortable reset.', category: 'Coat care' },
+    { id: 'nail-trimming', icon: Scissors, name: 'Nail Trimming', price: 200, duration: '30 min', desc: 'Careful nail clipping and edge smoothing to maintain paw comfort and everyday mobility.', category: 'Add-on' },
+    { id: 'ear-cleaning', icon: Ear, name: 'Ear Cleaning', price: 250, duration: '30 min', desc: 'Gentle external ear cleaning and wax removal to keep ears clean and fresh.', category: 'Add-on' }
 ]
 
 export default function Services() {
@@ -28,7 +28,12 @@ export default function Services() {
                     {services.map((service, index) => {
                         const Icon = service.icon
                         return (
-                            <article key={service.name} className={`group grid min-h-[280px] gap-6 overflow-hidden border border-[#DDE4DE] p-6 sm:grid-cols-[1fr_auto] sm:p-7 ${service.featured ? 'bg-[#13231B] text-white lg:row-span-2 lg:min-h-[576px]' : 'bg-white'} ${index === 0 ? 'rounded-tl-[1.8rem]' : ''} ${index === services.length - 1 ? 'rounded-br-[1.8rem]' : ''}`}>
+                            <Link
+                                key={service.name}
+                                to='/booking'
+                                state={{ serviceId: service.id, serviceName: service.name }}
+                                className={`group grid min-h-[280px] cursor-pointer gap-6 overflow-hidden border border-[#DDE4DE] p-6 transition-all duration-200 hover:border-[#1F4D3E] hover:shadow-xl sm:grid-cols-[1fr_auto] sm:p-7 ${service.featured ? 'bg-[#13231B] text-white hover:border-[#F3D58C] lg:row-span-2 lg:min-h-[576px]' : 'bg-white hover:bg-[#FAFBF9]'} ${index === 0 ? 'rounded-tl-[1.8rem]' : ''} ${index === services.length - 1 ? 'rounded-br-[1.8rem]' : ''}`}
+                            >
                                 <div className='flex flex-col'>
                                     <div className='flex items-center gap-3'>
                                         <span className={`grid h-11 w-11 place-items-center rounded-2xl ${service.featured ? 'bg-[#E8795B] text-[#13231B]' : 'bg-[#EDF3EE] text-[#1F4D3E]'}`}><Icon size={19} /></span>
@@ -36,7 +41,7 @@ export default function Services() {
                                     </div>
                                     <div className='mt-auto pt-12'>
                                         <div className='flex flex-wrap items-center gap-2'>
-                                            <h2 className='font-serif text-3xl sm:text-4xl'>{service.name}</h2>
+                                            <h2 className='font-serif text-3xl transition group-hover:text-[#2F6B57] sm:text-4xl' style={service.featured ? { color: 'inherit' } : {}}>{service.name}</h2>
                                             {service.ai && <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-[.11em] ${service.featured ? 'bg-white/10 text-[#F3D58C]' : 'bg-[#FBE9E4] text-[#B95843]'}`}><Sparkles size={11} />Style preview</span>}
                                         </div>
                                         <p className={`mt-3 max-w-xl text-sm leading-7 ${service.featured ? 'text-[#C4D0C9]' : 'text-[#68776F]'}`}>{service.desc}</p>
@@ -47,9 +52,9 @@ export default function Services() {
                                         <p className='font-serif text-3xl'>₱{service.price.toLocaleString('en-PH')}</p>
                                         <p className={`mt-1 inline-flex items-center gap-1 text-xs font-bold ${service.featured ? 'text-[#AFC0B6]' : 'text-[#7A8880]'}`}><Clock3 size={13} />{service.duration}</p>
                                     </div>
-                                    <span className={`grid h-10 w-10 place-items-center rounded-full transition group-hover:translate-x-1 ${service.featured ? 'bg-white text-[#13231B]' : 'bg-[#13231B] text-white'}`}><ArrowRight size={17} /></span>
+                                    <span className={`grid h-11 w-11 place-items-center rounded-full transition-all duration-300 group-hover:scale-110 group-hover:translate-x-1.5 ${service.featured ? 'bg-white text-[#13231B] group-hover:bg-[#F3D58C]' : 'bg-[#13231B] text-white group-hover:bg-[#1F4D3E]'}`} aria-label={`Book ${service.name}`}><ArrowRight size={18} /></span>
                                 </div>
-                            </article>
+                            </Link>
                         )
                     })}
                 </div>
