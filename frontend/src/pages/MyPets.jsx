@@ -99,46 +99,43 @@ export default function MyPets() {
     }
 
     return (
-        <div className='min-h-screen bg-[#F8F7F4] px-4 py-10 text-slate-900 sm:px-6 lg:px-8'>
-            <div className='mx-auto max-w-6xl'>
+        <div className='min-h-screen bg-[#F6F7F2] px-4 py-10 text-[#13231B] sm:px-6 lg:px-8'>
+            <div className='mx-auto max-w-7xl'>
 
                 {/* Page Header */}
-                <div className='mb-8 flex flex-col justify-between gap-4 border-b border-slate-200 pb-6 sm:flex-row sm:items-end'>
-                    <div>
-                        <span className='inline-block rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
-                            Pet Profiles
-                        </span>
-                        <h1 className='mt-2 font-serif text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl'>
-                            My Pets
-                        </h1>
-                        <p className='mt-1 text-sm text-slate-600'>
-                            Manage your pet profiles and photos for seamless appointment booking.
-                        </p>
+                <section className='mb-10 overflow-hidden rounded-[2rem] bg-[#13231B] text-white shadow-[0_24px_70px_rgba(19,35,27,0.10)]'>
+                    <div className='grid gap-8 px-6 py-8 sm:px-8 lg:grid-cols-[1fr_auto] lg:items-end lg:px-10 lg:py-10'>
+                        <div className='max-w-2xl'>
+                            <h1 className='font-serif text-4xl font-bold tracking-tight sm:text-5xl'>Profiles built around each pet.</h1>
+                            <p className='mt-4 max-w-xl text-sm leading-6 text-[#DCE9E0] sm:text-base'>
+                                Keep coat, vaccination, age, notes, and photos in one place so every grooming visit starts with the right context.
+                            </p>
+                        </div>
+                        <button
+                            onClick={openNew}
+                            className='inline-flex items-center justify-center gap-2 self-start rounded-full bg-[#E8795B] px-5 py-3 text-sm font-extrabold text-[#13231B] transition hover:-translate-y-0.5 hover:bg-[#F08A6D] lg:self-auto'
+                        >
+                            <Plus size={18} />
+                            <span>Add a pet</span>
+                        </button>
                     </div>
-                    <button
-                        onClick={openNew}
-                        className='inline-flex items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-5 py-2.5 text-sm font-bold text-white transition hover:bg-[#A84E20] active:scale-[0.98]'
-                    >
-                        <Plus size={18} />
-                        <span>Add New Pet</span>
-                    </button>
-                </div>
+                </section>
 
                 {/* Main Pets Grid */}
                 {loading ? (
-                    <div className='rounded-xl border border-slate-200 bg-white p-12 text-center text-sm font-medium text-slate-600'>
+                    <div className='rounded-xl border border-[#DDE4DE] bg-white p-12 text-center text-sm font-medium text-[#405148]'>
                         Loading pet profiles...
                     </div>
                 ) : (
-                    <div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+                    <div className='grid gap-5 md:grid-cols-2'>
                         {pets.map((pet) => (
                             <article
                                 key={pet._id}
-                                className='group relative flex flex-col overflow-hidden rounded-xl border border-slate-200 bg-white p-5 transition hover:border-slate-300'
+                                className='group relative flex min-h-[220px] flex-col overflow-hidden rounded-[1.75rem] border border-[#DDE4DE] bg-white p-6 shadow-[0_14px_45px_rgba(19,35,27,0.05)] transition hover:-translate-y-0.5 hover:border-[#B8C9BD]'
                             >
                                 <div className='flex items-start gap-4'>
                                     {/* Prominent Pet Profile Picture */}
-                                    <div className='relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100'>
+                                    <div className='relative h-24 w-24 shrink-0 overflow-hidden rounded-[1.25rem] border border-[#DDE4DE] bg-[#EDF3EE]'>
                                         {pet.photoUrl ? (
                                             <img
                                                 src={pet.photoUrl}
@@ -146,7 +143,7 @@ export default function MyPets() {
                                                 className='h-full w-full object-cover transition-transform duration-300 group-hover:scale-105'
                                             />
                                         ) : (
-                                            <div className='flex h-full w-full flex-col items-center justify-center text-slate-400'>
+                                            <div className='flex h-full w-full flex-col items-center justify-center text-[#2F6B57]'>
                                                 {pet.type === 'cat' ? <Cat size={28} /> : <Dog size={28} />}
                                                 <span className='mt-0.5 text-[9px] font-semibold uppercase tracking-wider'>No Photo</span>
                                             </div>
@@ -156,30 +153,30 @@ export default function MyPets() {
                                     {/* Pet Info */}
                                     <div className='min-w-0 flex-1'>
                                         <div className='flex items-center justify-between gap-2'>
-                                            <span className='inline-block rounded bg-slate-100 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#C25E2B]'>
+                                            <span className='inline-block rounded bg-[#F6F7F2] px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-[#2F6B57]'>
                                                 {pet.type === 'cat' ? 'Cat' : 'Dog'}
                                             </span>
-                                            <div className='flex items-center gap-1'>
+                                            <div className='flex items-center gap-1.5'>
                                                 <button
                                                     onClick={() => openEdit(pet)}
-                                                    className='grid h-7 w-7 place-items-center rounded-md border border-slate-200 bg-white text-slate-600 transition hover:border-[#C25E2B] hover:text-[#C25E2B]'
+                                                    className='grid h-8 w-8 place-items-center rounded-lg border border-[#DDE4DE] bg-white text-[#405148] transition hover:bg-[#F6F7F2] hover:text-[#13231B]'
                                                     title='Edit Pet Profile'
                                                 >
                                                     <Pencil size={13} />
                                                 </button>
                                                 <button
                                                     onClick={() => setConfirmDeletePet(pet)}
-                                                    className='grid h-7 w-7 place-items-center rounded-md border border-red-200 bg-white text-red-600 transition hover:bg-red-50 hover:border-red-300'
+                                                    className='grid h-8 w-8 place-items-center rounded-lg border border-[#F0CCCC] bg-[#FBEAEA] text-[#9E3E3E] transition hover:bg-[#F4D6D6]'
                                                     title='Remove Pet'
                                                 >
                                                     <Trash2 size={13} />
                                                 </button>
                                             </div>
                                         </div>
-                                        <h2 className='mt-1 truncate font-serif text-xl font-bold text-slate-900'>
+                                        <h2 className='mt-1 truncate font-serif text-xl font-bold text-[#13231B]'>
                                             {pet.name}
                                         </h2>
-                                        <p className='truncate text-xs font-medium text-slate-600'>
+                                        <p className='truncate text-xs font-medium text-[#405148]'>
                                             {pet.breed}
                                         </p>
                                     </div>
@@ -188,23 +185,23 @@ export default function MyPets() {
                                 {/* Pet Specs & Badges */}
                                 <div className='mt-4 flex flex-wrap gap-2 text-xs'>
                                     {pet.coatType && (
-                                        <span className='rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-medium text-slate-800'>
+                                        <span className='rounded-md border border-[#DDE4DE] bg-[#F6F7F2] px-2.5 py-1 font-medium text-[#13231B]'>
                                             Coat: <span className='font-semibold'>{pet.coatType}</span>
                                         </span>
                                     )}
                                     {pet.ageMonths !== undefined && pet.ageMonths !== null && (
-                                        <span className='rounded-md border border-slate-200 bg-slate-50 px-2.5 py-1 font-medium text-slate-800'>
+                                        <span className='rounded-md border border-[#DDE4DE] bg-[#F6F7F2] px-2.5 py-1 font-medium text-[#13231B]'>
                                             {pet.ageMonths} mo old
                                         </span>
                                     )}
-                                    <span className={`rounded-md px-2.5 py-1 font-medium ${pet.vaccinated === false ? 'bg-red-50 text-red-700 border border-red-200' : 'bg-emerald-50 text-emerald-800 border border-emerald-200'}`}>
+                                    <span className={`rounded-md px-2.5 py-1 font-medium ${pet.vaccinated === false ? 'bg-[#FBEAEA] text-[#9E3E3E] border border-[#F0CCCC]' : 'bg-[#E4F1EA] text-[#216245] border border-[#C9E1D3]'}`}>
                                         {pet.vaccinated === false ? 'Unvaccinated' : 'Fully Vaccinated'}
                                     </span>
                                 </div>
 
                                 {pet.notes && (
-                                    <div className='mt-3 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs leading-relaxed text-slate-600'>
-                                        <span className='font-semibold text-slate-900'>Notes: </span>
+                                    <div className='mt-3 rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] px-3 py-2 text-xs leading-relaxed text-[#405148]'>
+                                        <span className='font-semibold text-[#13231B]'>Notes: </span>
                                         {pet.notes}
                                     </div>
                                 )}
@@ -213,17 +210,17 @@ export default function MyPets() {
 
                         {/* Empty State */}
                         {!pets.length && (
-                            <div className='flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-300 bg-white p-12 text-center md:col-span-2 lg:col-span-3'>
-                                <div className='grid h-14 w-14 place-items-center rounded-full bg-slate-100 text-[#C25E2B]'>
+                            <div className='flex flex-col items-center justify-center rounded-xl border border-dashed border-[#2F6B57] bg-[#F6F7F2] p-12 text-center md:col-span-2'>
+                                <div className='grid h-14 w-14 place-items-center rounded-full bg-[#F6F7F2] text-[#2F6B57]'>
                                     <Dog size={28} />
                                 </div>
-                                <h2 className='mt-4 font-serif text-xl font-bold text-slate-900'>No Pet Profiles Saved</h2>
-                                <p className='mt-1 max-w-sm text-sm text-slate-600'>
+                                <h2 className='mt-4 font-serif text-xl font-bold text-[#13231B]'>No Pet Profiles Saved</h2>
+                                <p className='mt-1 max-w-sm text-sm text-[#405148]'>
                                     Add your pets to upload their pictures and book grooming appointments effortlessly.
                                 </p>
                                 <button
                                     onClick={openNew}
-                                    className='mt-5 inline-flex items-center gap-2 rounded-lg bg-[#C25E2B] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#A84E20]'
+                                    className='mt-5 inline-flex items-center gap-2 rounded-lg bg-[#2F6B57] px-5 py-2.5 text-xs font-bold text-[#F6F7F2] transition hover:bg-[#1F4D3E]'
                                 >
                                     <Plus size={15} />
                                     <span>Add Your First Pet</span>
@@ -236,37 +233,37 @@ export default function MyPets() {
 
             {/* Pet Form Modal */}
             {open && (
-                <div className='fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-slate-900/40 backdrop-blur-xs overflow-y-auto'>
+                <div className='fixed inset-0 z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 bg-[#13231B]/40 backdrop-blur-xs overflow-y-auto'>
                     <form
                         onSubmit={save}
-                        className='relative w-full max-w-lg rounded-t-2xl sm:rounded-xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xl max-h-[90vh] overflow-y-auto pb-safe'
+                        className='relative w-full max-w-lg rounded-t-2xl sm:rounded-xl border border-[#DDE4DE] bg-white p-5 sm:p-6 shadow-xl max-h-[90vh] overflow-y-auto pb-safe'
                     >
-                        <div className='mb-6 flex items-center justify-between border-b border-slate-200 pb-4'>
-                            <h2 className='font-serif text-xl font-bold text-slate-900'>
+                        <div className='mb-6 flex items-center justify-between border-b border-[#2F6B57] pb-4'>
+                            <h2 className='font-serif text-xl font-bold text-[#13231B]'>
                                 {editingId ? 'Edit Pet Profile' : 'Add New Pet'}
                             </h2>
                             <button
                                 type='button'
                                 onClick={() => setOpen(false)}
-                                className='grid h-8 w-8 place-items-center rounded-lg border border-slate-200 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900'
+                                className='grid h-8 w-8 place-items-center rounded-lg border border-[#DDE4DE] text-[#405148] transition hover:bg-[#F6F7F2] hover:text-[#13231B]'
                             >
                                 <X size={17} />
                             </button>
                         </div>
 
                         {/* Pet Photo Upload Header */}
-                        <div className='mb-6 flex items-center gap-4 rounded-xl border border-slate-200 bg-slate-50 p-4'>
-                            <div className='relative h-20 w-20 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-white'>
+                        <div className='mb-6 flex items-center gap-4 rounded-xl border border-[#DDE4DE] bg-white p-4'>
+                            <div className='relative h-24 w-24 shrink-0 overflow-hidden rounded-[1.25rem] border border-[#DDE4DE] bg-[#EDF3EE]'>
                                 {form.photoUrl ? (
                                     <img src={form.photoUrl} alt='Pet preview' className='h-full w-full object-cover' />
                                 ) : (
-                                    <div className='flex h-full w-full items-center justify-center text-slate-400'>
+                                    <div className='flex h-full w-full items-center justify-center text-[#F6F7F2]'>
                                         <Camera size={24} />
                                     </div>
                                 )}
                             </div>
                             <div className='flex-1'>
-                                <label className='inline-flex cursor-pointer items-center gap-2 rounded-lg border border-slate-200 bg-white px-3.5 py-2 text-xs font-bold text-slate-800 transition hover:border-[#C25E2B] hover:text-[#C25E2B]'>
+                                <label className='inline-flex cursor-pointer items-center gap-2 rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] px-3.5 py-2 text-xs font-bold text-[#13231B] transition hover:border-[#2F6B57] hover:text-[#2F6B57]'>
                                     <Upload size={14} />
                                     <span>{form.photoUrl ? 'Change Pet Photo' : 'Upload Pet Photo'}</span>
                                     <input
@@ -276,7 +273,7 @@ export default function MyPets() {
                                         className='hidden'
                                     />
                                 </label>
-                                <p className='mt-1 text-[11px] text-slate-500'>
+                                <p className='mt-1 text-[11px] text-[#405148]'>
                                     Official picture for your pet. JPG, PNG or WEBP up to 8MB.
                                 </p>
                             </div>
@@ -290,7 +287,7 @@ export default function MyPets() {
                                     <select
                                         value={form.type}
                                         onChange={(e) => setForm({ ...form, type: e.target.value })}
-                                        className='h-10 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20'
+                                        className='h-10 w-full rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] px-3.5 text-sm outline-none transition focus:border-[#2F6B57] focus:ring-2 focus:ring-[#2F6B57]/20'
                                     >
                                         <option value='dog'>Dog</option>
                                         <option value='cat'>Cat</option>
@@ -310,7 +307,7 @@ export default function MyPets() {
                                     <select
                                         value={form.vaccinated}
                                         onChange={(e) => setForm({ ...form, vaccinated: e.target.value })}
-                                        className='h-10 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20'
+                                        className='h-10 w-full rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] px-3.5 text-sm outline-none transition focus:border-[#2F6B57] focus:ring-2 focus:ring-[#2F6B57]/20'
                                     >
                                         <option value='yes'>Yes - Fully Vaccinated</option>
                                         <option value='no'>No - Not Fully Vaccinated</option>
@@ -325,22 +322,22 @@ export default function MyPets() {
                                     placeholder='e.g. Sensitive skin, prefers low blow-dry speed'
                                     onChange={(e) => setForm({ ...form, notes: e.target.value })}
                                     rows={3}
-                                    className='w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20 placeholder:text-slate-400'
+                                    className='w-full rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] px-3.5 py-2.5 text-sm outline-none transition focus:border-[#2F6B57] focus:ring-2 focus:ring-[#2F6B57]/20 placeholder:text-[#9AA69F]'
                                 />
                             </label>
                         </div>
 
-                        <div className='mt-6 flex items-center justify-end gap-3 border-t border-slate-200 pt-4'>
+                        <div className='mt-6 flex items-center justify-end gap-3 border-t border-[#2F6B57] pt-4'>
                             <button
                                 type='button'
                                 onClick={() => setOpen(false)}
-                                className='rounded-lg border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 transition hover:bg-slate-100'
+                                className='rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] px-4 py-2 text-xs font-bold text-[#405148] transition hover:bg-[#F6F7F2]'
                             >
                                 Cancel
                             </button>
                             <button
                                 disabled={saving}
-                                className='rounded-lg bg-[#C25E2B] px-5 py-2 text-xs font-bold text-white transition hover:bg-[#A84E20] disabled:opacity-60'
+                                className='rounded-lg bg-[#2F6B57] px-5 py-2 text-xs font-bold text-[#F6F7F2] transition hover:bg-[#1F4D3E] disabled:opacity-60'
                             >
                                 {saving ? 'Saving Profile...' : 'Save Pet Profile'}
                             </button>
@@ -367,7 +364,7 @@ export default function MyPets() {
 }
 
 function FieldLabel({ children }) {
-    return <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700'>{children}</span>
+    return <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#405148]'>{children}</span>
 }
 
 function Field({ label, value, onChange, placeholder, required = true, ...props }) {
@@ -379,7 +376,7 @@ function Field({ label, value, onChange, placeholder, required = true, ...props 
                 placeholder={placeholder}
                 onChange={(e) => onChange(e.target.value)}
                 required={required}
-                className='h-10 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20 placeholder:text-slate-400'
+                className='h-10 w-full rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] px-3.5 text-sm font-medium text-[#13231B] outline-none transition focus:border-[#2F6B57] focus:ring-2 focus:ring-[#2F6B57]/20 placeholder:text-[#9AA69F]'
                 {...props}
             />
         </label>

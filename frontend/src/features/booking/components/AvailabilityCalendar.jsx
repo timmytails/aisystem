@@ -25,13 +25,13 @@ export default function AvailabilityCalendar({
     const maxMonth = maxDate.slice(0, 7)
 
     return (
-        <div className='rounded-2xl border border-[#e5d6c5] bg-white p-5'>
+        <div className='rounded-2xl border border-[#DDE4DE] bg-white p-5'>
             <div className='mb-5 flex items-center justify-between'>
                 <button
                     type='button'
                     disabled={previousMonth < minMonth}
                     onClick={() => onMonthChange(previousMonth)}
-                    className='grid h-9 w-9 place-items-center rounded-full border border-[#e4d5c4] disabled:cursor-not-allowed disabled:opacity-30'
+                    className='grid h-9 w-9 place-items-center rounded-full border border-[#F6F7F2] disabled:cursor-not-allowed disabled:opacity-30'
                     aria-label='Previous month'
                 >
                     <ChevronLeft size={18} />
@@ -41,7 +41,7 @@ export default function AvailabilityCalendar({
                     type='button'
                     disabled={nextMonth > maxMonth}
                     onClick={() => onMonthChange(nextMonth)}
-                    className='grid h-9 w-9 place-items-center rounded-full border border-[#e4d5c4] disabled:cursor-not-allowed disabled:opacity-30'
+                    className='grid h-9 w-9 place-items-center rounded-full border border-[#F6F7F2] disabled:cursor-not-allowed disabled:opacity-30'
                     aria-label='Next month'
                 >
                     <ChevronRight size={18} />
@@ -49,7 +49,7 @@ export default function AvailabilityCalendar({
             </div>
 
             <div className='grid grid-cols-7 gap-1 text-center'>
-                {weekdays.map((day) => <div key={day} className='py-2 text-[11px] font-bold uppercase tracking-wide text-[#937867]'>{day}</div>)}
+                {weekdays.map((day) => <div key={day} className='py-2 text-[11px] font-bold uppercase tracking-wide text-[#2F6B57]'>{day}</div>)}
                 {cells.map((day, index) => {
                     if (!day) return <div key={`blank-${index}`} />
                     const dateKey = toDateKey(new Date(year, month, day, 12))
@@ -57,12 +57,12 @@ export default function AvailabilityCalendar({
                     const selected = selectedDate === dateKey
                     const disabled = dateKey < minDate || dateKey > maxDate || ['past', 'closed', 'fully-booked', 'outside-range', 'loading'].includes(status)
                     const className = selected
-                        ? 'border-[#a84522] bg-[#bf5a31] text-white'
+                        ? 'border-[#2F6B57] bg-[#2F6B57] text-[#F6F7F2]'
                         : status === 'fully-booked' || status === 'closed'
-                            ? 'border-red-200 bg-red-50 text-red-500'
+                            ? 'border-[#1F4D3E] bg-[#1F4D3E] text-white'
                             : status === 'past' || status === 'outside-range'
-                                ? 'border-stone-200 bg-stone-100 text-stone-400'
-                                : 'border-[#eadfce] bg-white text-[#2d211a] hover:border-[#bd5a34] hover:bg-[#fff6f0]'
+                                ? 'border-[#1F4D3E] bg-[#1F4D3E] text-white'
+                                : 'border-[#F6F7F2] bg-[#F6F7F2] text-[#13231B] hover:border-[#2F6B57] hover:bg-[#F6F7F2]'
 
                     return (
                         <button
@@ -79,10 +79,10 @@ export default function AvailabilityCalendar({
                 })}
             </div>
 
-            <div className='mt-5 flex flex-wrap gap-4 border-t border-[#eee2d4] pt-4 text-xs text-[#806654]'>
-                <Legend className='bg-white border-[#eadfce]' label='Available' />
-                <Legend className='bg-red-50 border-red-200' label='Booked or closed' />
-                <Legend className='bg-stone-100 border-stone-200' label='Past or unavailable' />
+            <div className='mt-5 flex flex-wrap gap-4 border-t border-[#DDE4DE] pt-4 text-xs text-[#2F6B57]'>
+                <Legend className='bg-[#F6F7F2] border-[#F6F7F2]' label='Available' />
+                <Legend className='bg-[#2F6B57] border-[#2F6B57]' label='Booked or closed' />
+                <Legend className='bg-[#F6F7F2] border-[#2F6B57]' label='Past or unavailable' />
             </div>
         </div>
     )

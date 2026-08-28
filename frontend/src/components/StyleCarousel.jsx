@@ -67,22 +67,22 @@ export default function StyleCarousel() {
         >
             {/* Nav Arrows Header Bar */}
             <div className='flex items-center justify-between'>
-                <div className='flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500'>
-                    <Scissors size={14} className='text-[#C25E2B]' />
+                <div className='flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#405148]'>
+                    <Scissors size={14} className='text-[#2F6B57]' />
                     <span>Featured Pet Cuts ({startIndex + 1}/{CUT_STYLES.length})</span>
                 </div>
                 <div className='flex items-center gap-2'>
                     <button
                         onClick={prev}
                         aria-label='Previous style'
-                        className='grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:border-[#C25E2B] hover:text-[#C25E2B]'
+                        className='grid h-9 w-9 place-items-center rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] text-[#405148] transition hover:border-[#2F6B57] hover:text-[#2F6B57]'
                     >
                         <ChevronLeft size={18} />
                     </button>
                     <button
                         onClick={next}
                         aria-label='Next style'
-                        className='grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:border-[#C25E2B] hover:text-[#C25E2B]'
+                        className='grid h-9 w-9 place-items-center rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] text-[#405148] transition hover:border-[#2F6B57] hover:text-[#2F6B57]'
                     >
                         <ChevronRight size={18} />
                     </button>
@@ -94,26 +94,26 @@ export default function StyleCarousel() {
                 {visibleItems.map((item, index) => (
                     <figure
                         key={`${item.id}-${index}`}
-                        className='group flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs transition-all duration-500 hover:border-slate-300 hover:shadow-md animate-in fade-in'
+                        className='group flex flex-col justify-between overflow-hidden rounded-xl border border-[#DDE4DE] bg-[#F6F7F2] shadow-xs transition-all duration-500 hover:border-[#2F6B57] hover:shadow-md animate-in fade-in'
                     >
-                        <div className='h-56 overflow-hidden bg-slate-100 relative'>
+                        <div className='h-56 overflow-hidden bg-[#F6F7F2] relative'>
                             <img
                                 src={item.image}
                                 alt={`${item.style} reference cut`}
                                 className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
                             />
-                            <span className='absolute top-3 right-3 rounded-md bg-white/90 px-2.5 py-0.5 text-[11px] font-bold text-[#C25E2B] backdrop-blur-xs shadow-xs'>
+                            <span className='absolute top-3 right-3 rounded-md bg-[#F6F7F2]/90 px-2.5 py-0.5 text-[11px] font-bold text-[#2F6B57] backdrop-blur-xs shadow-xs'>
                                 {item.breed}
                             </span>
                         </div>
                         <figcaption className='flex items-center justify-between p-4'>
                             <div>
-                                <h3 className='font-serif text-base font-bold text-slate-900'>{item.style}</h3>
-                                <p className='mt-0.5 text-xs text-slate-500'>Available for Custom Booking</p>
+                                <h3 className='font-serif text-base font-bold text-[#13231B]'>{item.style}</h3>
+                                <p className='mt-0.5 text-xs text-[#405148]'>Available for Custom Booking</p>
                             </div>
                             <button
                                 onClick={handleBook}
-                                className='rounded-lg bg-slate-900 px-3 py-2 text-xs font-bold text-white transition hover:bg-[#C25E2B]'
+                                className='rounded-lg bg-[#13231B] px-3 py-2 text-xs font-bold text-[#F6F7F2] transition hover:bg-[#1F4D3E]'
                             >
                                 Book
                             </button>
@@ -131,8 +131,8 @@ export default function StyleCarousel() {
                         aria-label={`Go to slide ${idx + 1}`}
                         className={`h-2 rounded-full transition-all duration-300 ${
                             idx === startIndex % CUT_STYLES.length
-                                ? 'w-6 bg-[#C25E2B]'
-                                : 'w-2 bg-slate-300 hover:bg-slate-400'
+                                ? 'w-6 bg-[#2F6B57]'
+                                : 'w-2 bg-[#F6F7F2] hover:bg-[#1F4D3E]'
                         }`}
                     />
                 ))}

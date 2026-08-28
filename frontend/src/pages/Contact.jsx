@@ -1,6 +1,6 @@
 import { createElement, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { Clock3, Mail, MapPin, Phone, Send } from 'lucide-react'
+import { ArrowRight, Clock3, Mail, MapPin, Phone, Send } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { contactApi, getErrorMessage } from '../utils/api'
 import PhoneField from '../components/PhoneField'
@@ -12,30 +12,17 @@ export default function Contact() {
     const [submitting, setSubmitting] = useState(false)
 
     const validate = () => {
-        if (!form.name.trim() || form.name.trim().length < 2) {
-            toast.error('Please enter a valid full name (at least 2 characters)')
-            return false
-        }
+        if (!form.name.trim() || form.name.trim().length < 2) { toast.error('Please enter a valid full name (at least 2 characters)'); return false }
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-        if (!form.email.trim() || !emailRegex.test(form.email.trim())) {
-            toast.error('Please enter a valid email address')
-            return false
-        }
-        if (!form.phone || form.phone.replace(/\D/g, '').length < 12) {
-            toast.error('Please enter a valid 10-digit mobile number')
-            return false
-        }
-        if (!form.message.trim() || form.message.trim().length < 10) {
-            toast.error('Message must be at least 10 characters long')
-            return false
-        }
+        if (!form.email.trim() || !emailRegex.test(form.email.trim())) { toast.error('Please enter a valid email address'); return false }
+        if (!form.phone || form.phone.replace(/\D/g, '').length < 12) { toast.error('Please enter a valid 10-digit mobile number'); return false }
+        if (!form.message.trim() || form.message.trim().length < 10) { toast.error('Message must be at least 10 characters long'); return false }
         return true
     }
 
     const submit = async (event) => {
         event.preventDefault()
         if (!validate()) return
-
         setSubmitting(true)
         try {
             const { data } = await contactApi.send(form)
@@ -49,117 +36,50 @@ export default function Contact() {
     }
 
     return (
-        <div className='min-h-screen bg-[#F8F7F4] text-slate-900'>
-            {/* Page Header */}
-            <div className='border-b border-slate-200 bg-white px-6 py-12'>
-                <div className='mx-auto max-w-6xl'>
-                    <span className='inline-block rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
-                        Get in Touch
-                    </span>
-                    <h1 className='mt-2 font-serif text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl'>
-                        We&apos;re Here to Help
-                    </h1>
-                    <p className='mt-2 max-w-xl text-sm text-slate-600 sm:text-base'>
-                        Have a question about our grooming services or special pet handling? Send us a message and our salon team will get back to you promptly.
-                    </p>
+        <div className='min-h-screen bg-[#F6F7F2] text-[#13231B]'>
+            <section className='border-b border-[#DDE4DE] bg-white'>
+                <div className='mx-auto grid max-w-[1480px] gap-8 px-5 py-14 sm:px-6 lg:grid-cols-[1fr_.7fr] lg:items-end lg:px-8 lg:py-20'>
+                    <div><p className='tt-kicker'>Get in Touch</p><h1 className='mt-4 font-serif text-[clamp(3.2rem,7vw,6rem)] leading-[.92] tracking-[-.04em]'>Questions are easier before the appointment.</h1></div>
+                    <p className='max-w-xl text-sm leading-7 text-[#68776F] lg:justify-self-end'>Ask about coat care, handling needs, service selection, or an existing appointment. For a new reservation, use the booking flow so availability stays accurate.</p>
                 </div>
-            </div>
+            </section>
 
-            {/* Content Container */}
-            <div className='mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[0.9fr_1.1fr] lg:px-8'>
-
-                {/* Details Panel */}
-                <section className='space-y-4'>
-                    <h2 className='font-serif text-xl font-bold text-slate-900'>Contact Details</h2>
-                    <p className='text-sm text-slate-600'>
-                        Looking to schedule an appointment? Visit our{' '}
-                        <Link to='/booking' className='font-bold text-[#C25E2B] hover:underline'>Booking Page</Link>.
-                    </p>
-
-                    <div className='grid gap-3 sm:grid-cols-2 lg:grid-cols-1'>
-                        <InfoCard icon={MapPin} label='Location' text='Baliuag City, Bulacan, Philippines' />
-                        <InfoCard icon={Phone} label='Salon Phone' text='+63 975 669 2647' />
-                        <InfoCard icon={Mail} label='Email Inquiry' text='contact@timmytails.com' />
-                        <InfoCard icon={Clock3} label='Salon Hours' text='Mon – Sat: 8:00 AM – 6:00 PM' />
+            <section className='mx-auto grid max-w-[1480px] gap-8 px-5 py-12 sm:px-6 lg:grid-cols-[.72fr_1.28fr] lg:px-8 lg:py-16'>
+                <aside>
+                    <div className='rounded-[1.75rem] bg-[#13231B] p-6 text-white sm:p-7'>
+                        <p className='text-[10px] font-extrabold uppercase tracking-[.16em] text-[#E5B95D]'>Location & Hours</p>
+                        <h2 className='mt-3 font-serif text-3xl'>TimmyTails Baliuag</h2>
+                        <div className='mt-7 divide-y divide-white/10'>
+                            <InfoRow icon={MapPin} label='Location' text='Baliuag City, Bulacan, Philippines' />
+                            <InfoRow icon={Phone} label='Phone' text='+63 975 669 2647' />
+                            <InfoRow icon={Mail} label='Email' text='contact@timmytails.com' />
+                            <InfoRow icon={Clock3} label='Hours' text='Mon–Sat · 8:00 AM–6:00 PM' />
+                        </div>
+                        <Link to='/booking' className='mt-6 inline-flex items-center gap-2 text-sm font-extrabold text-[#F3D58C]'>Need a slot instead? Book here <ArrowRight size={15} /></Link>
                     </div>
-                </section>
+                </aside>
 
-                {/* Contact Form Panel */}
-                <form onSubmit={submit} className='space-y-4 rounded-xl border border-slate-200 bg-white p-6 sm:p-8'>
-                    <div>
-                        <h2 className='font-serif text-xl font-bold text-slate-900'>Send a Message</h2>
-                        <p className='mt-0.5 text-xs text-slate-500'>We usually reply within one business day.</p>
+                <form onSubmit={submit} className='rounded-[1.75rem] border border-[#DDE4DE] bg-white p-6 sm:p-8'>
+                    <div><p className='text-[10px] font-extrabold uppercase tracking-[.14em] text-[#2F6B57]'>Send a message</p><h2 className='mt-2 font-serif text-3xl'>Tell us what you need help with.</h2><p className='mt-2 text-sm text-[#68776F]'>We usually reply within one business day.</p></div>
+                    <div className='mt-7 grid gap-5 sm:grid-cols-2'>
+                        <Field label='Full name' name='name' placeholder='e.g. Juan dela Cruz' value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
+                        <Field label='Email address' name='email' type='email' placeholder='example@gmail.com' value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
                     </div>
-
-                    <div className='grid gap-4 sm:grid-cols-2'>
-                        <Field label='Full Name' name='name' placeholder='e.g. Juan dela Cruz' value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-                        <Field label='Email Address' name='email' type='email' placeholder='example@gmail.com' value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} />
-                    </div>
-
-                    <PhoneField
-                        label='Mobile Phone Number'
-                        name='phone'
-                        value={form.phone}
-                        onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                        placeholder='917 123 4567'
-                    />
-
-                    <div>
+                    <div className='mt-5'><PhoneField label='Mobile phone number' name='phone' value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} placeholder='917 123 4567' /></div>
+                    <label className='mt-5 block'>
                         <Label>Message</Label>
-                        <textarea
-                            name='message'
-                            value={form.message}
-                            onChange={(e) => setForm({ ...form, message: e.target.value })}
-                            required
-                            minLength={10}
-                            maxLength={1000}
-                            rows={4}
-                            placeholder='Write your inquiry or question here...'
-                            className='w-full rounded-lg border border-slate-300 bg-white px-3.5 py-2.5 text-sm outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20 placeholder:text-slate-400'
-                        />
-                        <p className='mt-1 text-right text-[11px] font-medium text-slate-500'>{form.message.length}/1000</p>
-                    </div>
-
-                    <button
-                        disabled={submitting}
-                        className='inline-flex w-full items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-6 py-3 font-bold text-white transition hover:bg-[#A84E20] disabled:opacity-60 sm:w-auto text-sm'
-                    >
-                        <Send size={15} />
-                        <span>{submitting ? 'Sending Message...' : 'Send Message'}</span>
-                    </button>
+                        <textarea name='message' value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} required minLength={10} maxLength={1000} rows={6} placeholder='Write your inquiry or question here…' className='w-full rounded-xl border border-[#D5DDD7] bg-[#FAFBF8] px-4 py-3 text-sm outline-none transition placeholder:text-[#9AA69F] focus:border-[#2F6B57] focus:ring-4 focus:ring-[#DCE9E0]' />
+                        <p className='mt-1 text-right text-[10px] font-bold text-[#8A978F]'>{form.message.length}/1000</p>
+                    </label>
+                    <button disabled={submitting} className='tt-primary mt-6 px-5 disabled:opacity-60'><Send size={16} />{submitting ? 'Sending message…' : 'Send message'}</button>
                 </form>
-            </div>
+            </section>
         </div>
     )
 }
 
-function InfoCard({ icon, label, text }) {
-    return (
-        <div className='flex items-center gap-3.5 rounded-xl border border-slate-200 bg-white p-4'>
-            <span className='grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-slate-100 text-[#C25E2B]'>
-                {createElement(icon, { size: 18 })}
-            </span>
-            <div>
-                <p className='text-[10px] font-bold uppercase tracking-wider text-slate-500'>{label}</p>
-                <p className='mt-0.5 text-sm font-semibold text-slate-900'>{text}</p>
-            </div>
-        </div>
-    )
+function InfoRow({ icon, label, text }) {
+    return <div className='flex gap-3 py-4 first:pt-0 last:pb-0'><span className='grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white/8 text-[#E8795B]'>{createElement(icon, { size: 16 })}</span><div><p className='text-[9px] font-extrabold uppercase tracking-[.13em] text-[#90A49A]'>{label}</p><p className='mt-1 text-sm font-bold text-[#E4EBE7]'>{text}</p></div></div>
 }
-
-function Label({ children }) {
-    return <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700'>{children}</span>
-}
-
-function Field({ label, ...props }) {
-    return (
-        <label className='block'>
-            <Label>{label}</Label>
-            <input
-                required
-                className='h-10 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20 placeholder:text-slate-400'
-                {...props}
-            />
-        </label>
-    )
-}
+function Label({ children }) { return <span className='mb-2 block text-xs font-extrabold text-[#405148]'>{children}</span> }
+function Field({ label, ...props }) { return <label className='block'><Label>{label}</Label><input required className='h-12 w-full rounded-xl border border-[#D5DDD7] bg-[#FAFBF8] px-4 text-sm outline-none transition placeholder:text-[#9AA69F] focus:border-[#2F6B57] focus:ring-4 focus:ring-[#DCE9E0]' {...props} /></label> }

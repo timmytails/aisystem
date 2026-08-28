@@ -1,89 +1,70 @@
 import { Link } from 'react-router-dom'
-import { Bath, CalendarDays, Clock3, Ear, Scissors, Sparkles, WandSparkles } from 'lucide-react'
+import { ArrowRight, Bath, CalendarDays, Clock3, Ear, Scissors, Sparkles, WandSparkles } from 'lucide-react'
 
 const services = [
-    { icon: Bath, name: 'Basic Grooming', price: 500, duration: '60 minutes', desc: 'Refreshing bath with coat conditioner, gentle brush-out, nail trimming, ear hygiene, and a fluff blow dry.', ai: false },
-    { icon: Sparkles, name: 'Full Grooming', price: 1200, duration: '120 minutes', desc: 'Complete spa care including bath, styling haircut, sanitary trim, pad cleaning, and customized coat finishing.', ai: true },
-    { icon: WandSparkles, name: 'Custom Styling', price: 1000, duration: '90 minutes', desc: 'A specialized haircut session designed around your chosen style reference or custom coat pattern.', ai: true },
-    { icon: Bath, name: 'Bath & Blow Dry', price: 800, duration: '90 minutes', desc: 'Deep cleansing shampoo, soothing conditioner, thorough drying, and complete coat de-shedding brushing.', ai: false },
-    { icon: Scissors, name: 'Nail Trimming', price: 200, duration: '30 minutes', desc: 'Careful nail clipping and edge smoothing for dogs and cats to maintain comfort and paw health.', ai: false },
-    { icon: Ear, name: 'Ear Cleaning', price: 250, duration: '30 minutes', desc: 'Gentle external ear cleaning and wax removal to keep ears fresh, clean, and healthy.', ai: false }
+    { icon: Bath, name: 'Basic Grooming', price: 500, duration: '60 min', desc: 'A practical maintenance visit with bath, conditioner, brush-out, nail trim, ear hygiene, and fluff dry.', category: 'Routine care' },
+    { icon: Sparkles, name: 'Full Grooming', price: 1200, duration: '120 min', desc: 'Complete grooming with bath, haircut, sanitary trim, pad cleaning, finishing, and style consultation.', category: 'Complete care', featured: true, ai: true },
+    { icon: WandSparkles, name: 'Custom Styling', price: 1000, duration: '90 min', desc: 'A haircut session built around a chosen visual reference, coat goals, and your pet’s practical needs.', category: 'Haircut', ai: true },
+    { icon: Bath, name: 'Bath & Blow Dry', price: 800, duration: '90 min', desc: 'Deep cleansing, conditioner, thorough drying, and coat brushing for a clean, comfortable reset.', category: 'Coat care' },
+    { icon: Scissors, name: 'Nail Trimming', price: 200, duration: '30 min', desc: 'Careful nail clipping and edge smoothing to maintain paw comfort and everyday mobility.', category: 'Add-on' },
+    { icon: Ear, name: 'Ear Cleaning', price: 250, duration: '30 min', desc: 'Gentle external ear cleaning and wax removal to keep ears clean and fresh.', category: 'Add-on' }
 ]
 
 export default function Services() {
     return (
-        <div className='min-h-screen bg-[#F8F7F4] px-4 py-12 text-slate-900 sm:px-6 lg:px-8'>
-            <div className='mx-auto max-w-7xl'>
-
-                {/* Header */}
-                <div className='mx-auto max-w-3xl text-center'>
-                    <span className='inline-block rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
-                        Grooming Menu
-                    </span>
-                    <h1 className='mt-2 font-serif text-3xl font-bold tracking-tight text-slate-900 sm:text-5xl'>
-                        Professional Care for Your Companion
-                    </h1>
-                    <p className='mt-3 text-sm text-slate-600 sm:text-base'>
-                        Whether your pet needs a routine bath &amp; nail trim or a full styling haircut, our certified groomers provide compassionate treatment for every breed.
-                    </p>
+        <div className='min-h-screen bg-[#F6F7F2] text-[#13231B]'>
+            <section className='border-b border-[#DDE4DE] bg-white'>
+                <div className='mx-auto grid max-w-[1480px] gap-8 px-5 py-14 sm:px-6 lg:grid-cols-[1fr_.7fr] lg:items-end lg:px-8 lg:py-20'>
+                    <div>
+                        <p className='tt-kicker'>Services & pricing</p>
+                        <h1 className='mt-4 max-w-4xl font-serif text-[clamp(3.2rem,7vw,6.2rem)] leading-[.92] tracking-[-.04em]'>Choose the amount of care your pet actually needs.</h1>
+                    </div>
+                    <p className='max-w-xl text-sm leading-7 text-[#68776F] lg:justify-self-end'>Prices are intentionally simple to scan. Every service shows its typical duration and what kind of visit it is, so you can compare without decoding salon terminology.</p>
                 </div>
+            </section>
 
-                {/* Services Grid */}
-                <div className='mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
-                    {services.map((s) => {
-                        const Icon = s.icon
+            <section className='mx-auto max-w-[1480px] px-5 py-12 sm:px-6 lg:px-8 lg:py-16'>
+                <div className='grid gap-4 lg:grid-cols-2'>
+                    {services.map((service, index) => {
+                        const Icon = service.icon
                         return (
-                            <article
-                                key={s.name}
-                                className='flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 transition hover:border-slate-300'
-                            >
-                                <div>
-                                    <div className='flex items-start justify-between gap-3'>
-                                        <span className='inline-grid h-10 w-10 place-items-center rounded-lg bg-slate-100 text-[#C25E2B]'>
-                                            <Icon size={20} />
-                                        </span>
-                                        {s.ai && (
-                                            <span className='inline-flex items-center gap-1 rounded border border-emerald-200 bg-emerald-50 px-2.5 py-0.5 text-[11px] font-bold text-emerald-800'>
-                                                <Sparkles size={12} />
-                                                <span>AI Style Preview</span>
-                                            </span>
-                                        )}
+                            <article key={service.name} className={`group grid min-h-[280px] gap-6 overflow-hidden border border-[#DDE4DE] p-6 sm:grid-cols-[1fr_auto] sm:p-7 ${service.featured ? 'bg-[#13231B] text-white lg:row-span-2 lg:min-h-[576px]' : 'bg-white'} ${index === 0 ? 'rounded-tl-[1.8rem]' : ''} ${index === services.length - 1 ? 'rounded-br-[1.8rem]' : ''}`}>
+                                <div className='flex flex-col'>
+                                    <div className='flex items-center gap-3'>
+                                        <span className={`grid h-11 w-11 place-items-center rounded-2xl ${service.featured ? 'bg-[#E8795B] text-[#13231B]' : 'bg-[#EDF3EE] text-[#1F4D3E]'}`}><Icon size={19} /></span>
+                                        <span className={`text-[10px] font-extrabold uppercase tracking-[.15em] ${service.featured ? 'text-[#E5B95D]' : 'text-[#2F6B57]'}`}>{service.category}</span>
                                     </div>
-                                    <h2 className='mt-4 font-serif text-xl font-bold text-slate-900'>{s.name}</h2>
-                                    <p className='mt-2 text-sm leading-relaxed text-slate-600'>{s.desc}</p>
+                                    <div className='mt-auto pt-12'>
+                                        <div className='flex flex-wrap items-center gap-2'>
+                                            <h2 className='font-serif text-3xl sm:text-4xl'>{service.name}</h2>
+                                            {service.ai && <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-[.11em] ${service.featured ? 'bg-white/10 text-[#F3D58C]' : 'bg-[#FBE9E4] text-[#B95843]'}`}><Sparkles size={11} />Style preview</span>}
+                                        </div>
+                                        <p className={`mt-3 max-w-xl text-sm leading-7 ${service.featured ? 'text-[#C4D0C9]' : 'text-[#68776F]'}`}>{service.desc}</p>
+                                    </div>
                                 </div>
-
-                                <div className='mt-6 flex items-center justify-between border-t border-slate-100 pt-4'>
-                                    <span className='font-serif text-2xl font-bold text-[#C25E2B]'>
-                                        ₱{s.price.toLocaleString('en-PH')}
-                                    </span>
-                                    <span className='flex items-center gap-1.5 text-xs font-semibold text-slate-500'>
-                                        <Clock3 size={14} />
-                                        <span>{s.duration}</span>
-                                    </span>
+                                <div className='flex items-end justify-between gap-6 border-t pt-5 sm:flex-col sm:items-end sm:border-l sm:border-t-0 sm:pl-6 sm:pt-0'>
+                                    <div className='sm:text-right'>
+                                        <p className='font-serif text-3xl'>₱{service.price.toLocaleString('en-PH')}</p>
+                                        <p className={`mt-1 inline-flex items-center gap-1 text-xs font-bold ${service.featured ? 'text-[#AFC0B6]' : 'text-[#7A8880]'}`}><Clock3 size={13} />{service.duration}</p>
+                                    </div>
+                                    <span className={`grid h-10 w-10 place-items-center rounded-full transition group-hover:translate-x-1 ${service.featured ? 'bg-white text-[#13231B]' : 'bg-[#13231B] text-white'}`}><ArrowRight size={17} /></span>
                                 </div>
                             </article>
                         )
                     })}
                 </div>
+            </section>
 
-                {/* CTA Banner */}
-                <div className='mt-14 rounded-xl border border-slate-800 bg-[#0F172A] p-8 text-center text-white sm:p-10'>
-                    <div className='flex items-center justify-center gap-2'>
-                        <CalendarDays size={20} className='text-[#C25E2B]' />
-                        <h2 className='font-serif text-2xl font-bold sm:text-3xl'>Ready to reserve a grooming slot?</h2>
+            <section className='mx-auto max-w-[1480px] px-5 pb-16 sm:px-6 lg:px-8 lg:pb-24'>
+                <div className='grid gap-6 rounded-[2rem] bg-[#DCE9E0] p-7 sm:p-9 lg:grid-cols-[1fr_auto] lg:items-center'>
+                    <div>
+                        <p className='text-[10px] font-extrabold uppercase tracking-[.15em] text-[#2F6B57]'>Ready when you are</p>
+                        <h2 className='mt-2 font-serif text-3xl sm:text-4xl'>Reserve the visit that fits your pet.</h2>
+                        <p className='mt-2 max-w-2xl text-sm leading-6 text-[#5F6F66]'>Select a saved pet, choose a service, and confirm an available schedule in one flow.</p>
                     </div>
-                    <p className='mx-auto mt-2 max-w-xl text-sm leading-relaxed text-slate-300 sm:text-base'>
-                        Select your saved pet profile, pick your preferred haircut style preview, and confirm a guaranteed 2-hour schedule.
-                    </p>
-                    <Link
-                        to='/booking'
-                        className='mt-6 inline-flex items-center gap-2 rounded-lg bg-[#C25E2B] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#A84E20]'
-                    >
-                        <span>Book an Appointment</span>
-                    </Link>
+                    <Link to='/booking' className='tt-primary px-5'><CalendarDays size={17} />Book an appointment</Link>
                 </div>
-            </div>
+            </section>
         </div>
     )
 }

@@ -143,3 +143,26 @@ See `AI_PREVIEW_UPDATE_TESTING.md` for end-to-end cases and `AI_GROOMING_PREVIEW
 ## Existing database compatibility
 
 Keep the same `MONGO_URI` to reuse existing records. New AI-preview fields are additive. Appointments created by older clients can still use the legacy preview-image field, while new clients use trusted preview IDs. Existing `homeAddress` strings also remain available as a compatibility fallback.
+
+## 2026 UI redesign and admin account-status persistence
+
+The application shell and administration workspace use the TimmyTails six-color interface palette defined in `frontend/src/index.css`:
+
+- `#1B1931` Dark Navy
+- `#44174E` Deep Purple
+- `#662249` Plum
+- `#A34054` Muted Rose
+- `#ED9E5B` Soft Orange
+- `#E9BCB9` Pale Pink
+
+The redesign audit and layout map are documented in `REDESIGN_AUDIT.md`.
+
+Customer enforcement now has one source of truth: `User.accountStatus` in MongoDB. The admin status endpoint validates and persists the account status before returning it, the customer list reads the persisted value directly, and login/booking checks no longer infer enforcement from notification wording. Notifications remain customer communication only.
+
+Persistence verification is covered by:
+
+```bash
+node --test backend-express/tests/accountStatusPersistence.test.js
+node --test backend-express/tests/adminBanEndToEnd.test.js
+node --test frontend/tests/customerStatusPersistence.test.js
+```

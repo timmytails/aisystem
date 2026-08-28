@@ -77,27 +77,27 @@ export default function CompleteProfile() {
     }
 
     return (
-        <div className='min-h-screen bg-[#F8F7F4] px-4 py-12 text-slate-900 sm:px-6 lg:px-8'>
+        <div className='min-h-screen bg-[#F6F7F2] px-4 py-12 text-[#13231B] sm:px-6 lg:px-8'>
             <div className='mx-auto max-w-2xl'>
 
                 {/* Brand title */}
                 <div className='mb-6'>
-                    <span className='font-serif text-2xl font-bold tracking-tight text-slate-900'>
+                    <span className='font-serif text-2xl font-bold tracking-tight text-[#13231B]'>
                         TimmyTails
                     </span>
                 </div>
 
-                <div className='rounded-xl border border-slate-200 bg-white p-6 sm:p-10'>
+                <div className='rounded-xl border border-[#DDE4DE] bg-white p-6 sm:p-10'>
                     {/* Step indicator */}
                     <div className='mb-6 flex items-center gap-3'>
-                        <span className='inline-flex items-center gap-1.5 rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold text-[#C25E2B]'>
+                        <span className='inline-flex items-center gap-1.5 rounded-md bg-[#2F6B57]/10 px-3 py-1 text-xs font-bold text-[#2F6B57]'>
                             Step 2 of 2
                         </span>
-                        <span className='h-px flex-1 bg-slate-200' />
+                        <span className='h-px flex-1 bg-[#F6F7F2]' />
                     </div>
 
-                    <h1 className='font-serif text-3xl font-bold text-slate-900'>Complete Your Profile</h1>
-                    <p className='mt-1 text-sm text-slate-600'>
+                    <h1 className='font-serif text-3xl font-bold text-[#13231B]'>Complete Your Profile</h1>
+                    <p className='mt-1 text-sm text-[#405148]'>
                         Your Google account is connected. Please fill in your contact details and verify your mobile number.
                     </p>
 
@@ -108,9 +108,9 @@ export default function CompleteProfile() {
                         </div>
 
                         <label className='block'>
-                            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700'>Email Address</span>
-                            <input value={user?.email || ''} readOnly className='h-10 w-full rounded-lg border border-slate-200 bg-slate-100 px-3.5 text-sm text-slate-500 cursor-not-allowed' />
-                            <span className='mt-1 block text-xs text-slate-500'>Managed by your Google account.</span>
+                            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#405148]'>Email Address</span>
+                            <input value={user?.email || ''} readOnly className='h-10 w-full rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] px-3.5 text-sm text-[#405148] cursor-not-allowed' />
+                            <span className='mt-1 block text-xs text-[#405148]'>Managed by your Google account.</span>
                         </label>
 
                         <div>
@@ -118,15 +118,15 @@ export default function CompleteProfile() {
                         </div>
 
                         {/* OTP Block */}
-                        <div className='rounded-lg border border-slate-200 bg-slate-50 p-4'>
+                        <div className='rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] p-4'>
                             <div className='flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between'>
                                 <div className='flex items-start gap-3'>
-                                    <span className={`mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg ${otpSent ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-200 text-[#C25E2B]'}`}>
+                                    <span className={`mt-0.5 grid h-8 w-8 shrink-0 place-items-center rounded-lg ${otpSent ? 'bg-[#E4F1EA] text-[#216245]' : 'bg-[#F6F7F2] text-[#2F6B57]'}`}>
                                         {otpSent ? <CheckCircle2 size={18} /> : <ShieldCheck size={18} />}
                                     </span>
                                     <div>
-                                        <p className='font-semibold text-slate-900 text-sm'>Mobile Phone Verification</p>
-                                        <p className='mt-0.5 text-xs text-slate-600'>
+                                        <p className='font-semibold text-[#13231B] text-sm'>Mobile Phone Verification</p>
+                                        <p className='mt-0.5 text-xs text-[#405148]'>
                                             {otpSent ? (otpTimer > 0 ? `Code sent to ${form.phone}. Resend available in ${otpTimer}s.` : `A verification code was sent to ${form.phone}.`) : 'Request an OTP code before saving.'}
                                         </p>
                                     </div>
@@ -135,7 +135,7 @@ export default function CompleteProfile() {
                                     type='button'
                                     onClick={requestOtp}
                                     disabled={sendingOtp || (otpSent && otpTimer > 0)}
-                                    className='shrink-0 rounded-lg border border-[#C25E2B] px-3.5 py-1.5 text-xs font-bold text-[#C25E2B] transition hover:bg-[#C25E2B]/10 disabled:opacity-60'
+                                    className='shrink-0 rounded-lg border border-[#DDE4DE] px-3.5 py-1.5 text-xs font-bold text-[#2F6B57] transition hover:bg-[#1F4D3E]/10 disabled:opacity-60'
                                 >
                                     {sendingOtp ? 'Sending...' : otpSent ? (otpTimer > 0 ? `Resend (${otpTimer}s)` : 'Resend OTP') : 'Send OTP'}
                                 </button>
@@ -159,9 +159,9 @@ export default function CompleteProfile() {
                         </div>
 
                         {/* Address Block */}
-                        <div className='border-t border-slate-200 pt-5'>
-                            <h2 className='font-serif text-lg font-bold text-slate-900'>Home Address</h2>
-                            <p className='mt-0.5 text-xs text-slate-500'>Required for grooming appointment confirmation.</p>
+                        <div className='border-t border-[#2F6B57] pt-5'>
+                            <h2 className='font-serif text-lg font-bold text-[#13231B]'>Home Address</h2>
+                            <p className='mt-0.5 text-xs text-[#405148]'>Required for grooming appointment confirmation.</p>
                             <div className='mt-4 space-y-4'>
                                 <Field label='Street / House Number' name='street' value={form.address.street} onChange={updateAddress} placeholder='e.g. 123 Grooming Street' autoComplete='street-address' />
                                 <div className='grid gap-4 sm:grid-cols-2'>
@@ -174,7 +174,7 @@ export default function CompleteProfile() {
 
                         <button
                             disabled={submitting || !otpSent || otp.length !== 6}
-                            className='h-10 w-full rounded-lg bg-[#C25E2B] px-5 font-bold text-white transition hover:bg-[#A84E20] disabled:opacity-60 text-sm'
+                            className='h-10 w-full rounded-lg bg-[#2F6B57] px-5 font-bold text-[#F6F7F2] transition hover:bg-[#1F4D3E] disabled:opacity-60 text-sm'
                         >
                             {submitting ? 'Saving Profile...' : 'Verify & Save Profile'}
                         </button>
@@ -182,7 +182,7 @@ export default function CompleteProfile() {
 
                     <button
                         onClick={() => { logout(); navigate('/login') }}
-                        className='mt-5 w-full text-xs font-bold text-slate-600 hover:text-slate-900'
+                        className='mt-5 w-full text-xs font-bold text-[#405148] hover:text-[#13231B]'
                     >
                         Sign out and use another account
                     </button>
@@ -195,10 +195,10 @@ export default function CompleteProfile() {
 function Field({ label, required = true, ...props }) {
     return (
         <label className='block'>
-            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700'>{label}</span>
+            <span className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-[#405148]'>{label}</span>
             <input
                 required={required}
-                className='h-10 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20 placeholder:text-slate-400'
+                className='h-10 w-full rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] px-3.5 text-sm font-medium text-[#13231B] outline-none transition focus:border-[#2F6B57] focus:ring-2 focus:ring-[#2F6B57]/20 placeholder:text-[#9AA69F]'
                 {...props}
             />
         </label>

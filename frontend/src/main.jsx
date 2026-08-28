@@ -15,13 +15,13 @@ ReactDOM.createRoot(document.getElementById('root')).render(
                     duration: 4000,
                     style: {
                         borderRadius: '12px',
-                        border: '1px solid #eadbc9',
-                        background: '#fffdf9',
-                        color: '#201711',
+                        border: '1px solid #F6F7F2',
+                        background: '#F6F7F2',
+                        color: '#13231B',
                         fontWeight: 600
                     },
-                    success: { iconTheme: { primary: '#24523f', secondary: '#ffffff' } },
-                    error: { iconTheme: { primary: '#b42318', secondary: '#ffffff' } }
+                    success: { iconTheme: { primary: '#13231B', secondary: '#F6F7F2' } },
+                    error: { iconTheme: { primary: '#2F6B57', secondary: '#F6F7F2' } }
                 }}
             />
         </AuthProvider>

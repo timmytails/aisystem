@@ -91,97 +91,52 @@ export default function Login() {
     }, [finishLogin, googleLogin])
 
     return (
-        <div className='min-h-screen w-full bg-[#F8F7F4] text-slate-900 lg:grid lg:h-screen lg:grid-cols-12 lg:overflow-hidden'>
-
-            {/* Left Image Side */}
-            <div className='relative hidden h-full overflow-hidden bg-[#0F172A] lg:col-span-5 lg:block xl:col-span-6'>
-                <img
-                    src={loginImage}
-                    alt='Professional groomer pampering a pet'
-                    className='h-full w-full object-cover opacity-60'
-                />
-                <div className='absolute inset-0 bg-slate-950/40' />
-
-                {/* Brand title */}
-                <div className='absolute left-8 top-8'>
-                    <span className='font-serif text-2xl font-bold tracking-tight text-white'>
-                        TimmyTails
-                    </span>
+        <div className='min-h-screen bg-[#F6F7F2] text-[#13231B] lg:grid lg:grid-cols-[1.05fr_.95fr]'>
+            <section className='relative hidden min-h-screen overflow-hidden bg-[#13231B] lg:block'>
+                <img src={loginImage} alt='Professional groomer pampering a pet' className='absolute inset-0 h-full w-full object-cover opacity-75' />
+                <div className='absolute inset-0 bg-gradient-to-t from-[#13231B] via-[#13231B]/25 to-[#13231B]/20' />
+                <div className='relative flex h-full min-h-screen flex-col justify-between p-10 xl:p-14'>
+                    <Link to='/' className='flex w-fit items-center text-white transition hover:opacity-85'>
+                        <span className='font-serif text-3xl font-bold tracking-tight'>TimmyTails</span>
+                    </Link>
+                    <div className='max-w-xl'>
+                        <span className='inline-flex rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[.15em] text-[#F3D58C] backdrop-blur'>Your pet-care workspace</span>
+                        <h2 className='mt-5 font-serif text-5xl leading-[.98] tracking-[-.03em] text-white xl:text-6xl'>Pick up right where your last visit left off.</h2>
+                        <p className='mt-5 max-w-lg text-sm leading-7 text-[#D2DDD6]'>Appointments, pet profiles, style references, and visit history stay connected to one account.</p>
+                    </div>
                 </div>
+            </section>
 
-                {/* Bottom quote */}
-                <div className='absolute bottom-10 left-10 right-10 border-l-2 border-[#C25E2B] pl-4 text-white'>
-                    <p className='font-serif text-xl leading-relaxed text-slate-200'>
-                        &ldquo;Gentle, professional pet care with visual haircut style previews.&rdquo;
-                    </p>
-                    <p className='mt-2 text-xs font-bold uppercase tracking-widest text-slate-400'>
-                        TimmyTails Pet Grooming
-                    </p>
-                </div>
-            </div>
-
-            {/* Right Form Side */}
-            <div className='flex h-full min-h-screen items-center justify-center p-6 lg:col-span-7 lg:min-h-0 lg:overflow-y-auto xl:col-span-6'>
-                <div className='my-auto w-full max-w-md py-4'>
-
-                    {/* Back link */}
-                    <Link
-                        to='/'
-                        className='group mb-6 inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 transition hover:text-slate-900'
-                    >
-                        <ArrowLeft size={14} className='transition-transform duration-200 group-hover:-translate-x-1' />
-                        <span>Back to Home</span>
+            <main className='flex min-h-screen items-center justify-center px-5 py-8 sm:px-8 lg:px-12'>
+                <div className='w-full max-w-[470px]'>
+                    <Link to='/' className='group mb-8 inline-flex items-center gap-1.5 text-xs font-extrabold text-[#68776F] hover:text-[#13231B]'>
+                        <ArrowLeft size={14} className='transition-transform group-hover:-translate-x-1' />Back to home
                     </Link>
 
-                    {/* Brand title */}
-                    <div className='mb-2'>
-                        <span className='font-serif text-xl font-bold tracking-tight text-slate-900'>
-                            TimmyTails
-                        </span>
+                    <div className='mb-8 lg:hidden'>
+                        <p className='font-serif text-2xl'>TimmyTails</p>
                     </div>
 
-                    <h1 className='font-serif text-3xl font-bold tracking-tight text-slate-900'>
-                        Welcome Back
-                    </h1>
-                    <p className='mt-1 text-sm text-slate-600'>
-                        Sign in to view appointments, manage pet profiles, and book grooming slots.
-                    </p>
+                    <p className='text-[10px] font-extrabold uppercase tracking-[.16em] text-[#2F6B57]'>Welcome back</p>
+                    <h1 className='mt-3 font-serif text-4xl tracking-[-.02em] sm:text-5xl'>Sign in to your account.</h1>
+                    <p className='mt-3 max-w-md text-sm leading-6 text-[#68776F]'>Manage appointments, pet profiles, and grooming preferences in one place.</p>
 
-                    {/* Booking alert */}
                     {location.state?.reason === 'booking-required' && (
-                        <div className='mt-4 rounded-lg border border-[#C25E2B]/30 bg-[#C25E2B]/10 px-4 py-3 text-xs font-semibold text-[#C25E2B]'>
-                            Please sign in to complete your appointment booking.
-                        </div>
+                        <div className='mt-5 rounded-2xl border border-[#C9D9CE] bg-[#EDF3EE] px-4 py-3 text-xs font-bold text-[#1F4D3E]'>Sign in first, then we’ll return you to your booking.</div>
                     )}
 
-                    {/* Account Ban Notice Alert */}
                     {banErrorMsg && (
-                        <div className='mt-4 rounded-xl border border-red-200 bg-red-50 p-4 text-left shadow-xs'>
+                        <div className='mt-5 rounded-2xl border border-[#F0CCCC] bg-[#FBEAEA] p-4 text-left'>
                             <div className='flex items-start gap-3'>
-                                <div className='grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-red-100 text-red-600 border border-red-200'>
-                                    <Ban size={18} />
-                                </div>
-                                <div>
-                                    <h4 className='text-xs font-bold uppercase tracking-wider text-red-900'>
-                                        Account Access Suspended
-                                    </h4>
-                                    <p className='mt-1 text-xs font-medium leading-relaxed text-red-800'>
-                                        {banErrorMsg}
-                                    </p>
-                                    <p className='mt-2 border-t border-red-200/80 pt-2 text-[11px] font-normal text-red-700'>
-                                        Notice: Account access or booking privileges have been restricted due to salon policy or multiple cancellations.
-                                    </p>
-                                </div>
+                                <span className='grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-[#9E3E3E]'><Ban size={17} /></span>
+                                <div><h4 className='text-xs font-extrabold uppercase tracking-[.12em] text-[#7F3333]'>Account access suspended</h4><p className='mt-1 text-xs font-medium leading-6 text-[#7F3333]'>{banErrorMsg}</p></div>
                             </div>
                         </div>
                     )}
 
-                    {/* Form */}
-                    <form id='login-form' onSubmit={handleSubmit} className='mt-6 space-y-4'>
-                        <div>
-                            <label htmlFor='login-identifier' className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700'>
-                                Phone Number or Email
-                            </label>
+                    <form id='login-form' onSubmit={handleSubmit} className='mt-7 space-y-5'>
+                        <label className='block'>
+                            <span className='mb-2 block text-xs font-extrabold text-[#405148]'>Phone number or email</span>
                             <input
                                 id='login-identifier'
                                 type='text'
@@ -190,14 +145,12 @@ export default function Login() {
                                 required
                                 autoComplete='username'
                                 placeholder='0917 123 4567 or email@example.com'
-                                className='h-10 w-full rounded-lg border border-slate-300 bg-white px-3.5 text-sm font-medium text-slate-900 outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20 placeholder:text-slate-400'
+                                className='h-12 w-full rounded-xl border border-[#D5DDD7] bg-white px-4 text-sm font-medium text-[#13231B] outline-none transition placeholder:text-[#9AA69F] focus:border-[#2F6B57] focus:ring-4 focus:ring-[#DCE9E0]'
                             />
-                        </div>
+                        </label>
 
-                        <div>
-                            <label htmlFor='login-password' className='mb-1.5 block text-xs font-bold uppercase tracking-wider text-slate-700'>
-                                Password
-                            </label>
+                        <label className='block'>
+                            <span className='mb-2 block text-xs font-extrabold text-[#405148]'>Password</span>
                             <div className='relative'>
                                 <input
                                     id='login-password'
@@ -207,56 +160,24 @@ export default function Login() {
                                     required
                                     autoComplete='current-password'
                                     placeholder='Enter your password'
-                                    className='h-10 w-full rounded-lg border border-slate-300 bg-white pl-3.5 pr-10 text-sm font-medium text-slate-900 outline-none transition focus:border-[#C25E2B] focus:ring-2 focus:ring-[#C25E2B]/20 placeholder:text-slate-400'
+                                    className='h-12 w-full rounded-xl border border-[#D5DDD7] bg-white pl-4 pr-11 text-sm font-medium text-[#13231B] outline-none transition placeholder:text-[#9AA69F] focus:border-[#2F6B57] focus:ring-4 focus:ring-[#DCE9E0]'
                                 />
-                                <button
-                                    type='button'
-                                    onClick={() => setShowPassword((p) => !p)}
-                                    className='absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-700'
-                                    aria-label={showPassword ? 'Hide password' : 'Show password'}
-                                >
-                                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
-                                </button>
+                                <button type='button' onClick={() => setShowPassword((p) => !p)} className='absolute right-3 top-1/2 -translate-y-1/2 text-[#7A8880] hover:text-[#13231B]' aria-label={showPassword ? 'Hide password' : 'Show password'}>{showPassword ? <EyeOff size={17} /> : <Eye size={17} />}</button>
                             </div>
-                            <div className='mt-1.5 flex justify-end'>
-                                <Link to='/forgot-password' className='text-xs font-bold text-[#C25E2B] transition hover:underline'>
-                                    Forgot password?
-                                </Link>
-                            </div>
-                        </div>
+                            <span className='mt-2 flex justify-end'><Link to='/forgot-password' className='text-xs font-extrabold text-[#2F6B57] hover:underline'>Forgot password?</Link></span>
+                        </label>
 
-                        <button
-                            type='submit'
-                            disabled={submitting}
-                            className='flex h-10 w-full items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-4 text-sm font-bold text-white transition hover:bg-[#A84E20] disabled:opacity-60'
-                        >
-                            {submitting ? (
-                                <><Loader2 size={16} className='animate-spin' /><span>Signing in...</span></>
-                            ) : (
-                                <span>Sign In</span>
-                            )}
+                        <button type='submit' disabled={submitting} className='tt-primary h-12 w-full text-sm disabled:opacity-60'>
+                            {submitting ? <><Loader2 size={16} className='animate-spin' />Signing in…</> : 'Sign in'}
                         </button>
                     </form>
 
-                    {/* Divider */}
-                    <div className='my-5 flex items-center gap-3 text-[11px] font-bold uppercase tracking-widest text-slate-400'>
-                        <span className='h-px flex-1 bg-slate-200' />
-                        <span>or</span>
-                        <span className='h-px flex-1 bg-slate-200' />
-                    </div>
+                    <div className='my-6 flex items-center gap-3 text-[10px] font-extrabold uppercase tracking-[.15em] text-[#9AA69F]'><span className='h-px flex-1 bg-[#DDE4DE]' /><span>or continue with</span><span className='h-px flex-1 bg-[#DDE4DE]' /></div>
+                    <div className='mx-auto flex w-full justify-center'><GoogleSignInButton onCredential={handleGoogle} disabled={submitting} text='continue_with' /></div>
 
-                    <div className='mx-auto flex w-full max-w-[400px] justify-center'>
-                        <GoogleSignInButton onCredential={handleGoogle} disabled={submitting} text='continue_with' />
-                    </div>
-
-                    <p className='mt-6 text-center text-xs text-slate-600 sm:text-sm'>
-                        Don&apos;t have an account?{' '}
-                        <Link to='/signup' state={{ returnTo: requestedReturnTo }} className='font-bold text-[#C25E2B] transition hover:underline'>
-                            Create Account
-                        </Link>
-                    </p>
+                    <p className='mt-7 text-center text-sm text-[#68776F]'>New to TimmyTails? <Link to='/signup' state={{ returnTo: requestedReturnTo }} className='font-extrabold text-[#1F4D3E] hover:underline'>Create an account</Link></p>
                 </div>
-            </div>
+            </main>
         </div>
     )
 }

@@ -59,13 +59,13 @@ export default function StylePicker({
             <section>
                 <div className='mb-3 flex items-start gap-3'>
                     {recommended && (
-                        <span className='mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#e5f1ea] text-[#24523f]'>
+                        <span className='mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-full bg-[#F6F7F2] text-[#13231B]'>
                             <Sparkles size={17} />
                         </span>
                     )}
                     <div>
                         <h4 className='font-serif text-lg font-bold'>{title}</h4>
-                        <p className='mt-0.5 text-xs leading-5 text-[#806654]'>{description}</p>
+                        <p className='mt-0.5 text-xs leading-5 text-[#2F6B57]'>{description}</p>
                     </div>
                 </div>
 
@@ -108,7 +108,7 @@ export default function StylePicker({
                                             : canGenerate
                                                 ? `Generate ${style.name} preview`
                                                 : `${style.name} preview is not ready`}
-                                    className={`group flex h-full w-full flex-col overflow-hidden rounded-2xl border bg-white p-0 text-left align-top transition-all duration-300 transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#a84522] focus-visible:ring-offset-2 disabled:cursor-wait ${selected ? 'border-[#a84522] bg-[#fffaf6] ring-2 ring-[#a84522]/30 shadow-md -translate-y-1' : 'border-[#e5d6c5] enabled:hover:-translate-y-1 enabled:hover:border-[#c88968] enabled:hover:shadow-md'}`}
+                                    className={`group flex h-full w-full flex-col overflow-hidden rounded-2xl border bg-[#F6F7F2] p-0 text-left align-top transition-all duration-300 transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2F6B57] focus-visible:ring-offset-2 disabled:cursor-wait ${selected ? 'border-[#2F6B57] bg-[#F6F7F2] ring-2 ring-[#2F6B57]/30 shadow-md -translate-y-1' : 'border-[#F6F7F2] enabled:hover:-translate-y-1 enabled:hover:border-[#E8795B] enabled:hover:shadow-md'}`}
                                 >
                                     <span className='relative block w-full shrink-0 overflow-hidden'>
                                         {ready ? (
@@ -118,15 +118,15 @@ export default function StylePicker({
                                                 className='h-36 w-full object-cover transition-transform duration-500 group-hover:scale-105'
                                             />
                                         ) : (
-                                            <span className='grid h-36 w-full place-items-center bg-[#f7f2eb] px-5 text-center text-[#806654]'>
+                                            <span className='grid h-36 w-full place-items-center bg-[#F6F7F2] px-5 text-center text-[#2F6B57]'>
                                                 {preview.status === 'generating' ? (
                                                     <span role='status'>
-                                                        <Loader2 size={26} className='mx-auto mb-2 animate-spin text-[#24523f]' />
+                                                        <Loader2 size={26} className='mx-auto mb-2 animate-spin text-[#13231B]' />
                                                         <span className='text-xs font-semibold'>Creating this style on your pet…</span>
                                                     </span>
                                                 ) : failed ? (
                                                     <span>
-                                                        <RefreshCw size={24} className='mx-auto mb-2 text-[#a94723]' />
+                                                        <RefreshCw size={24} className='mx-auto mb-2 text-[#2F6B57]' />
                                                         <span className='text-xs font-semibold'>
                                                             {generationBusy
                                                                 ? 'Another preview is being created. Please wait.'
@@ -135,7 +135,7 @@ export default function StylePicker({
                                                     </span>
                                                 ) : (
                                                     <span>
-                                                        <ImageIcon size={26} className='mx-auto mb-2 text-[#a94723]' />
+                                                        <ImageIcon size={26} className='mx-auto mb-2 text-[#2F6B57]' />
                                                         <span className='text-xs font-semibold'>
                                                             {!photoReady
                                                                 ? 'Upload your pet’s photo first'
@@ -149,7 +149,7 @@ export default function StylePicker({
                                         )}
 
                                         {recommendation && (
-                                            <span className='absolute left-3 top-3 rounded-full bg-[#234638] px-3 py-1 text-[9px] font-bold uppercase tracking-wide text-white'>
+                                            <span className='absolute left-3 top-3 rounded-full bg-[#13231B] px-3 py-1 text-[9px] font-bold uppercase tracking-wide text-[#F6F7F2]'>
                                                 {recommendation.rank === 1
                                                     ? 'Top suggestion'
                                                     : 'Suggested'}
@@ -157,7 +157,7 @@ export default function StylePicker({
                                         )}
 
                                         {ready && (
-                                            <span className='absolute bottom-3 right-3 rounded-full bg-white/95 px-2.5 py-1 text-[9px] font-bold text-[#6f5544] shadow-sm'>Your pet</span>
+                                            <span className='absolute bottom-3 right-3 rounded-full bg-[#F6F7F2]/95 px-2.5 py-1 text-[9px] font-bold text-[#405148] shadow-sm'>Your pet</span>
                                         )}
                                     </span>
 
@@ -165,29 +165,29 @@ export default function StylePicker({
                                         <span className='flex items-start justify-between gap-3'>
                                             <span className='font-serif text-lg font-bold'>{style.name}</span>
                                             {selected && (
-                                                <span className='inline-flex shrink-0 items-center gap-1 rounded-full bg-[#fff0e7] px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide text-[#9c4424]'>
+                                                <span className='inline-flex shrink-0 items-center gap-1 rounded-full bg-[#F6F7F2] px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide text-[#2F6B57]'>
                                                     <Check size={11} />Selected
                                                 </span>
                                             )}
                                         </span>
-                                        <span className='mt-1 block text-xs leading-5 text-[#806654]'>{style.description}</span>
+                                        <span className='mt-1 block text-xs leading-5 text-[#2F6B57]'>{style.description}</span>
                                         {recommendation?.reason && (
-                                            <span className='mt-2 block border-t border-[#efe4d7] pt-2 text-[11px] leading-5 text-[#24523f]'>{recommendation.reason}</span>
+                                            <span className='mt-2 block border-t border-[#DDE4DE] pt-2 text-[11px] leading-5 text-[#13231B]'>{recommendation.reason}</span>
                                         )}
                                         {style.coatSafety && (
-                                            <span className='mt-2 block text-[11px] leading-5 text-[#8b5a2b]'>{style.coatSafety}</span>
+                                            <span className='mt-2 block text-[11px] leading-5 text-[#2F6B57]'>{style.coatSafety}</span>
                                         )}
                                     </span>
                                 </button>
 
                                 {selected && ready && (
-                                    <div className='col-span-full overflow-hidden rounded-2xl border border-[#cfbca9] bg-white xl:hidden'>
-                                        <div className='flex items-center justify-between gap-3 border-b border-[#eadfce] px-4 py-3'>
+                                    <div className='col-span-full overflow-hidden rounded-2xl border border-[#DDE4DE] bg-white xl:hidden'>
+                                        <div className='flex items-center justify-between gap-3 border-b border-[#DDE4DE] px-4 py-3'>
                                             <div>
-                                                <p className='text-[10px] font-bold uppercase tracking-[0.16em] text-[#a94723]'>Selected preview</p>
+                                                <p className='text-[10px] font-bold uppercase tracking-[0.16em] text-[#2F6B57]'>Selected preview</p>
                                                 <p className='font-serif text-lg font-bold'>{style.name}</p>
                                             </div>
-                                            <span className='grid h-8 w-8 place-items-center rounded-full bg-[#e7f2eb] text-[#24523f]'>
+                                            <span className='grid h-8 w-8 place-items-center rounded-full bg-[#F6F7F2] text-[#13231B]'>
                                                 <Check size={16} />
                                             </span>
                                         </div>
@@ -211,10 +211,10 @@ export default function StylePicker({
             <div className='flex flex-wrap items-end justify-between gap-3'>
                 <div>
                     <h3 className='font-serif text-xl font-bold'>Choose your pet’s style</h3>
-                    <p className='mt-1 text-sm text-[#806654]'>The top recommendation is created first. Generate any other style when you want to compare it.</p>
+                    <p className='mt-1 text-sm text-[#2F6B57]'>The top recommendation is created first. Generate any other style when you want to compare it.</p>
                 </div>
                 {loading && (
-                    <span className='text-xs font-semibold text-[#806654]' role='status'>Preparing style choices…</span>
+                    <span className='text-xs font-semibold text-[#2F6B57]' role='status'>Preparing style choices…</span>
                 )}
             </div>
 
@@ -233,7 +233,7 @@ export default function StylePicker({
                     })}
                 </>
             ) : (
-                <div className='rounded-2xl border border-[#e5d6c5] bg-white p-6 text-sm text-[#806654]'>No compatible styles are available for this pet.</div>
+                <div className='rounded-2xl border border-[#DDE4DE] bg-white p-6 text-sm text-[#2F6B57]'>No compatible styles are available for this pet.</div>
             )}
         </div>
     )
