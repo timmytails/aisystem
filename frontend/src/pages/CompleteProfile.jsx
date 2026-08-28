@@ -81,8 +81,8 @@ export default function CompleteProfile() {
             <div className='mx-auto max-w-2xl'>
 
                 {/* Brand title */}
-                <div className='mb-6 flex items-center gap-2.5'>
-                    <img src='/logo.png' alt='TimmyTails logo' className='h-8 w-8 object-contain rounded-lg' />
+                <div className='mb-6 flex items-center gap-3'>
+                    <img src='/logo.png' alt='TimmyTails logo' className='h-9 w-9 rounded-full object-cover shadow-xs ring-1 ring-[#DDE4DE] bg-white' />
                     <span className='font-serif text-2xl font-bold tracking-tight text-[#13231B]'>
                         TimmyTails
                     </span>

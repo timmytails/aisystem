@@ -51,7 +51,7 @@ export default function Header() {
                     className='flex shrink-0 items-center gap-2.5 text-[#13231B] transition hover:opacity-85'
                     aria-label='TimmyTails home'
                 >
-                    <img src='/logo.png' alt='TimmyTails logo' className='h-9 w-9 object-contain rounded-lg' />
+                    <img src='/logo.png' alt='TimmyTails logo' className='h-10 w-10 rounded-full object-cover shadow-xs ring-2 ring-[#DDE4DE]/80 bg-white' />
                     <span className='font-serif text-[24px] font-bold tracking-tight text-[#13231B]'>
                         TimmyTails
                     </span>

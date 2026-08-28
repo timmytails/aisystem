@@ -102,8 +102,8 @@ export default function Login() {
                 <img src={loginImage} alt='Professional groomer pampering a pet' className='absolute inset-0 h-full w-full object-cover opacity-75' />
                 <div className='absolute inset-0 bg-gradient-to-t from-[#13231B] via-[#13231B]/25 to-[#13231B]/20' />
                 <div className='relative flex h-full min-h-screen flex-col justify-between p-10 xl:p-14'>
-                    <Link to='/' className='flex w-fit items-center gap-2.5 text-white transition hover:opacity-85'>
-                        <img src='/logo.png' alt='TimmyTails logo' className='h-9 w-9 object-contain rounded-lg' />
+                    <Link to='/' className='flex w-fit items-center gap-3 text-white transition hover:opacity-85'>
+                        <img src='/logo.png' alt='TimmyTails logo' className='h-10 w-10 rounded-full object-cover shadow-xs ring-2 ring-white/30 bg-white' />
                         <span className='font-serif text-3xl font-bold tracking-tight'>TimmyTails</span>
                     </Link>
                     <div className='max-w-xl'>
@@ -120,8 +120,8 @@ export default function Login() {
                         <ArrowLeft size={14} className='transition-transform group-hover:-translate-x-1' />Back to home
                     </Link>
 
-                    <div className='mb-8 flex items-center gap-2.5 lg:hidden'>
-                        <img src='/logo.png' alt='TimmyTails logo' className='h-8 w-8 object-contain rounded-lg' />
+                    <div className='mb-8 flex items-center gap-3 lg:hidden'>
+                        <img src='/logo.png' alt='TimmyTails logo' className='h-9 w-9 rounded-full object-cover shadow-xs ring-2 ring-[#DDE4DE] bg-white' />
                         <p className='font-serif text-2xl font-bold tracking-tight text-[#13231B]'>TimmyTails</p>
                     </div>
 

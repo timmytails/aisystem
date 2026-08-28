@@ -124,8 +124,8 @@ export default function Signup() {
                 />
                 <div className='absolute inset-0 bg-[#13231B]/40' />
 
-                <div className='absolute left-8 top-8 flex items-center gap-2.5'>
-                    <img src='/logo.png' alt='TimmyTails logo' className='h-8 w-8 object-contain rounded-lg' />
+                <div className='absolute left-8 top-8 flex items-center gap-3'>
+                    <img src='/logo.png' alt='TimmyTails logo' className='h-9 w-9 rounded-full object-cover shadow-xs ring-2 ring-white/30 bg-white' />
                     <span className='font-serif text-2xl font-bold tracking-tight text-[#F6F7F2]'>
                         TimmyTails
                     </span>
@@ -158,8 +158,8 @@ export default function Signup() {
                     <div className='rounded-xl border border-[#DDE4DE] bg-white p-6 sm:p-10'>
 
                         {/* Brand */}
-                        <div className='mb-2 flex items-center gap-2'>
-                            <img src='/logo.png' alt='TimmyTails logo' className='h-6 w-6 object-contain rounded-md' />
+                        <div className='mb-2 flex items-center gap-2.5'>
+                            <img src='/logo.png' alt='TimmyTails logo' className='h-7 w-7 rounded-full object-cover shadow-xs ring-1 ring-[#DDE4DE] bg-white' />
                             <span className='font-serif text-xl font-bold tracking-tight text-[#13231B]'>
                                 TimmyTails
                             </span>

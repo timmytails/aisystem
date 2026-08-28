@@ -1060,7 +1060,7 @@ function AdminDesktopRail({
         <aside className='sticky top-0 hidden h-screen flex-col border-r border-[#274A3B] bg-[#13231B] text-white lg:flex'>
             <div className='flex h-[88px] items-center border-b border-white/10 px-6'>
                 <div className='flex items-center gap-3'>
-                    <img src='/logo.png' alt='TimmyTails logo' className='h-8 w-8 object-contain rounded-lg' />
+                    <img src='/logo.png' alt='TimmyTails logo' className='h-9 w-9 rounded-full object-cover shadow-xs ring-2 ring-white/20 bg-white' />
                     <div>
                         <p className='font-serif text-2xl font-bold tracking-tight text-white'>TimmyTails</p>
                         <p className='mt-0.5 text-[9px] font-extrabold uppercase tracking-[.18em] text-[#A5B8AC]'>Admin Workspace</p>
@@ -1132,7 +1132,7 @@ function AdminSidebar({
                 {/* Header Brand */}
                 <div className='flex h-16 items-center justify-between border-b border-[#1F4D3E] px-5'>
                     <div className='flex items-center gap-2.5'>
-                        <img src='/logo.png' alt='TimmyTails logo' className='h-7 w-7 object-contain rounded-md' />
+                        <img src='/logo.png' alt='TimmyTails logo' className='h-8 w-8 rounded-full object-cover shadow-xs ring-1 ring-white/20 bg-white' />
                         <div>
                             <p className='font-serif text-lg font-bold tracking-tight text-[#F6F7F2]'>TimmyTails</p>
                             <p className='text-[10px] font-bold uppercase tracking-widest text-[#2F6B57]'>Admin Portal</p>
