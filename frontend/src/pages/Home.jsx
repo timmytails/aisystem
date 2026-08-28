@@ -1,5 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom'
-import { ArrowRight, CalendarDays, Check, Clock3, Heart, PawPrint, Scissors } from 'lucide-react'
+import { ArrowRight, CalendarDays, Check, Clock3, Heart, MapPin, PawPrint, Scissors } from 'lucide-react'
 import { useAuth } from '../context/AuthContext'
 import { rememberReturnTo } from '../utils/authRouting'
 import StyleCarousel from '../components/StyleCarousel'
@@ -37,8 +37,8 @@ export default function Home() {
             <section className='border-b border-[#DDE4DE]'>
                 <div className='mx-auto grid max-w-[1480px] gap-8 px-5 py-10 sm:px-6 sm:py-14 lg:grid-cols-[1.02fr_.98fr] lg:px-8 lg:py-16'>
                     <div className='flex flex-col justify-center lg:pr-10'>
-                        <div className='inline-flex w-fit items-center gap-2 rounded-full border border-[#C9D9CE] bg-[#EDF3EE] px-3 py-1.5 text-[11px] font-extrabold uppercase tracking-[.13em] text-[#1F4D3E]'>
-                            <Heart size={13} fill='currentColor' /> Gentle care in Baliuag
+                        <div className='inline-flex w-fit items-center gap-2 rounded-full border border-[#C9D9CE] bg-[#EDF3EE] px-3.5 py-1.5 text-[11px] font-extrabold uppercase tracking-[.13em] text-[#1F4D3E]'>
+                            <MapPin size={13} /> Tangos, Baliuag City, Bulacan
                         </div>
                         <h1 className='mt-6 max-w-3xl font-serif text-[clamp(3.15rem,7vw,6.6rem)] leading-[.88] tracking-[-.045em]'>A better grooming day starts with less fuss.</h1>
                         <p className='mt-6 max-w-xl text-base leading-8 text-[#5C6B63] sm:text-lg'>Book the right service, save every pet profile, and keep the whole visit organized without message threads and repeated forms.</p>
@@ -122,7 +122,7 @@ export default function Home() {
                         <p className='tt-kicker'>Style references</p>
                         <h2 className='tt-section-title mt-4'>Show the shape you have in mind.</h2>
                     </div>
-                    <p className='max-w-xl text-sm leading-7 text-[#68776F] lg:justify-self-end'>Use the gallery as a visual shorthand for face shape, coat length, and overall finish before the appointment begins.</p>
+                    <p className='max-w-xl text-sm leading-7 text-[#68776F] lg:justify-self-end'>Upload photos to help us match your preferred coat length, face shape, and overall cut before you arrive.</p>
                 </div>
                 <div className='mt-10'><StyleCarousel /></div>
             </section>
@@ -132,22 +132,22 @@ export default function Home() {
                     <div className='relative overflow-hidden rounded-[2rem] bg-[#DCE9E0]'>
                         <img src={salonImage} alt='TimmyTails grooming salon' className='h-[420px] w-full object-cover sm:h-[520px]' />
                         <div className='absolute bottom-4 left-4 rounded-2xl bg-white p-4 shadow-xl sm:bottom-6 sm:left-6'>
-                            <p className='text-[10px] font-extrabold uppercase tracking-[.15em] text-[#2F6B57]'>Baliuag Location</p>
-                            <p className='mt-1 text-sm font-extrabold'>Comfort-first grooming for dogs and cats.</p>
+                            <p className='text-[10px] font-extrabold uppercase tracking-[.15em] text-[#2F6B57]'>Tangos, Baliuag City</p>
+                            <p className='mt-1 font-serif text-lg font-bold text-[#13231B]'>Clean, calm, dedicated pet grooming.</p>
                         </div>
                     </div>
-                    <div className='lg:pl-10'>
-                        <p className='tt-kicker'>Why TimmyTails</p>
-                        <h2 className='tt-section-title mt-4'>Calm care comes from clear expectations.</h2>
-                        <div className='mt-7 grid gap-4'>
+                    <div className='space-y-6 lg:pl-10'>
+                        <p className='tt-kicker'>Visit the salon</p>
+                        <h2 className='tt-section-title'>A calm setting built around pet comfort.</h2>
+                        <p className='tt-muted text-sm leading-7 sm:text-base'>We pace every appointment so pets never feel rushed or stressed. Our clean, sanitized workspace ensures each companion receives the dedicated care they deserve.</p>
+                        <div className='grid gap-4 border-t border-[#DDE4DE] pt-6 sm:grid-cols-2'>
                             {[
-                                ['Gentle handling', 'Practical coat care and patient handling throughout the visit.'],
-                                ['Visual references', 'A shared reference makes haircut expectations easier to discuss.'],
-                                ['One customer record', 'Your pets, bookings, and appointment history stay together.']
-                            ].map(([title, body]) => (
-                                <div key={title} className='grid grid-cols-[32px_1fr] gap-3 border-b border-[#E5EAE6] pb-4'>
-                                    <span className='grid h-8 w-8 place-items-center rounded-full bg-[#DCE9E0] text-[#1F4D3E]'><Check size={14} /></span>
-                                    <div><p className='text-sm font-extrabold'>{title}</p><p className='mt-1 text-sm leading-6 text-[#68776F]'>{body}</p></div>
+                                ['Stress-free handling', 'Patient coat care and dedicated attention throughout every visit.'],
+                                ['Sanitized workspace', 'Fresh towels, sterilized tools, and clean suites for every pet.']
+                            ].map(([title, desc]) => (
+                                <div key={title} className='rounded-2xl border border-[#DDE4DE] bg-[#F6F7F2] p-5'>
+                                    <h3 className='font-serif text-lg font-bold text-[#13231B]'>{title}</h3>
+                                    <p className='mt-2 text-xs leading-6 text-[#68776F]'>{desc}</p>
                                 </div>
                             ))}
                         </div>

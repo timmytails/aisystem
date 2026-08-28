@@ -162,7 +162,7 @@ async function sendWelcomeEmail({ to, name }) {
                             </table>
 
                             <p style="margin: 20px 0 0 0; font-size: 13px; line-height: 1.6; color: #68776F;">
-                                If you ever have questions or need assistance, reply directly to this email or reach out to us at Baliuag, Bulacan.
+                                If you ever have questions or need assistance, reply directly to this email or reach out to us at Tangos, Baliuag City, Bulacan.
                             </p>
                         </td>
                     </tr>
@@ -171,7 +171,7 @@ async function sendWelcomeEmail({ to, name }) {
                     <tr>
                         <td style="background-color: #FAFBF8; border-top: 1px solid #E5EAE6; padding: 24px 40px; text-align: center;">
                             <p style="margin: 0; font-size: 12px; font-weight: 600; color: #68776F;">TimmyTails Pet Grooming</p>
-                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #9AA69F;">Baliuag, Bulacan · +63 975 669 2647</p>
+                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #9AA69F;">Tangos, Baliuag City, Bulacan · +63 975 669 2647</p>
                         </td>
                     </tr>
                 </table>
@@ -280,7 +280,7 @@ async function sendAppointmentCancelledEmail({ to, name, appointment, reason }) 
                     <tr>
                         <td style="background-color: #FAFBF8; border-top: 1px solid #E5EAE6; padding: 24px 40px; text-align: center;">
                             <p style="margin: 0; font-size: 12px; font-weight: 600; color: #68776F;">TimmyTails Pet Grooming</p>
-                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #9AA69F;">Baliuag, Bulacan · +63 975 669 2647</p>
+                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #9AA69F;">Tangos, Baliuag City, Bulacan · +63 975 669 2647</p>
                         </td>
                     </tr>
                 </table>
@@ -309,7 +309,7 @@ async function sendAppointmentConfirmedEmail({ to, name, appointment }) {
     const priceFormatted = appointment?.price ? `₱${Number(appointment.price).toLocaleString('en-PH')}` : ''
 
     const subject = `Booking Confirmed: ${serviceName} for ${petName}`
-    const text = `Hi ${displayName},\n\nYour ${serviceName} booking for ${petName} on ${dateFormatted} at ${timeFormatted} is confirmed!\n\nArrival Policy: Please arrive 5–10 minutes before your scheduled appointment time at Baliuag, Bulacan.\n\nView your appointments: ${frontendUrl}/appointments\n\nWarmly,\nTimmyTails Team`
+    const text = `Hi ${displayName},\n\nYour ${serviceName} booking for ${petName} on ${dateFormatted} at ${timeFormatted} is confirmed!\n\nArrival Policy: Please arrive 5–10 minutes before your scheduled appointment time at Tangos, Baliuag City, Bulacan.\n\nView your appointments: ${frontendUrl}/appointments\n\nWarmly,\nTimmyTails Team`
 
     const html = `
 <!DOCTYPE html>
@@ -400,7 +400,7 @@ async function sendAppointmentConfirmedEmail({ to, name, appointment }) {
                     <tr>
                         <td style="background-color: #FAFBF8; border-top: 1px solid #E5EAE6; padding: 24px 40px; text-align: center;">
                             <p style="margin: 0; font-size: 12px; font-weight: 600; color: #68776F;">TimmyTails Pet Grooming</p>
-                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #9AA69F;">Baliuag, Bulacan · +63 975 669 2647</p>
+                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #9AA69F;">Tangos, Baliuag City, Bulacan · +63 975 669 2647</p>
                         </td>
                     </tr>
                 </table>
@@ -495,7 +495,7 @@ async function sendAppointmentRescheduledEmail({ to, name, appointment, oldDate,
                     <tr>
                         <td style="background-color: #FAFBF8; border-top: 1px solid #E5EAE6; padding: 24px 40px; text-align: center;">
                             <p style="margin: 0; font-size: 12px; font-weight: 600; color: #68776F;">TimmyTails Pet Grooming</p>
-                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #9AA69F;">Baliuag, Bulacan · +63 975 669 2647</p>
+                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #9AA69F;">Tangos, Baliuag City, Bulacan · +63 975 669 2647</p>
                         </td>
                     </tr>
                 </table>
@@ -576,7 +576,7 @@ async function sendAppointmentCompletedEmail({ to, name, appointment }) {
                     <tr>
                         <td style="background-color: #FAFBF8; border-top: 1px solid #E5EAE6; padding: 24px 40px; text-align: center;">
                             <p style="margin: 0; font-size: 12px; font-weight: 600; color: #68776F;">TimmyTails Pet Grooming</p>
-                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #9AA69F;">Baliuag, Bulacan · +63 975 669 2647</p>
+                            <p style="margin: 4px 0 0 0; font-size: 11px; color: #9AA69F;">Tangos, Baliuag City, Bulacan · +63 975 669 2647</p>
                         </td>
                     </tr>
                 </table>

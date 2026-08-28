@@ -18,7 +18,7 @@ export default function Footer() {
                         <div>
                             <p className='text-[11px] font-extrabold uppercase tracking-[.16em] text-[#E5B95D]'>Location</p>
                             <div className='mt-4 space-y-3 text-sm text-[#D9E1DC]'>
-                                <p className='flex gap-2.5'><MapPin size={16} className='mt-0.5 shrink-0 text-[#E8795B]' />Baliuag City, Bulacan</p>
+                                <p className='flex gap-2.5'><MapPin size={16} className='mt-0.5 shrink-0 text-[#E8795B]' />Tangos, Baliuag City, Bulacan</p>
                                 <p className='flex gap-2.5'><Phone size={16} className='shrink-0 text-[#E8795B]' />+63 975 669 2647</p>
                                 <p className='flex gap-2.5'><Mail size={16} className='shrink-0 text-[#E8795B]' />contact@timmytails.com</p>
                                 <p className='flex gap-2.5'><Clock size={16} className='shrink-0 text-[#E8795B]' />Mon–Sat · 8 AM–6 PM</p>

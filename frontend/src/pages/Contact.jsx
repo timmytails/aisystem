@@ -48,9 +48,9 @@ export default function Contact() {
                 <aside>
                     <div className='rounded-[1.75rem] bg-[#13231B] p-6 text-white sm:p-7'>
                         <p className='text-[10px] font-extrabold uppercase tracking-[.16em] text-[#E5B95D]'>Location & Hours</p>
-                        <h2 className='mt-3 font-serif text-3xl'>TimmyTails Baliuag</h2>
+                        <h2 className='mt-3 font-serif text-3xl'>TimmyTails Tangos</h2>
                         <div className='mt-7 divide-y divide-white/10'>
-                            <InfoRow icon={MapPin} label='Location' text='Baliuag City, Bulacan, Philippines' />
+                            <InfoRow icon={MapPin} label='Location' text='Tangos, Baliuag City, Bulacan, Philippines' />
                             <InfoRow icon={Phone} label='Phone' text='+63 975 669 2647' />
                             <InfoRow icon={Mail} label='Email' text='contact@timmytails.com' />
                             <InfoRow icon={Clock3} label='Hours' text='Mon–Sat · 8:00 AM–6:00 PM' />

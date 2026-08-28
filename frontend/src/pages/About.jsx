@@ -3,7 +3,7 @@ import { CalendarDays, Camera, HeartHandshake, ShieldCheck, UserRoundCheck } fro
 import salonImage from '../assets/images/salon-grooming.png'
 
 const points = [
-    [HeartHandshake, 'Gentle handling', 'Every visit is paced around comfort, coat condition, and practical handling needs.'],
+    [HeartHandshake, 'Patient handling', 'Every visit is paced around comfort, coat condition, and practical handling needs.'],
     [Camera, 'Visual style references', 'Use a photo-based haircut reference when words alone are not enough to explain the look.'],
     [CalendarDays, 'Clear scheduling', 'See available times, service duration, and visit details before you confirm.'],
     [UserRoundCheck, 'Pet profiles that stay useful', 'Breed, coat notes, photos, and handling preferences stay connected to your account.']
@@ -17,10 +17,10 @@ export default function About() {
                     <div>
                         <p className='tt-kicker'>About TimmyTails</p>
                         <h1 className='mt-4 font-serif text-[clamp(3.2rem,7vw,6rem)] leading-[.92] tracking-[-.04em]'>Built for a calmer kind of grooming visit.</h1>
-                        <p className='mt-6 max-w-xl text-base leading-8 text-[#68776F]'>TimmyTails combines professional grooming with a clearer digital experience, so pet owners know what they are booking, what their pet needs, and what to expect before arrival.</p>
+                        <p className='mt-6 max-w-xl text-base leading-8 text-[#68776F]'>TimmyTails combines professional grooming in Tangos, Baliuag City with a clearer digital experience, so pet owners know what they are booking, what their pet needs, and what to expect before arrival.</p>
                     </div>
                     <div className='relative overflow-hidden rounded-[2rem] bg-[#DCE9E0]'>
-                        <img src={salonImage} alt='A pet receiving gentle professional grooming' className='h-[430px] w-full object-cover sm:h-[560px]' />
+                        <img src={salonImage} alt='A pet receiving professional grooming care' className='h-[430px] w-full object-cover sm:h-[560px]' />
                         <div className='absolute bottom-5 left-5 right-5 rounded-2xl bg-white/94 p-5 shadow-xl backdrop-blur sm:right-auto sm:max-w-sm'>
                             <div className='flex items-center gap-3'><span className='grid h-9 w-9 place-items-center rounded-xl bg-[#EDF3EE] text-[#1F4D3E]'><ShieldCheck size={18} /></span><p className='text-sm font-extrabold'>Care first, software second.</p></div>
                             <p className='mt-2 text-xs leading-5 text-[#68776F]'>The product is designed to reduce uncertainty around the real-world grooming experience—not add more steps.</p>
