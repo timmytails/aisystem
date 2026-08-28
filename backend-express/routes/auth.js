@@ -604,10 +604,22 @@ router.post(
                 true
             )
 
-            if (
-                !user ||
-                !(await user.matchPassword(req.body.password))
-            ) {
+            if (!user) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid email, phone number, or password'
+                })
+            }
+
+            if (user.authProvider === 'google' && !user.password) {
+                return res.status(400).json({
+                    success: false,
+                    code: 'GOOGLE_AUTH_REQUIRED',
+                    message: 'This account is linked with Google. Please click "Continue with Google" below to sign in, or use "Forgot password?" to set a password.'
+                })
+            }
+
+            if (!(await user.matchPassword(req.body.password))) {
                 return res.status(401).json({
                     success: false,
                     message: 'Invalid email, phone number, or password'
@@ -1132,11 +1144,11 @@ router.post(
                 true
             )
 
-            if (!user || !user.password) {
+            if (!user) {
                 return res.status(404).json({
                     success: false,
                     message:
-                        'No password account was found with that email address or phone number'
+                        'No account was found with that email address or phone number'
                 })
             }
 
@@ -1144,7 +1156,7 @@ router.post(
                 return res.status(400).json({
                     success: false,
                     message:
-                        'This account has no verified phone number for OTP recovery'
+                        'This account has no verified phone number. Please sign in with Google.'
                 })
             }
 
