@@ -85,17 +85,18 @@ export default function Header() {
                             <button onClick={startBooking} className='tt-primary'><CalendarDays size={17} />Book a visit</button>
                         </>
                     )}
+                <div className='ml-auto flex items-center gap-2 lg:hidden'>
+                    {user && <NotificationBell />}
+                    <button
+                        type='button'
+                        onClick={() => setOpen((value) => !value)}
+                        className='grid h-11 w-11 place-items-center rounded-xl border border-[#DDE4DE] bg-white text-[#13231B]'
+                        aria-label={open ? 'Close navigation' : 'Open navigation'}
+                        aria-expanded={open}
+                    >
+                        {open ? <X size={20} /> : <Menu size={20} />}
+                    </button>
                 </div>
-
-                <button
-                    type='button'
-                    onClick={() => setOpen((value) => !value)}
-                    className='ml-auto grid h-11 w-11 place-items-center rounded-xl border border-[#DDE4DE] bg-white text-[#13231B] lg:hidden'
-                    aria-label={open ? 'Close navigation' : 'Open navigation'}
-                    aria-expanded={open}
-                >
-                    {open ? <X size={20} /> : <Menu size={20} />}
-                </button>
             </div>
 
             {open && (
