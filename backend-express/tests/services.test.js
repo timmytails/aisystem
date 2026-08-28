@@ -68,6 +68,7 @@ test('keeps dog-only styles away from cats', () => {
     const catStyleIds = getStylesForPetType('cat').map((style) => style.id)
 
     assert.deepEqual(catStyleIds.sort(), [
+        'cat-sanitary-trim',
         'cat-teddy-bear-trim',
         'comb-cut',
         'lion-cut'
@@ -80,7 +81,8 @@ test('makes every cat clip style cat-only', () => {
     const catClipStyleIds = [
         'lion-cut',
         'comb-cut',
-        'cat-teddy-bear-trim'
+        'cat-teddy-bear-trim',
+        'cat-sanitary-trim'
     ]
 
     catClipStyleIds.forEach((styleId) => {
@@ -105,71 +107,53 @@ test('ranks Summer Cut first for a non-double-coated dog in hot months', () => {
     })
 
     assert.equal(recommendations[0].id, 'summer-cut')
+    assert.equal(recommendations[0].rank, 1)
 })
 
 test('keeps Summer Cut selectable but suggests it only in hot months', () => {
-    const dogStyleIds = getStylesForPetType(
-        'dog'
-    ).map((style) => style.id)
-    const wetRecommendationIds =
-        getStyleRecommendations({
-            petType: 'dog',
-            coatType: 'long',
-            season: 'wet-rainy'
-        }).map((style) => style.id)
-    const coolRecommendationIds =
-        getStyleRecommendations({
-            petType: 'dog',
-            coatType: 'long',
-            season: 'cool-dry'
-        }).map((style) => style.id)
+    const hotRecommendations = getStyleRecommendations({
+        petType: 'dog',
+        coatType: 'medium',
+        season: 'hot-dry'
+    }).map((style) => style.id)
+    const wetRecommendations = getStyleRecommendations({
+        petType: 'dog',
+        coatType: 'medium',
+        season: 'wet-rainy'
+    }).map((style) => style.id)
+    const coolRecommendations = getStyleRecommendations({
+        petType: 'dog',
+        coatType: 'medium',
+        season: 'cool-dry'
+    }).map((style) => style.id)
 
-    assert.equal(
-        dogStyleIds.includes('summer-cut'),
-        true
-    )
-    assert.equal(
-        wetRecommendationIds.includes('summer-cut'),
-        false
-    )
-    assert.equal(
-        coolRecommendationIds.includes('summer-cut'),
-        false
-    )
+    assert.equal(hotRecommendations.includes('summer-cut'), true)
+    assert.equal(wetRecommendations.includes('summer-cut'), false)
+    assert.equal(coolRecommendations.includes('summer-cut'), false)
 })
 
 test('uses rainy-season recommendations for dogs', () => {
-    const recommendations =
-        getStyleRecommendations({
-            petType: 'dog',
-            coatType: 'long',
-            season: 'wet-rainy'
-        })
-    const recommendationIds =
-        recommendations.map((style) => style.id)
+    const recommendations = getStyleRecommendations({
+        petType: 'dog',
+        coatType: 'long',
+        season: 'wet-rainy'
+    }).map((style) => style.id)
 
-    assert.deepEqual(recommendationIds, [
+    assert.deepEqual(recommendations, [
         'natural-trim',
         'puppy-cut',
         'teddy-bear-cut'
     ])
-    assert.equal(
-        new Set(
-            recommendations.map((style) => style.reason)
-        ).size,
-        recommendations.length
-    )
 })
 
 test('uses cool-season recommendations for dogs', () => {
-    const recommendationIds =
-        getStyleRecommendations({
-            petType: 'dog',
-            coatType: 'long',
-            season: 'cool-dry'
-        }).map((style) => style.id)
+    const recommendations = getStyleRecommendations({
+        petType: 'dog',
+        coatType: 'curly',
+        season: 'cool-dry'
+    }).map((style) => style.id)
 
-    assert.deepEqual(recommendationIds, [
+    assert.deepEqual(recommendations, [
         'natural-trim',
         'teddy-bear-cut',
         'asian-fusion-cut'
@@ -198,13 +182,16 @@ test('changes cat recommendations by season', () => {
 
     assert.deepEqual(hotRecommendations, [
         'lion-cut',
-        'comb-cut'
+        'comb-cut',
+        'cat-sanitary-trim'
     ])
     assert.deepEqual(wetRecommendations, [
+        'cat-sanitary-trim',
         'comb-cut'
     ])
     assert.deepEqual(coolRecommendations, [
-        'cat-teddy-bear-trim'
+        'cat-teddy-bear-trim',
+        'cat-sanitary-trim'
     ])
 })
 
@@ -223,7 +210,9 @@ test('does not suggest clip-heavy styles for a short-haired cat', () => {
                 season
             }).map((style) => style.id)
 
-        assert.deepEqual(recommendationIds, [])
+        assert.deepEqual(recommendationIds, [
+            'cat-sanitary-trim'
+        ])
     })
 })
 

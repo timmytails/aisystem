@@ -232,6 +232,25 @@ const STYLE_OPTIONS = [
         },
         seasonPriority: { 'hot-dry': 1 },
         coatSafety: 'Specialized style for long-haired cats. Our groomers ensure patient, safe handling.'
+    },
+    {
+        id: 'cat-sanitary-trim',
+        name: 'Hygiene & Sanitary Trim',
+        description: 'A focused hygiene trim around the belly, sanitary areas, and paw pads to keep cats clean and comfortable.',
+        petTypes: ['cat'],
+        coatTypes: ['short', 'medium', 'long'],
+        generationInstructions:
+            'Preserve the cat’s full natural body coat and facial shape while neatening the paw pads and hygiene areas cleanly.',
+        verificationCriteria:
+            'Full natural coat maintained with clean, neat sanitary outline and paw pads.',
+        recommendedSeasons: ['hot-dry', 'wet-rainy', 'cool-dry'],
+        seasonReasons: {
+            'hot-dry': 'Maintains daily cleanliness and paw ventilation in warm weather.',
+            'wet-rainy': 'Prevents litter and moisture buildup during humid rainy months.',
+            'cool-dry': 'Preserves full body warmth while keeping hygiene areas fresh.'
+        },
+        seasonPriority: { 'hot-dry': 2, 'wet-rainy': 1, 'cool-dry': 1 },
+        coatSafety: 'Ideal for all cat breeds, including short-haired domestic cats and long-haired Persians.'
     }
 ]
 
