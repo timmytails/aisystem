@@ -90,7 +90,8 @@ export default function ForgotPassword() {
                 />
                 <div className='absolute inset-0 bg-[#13231B]/40' />
 
-                <div className='absolute left-8 top-8'>
+                <div className='absolute left-8 top-8 flex items-center gap-2.5'>
+                    <img src='/logo.png' alt='TimmyTails logo' className='h-8 w-8 object-contain rounded-lg' />
                     <span className='font-serif text-2xl font-bold tracking-tight text-[#F6F7F2]'>
                         TimmyTails
                     </span>
@@ -120,7 +121,8 @@ export default function ForgotPassword() {
                     </Link>
 
                     {/* Brand title */}
-                    <div className='mb-2'>
+                    <div className='mb-2 flex items-center gap-2'>
+                        <img src='/logo.png' alt='TimmyTails logo' className='h-6 w-6 object-contain rounded-md' />
                         <span className='font-serif text-xl font-bold tracking-tight text-[#13231B]'>
                             TimmyTails
                         </span>

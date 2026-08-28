@@ -7,7 +7,8 @@ export default function Footer() {
             <div className='mx-auto max-w-[1480px] px-6 py-14 lg:px-8 lg:py-16'>
                 <div className='grid gap-12 lg:grid-cols-[1.25fr_.75fr]'>
                     <div>
-                        <div>
+                        <div className='flex items-center gap-3'>
+                            <img src='/logo.png' alt='TimmyTails logo' className='h-9 w-9 object-contain rounded-lg' />
                             <p className='font-serif text-3xl font-bold tracking-tight text-white'>TimmyTails</p>
                         </div>
                         <h2 className='mt-8 max-w-2xl font-serif text-4xl leading-[1.05] tracking-[-.02em] sm:text-5xl'>Good grooming should feel simple—for you and your pet.</h2>

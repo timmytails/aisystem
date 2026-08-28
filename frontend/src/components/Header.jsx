@@ -48,9 +48,10 @@ export default function Header() {
             <div className='mx-auto flex min-h-[72px] max-w-[1480px] items-center gap-5 px-4 sm:px-6 lg:px-8'>
                 <Link
                     to={user?.role === 'user' ? '/dashboard' : '/'}
-                    className='flex shrink-0 items-center text-[#13231B] transition hover:opacity-80'
+                    className='flex shrink-0 items-center gap-2.5 text-[#13231B] transition hover:opacity-85'
                     aria-label='TimmyTails home'
                 >
+                    <img src='/logo.png' alt='TimmyTails logo' className='h-9 w-9 object-contain rounded-lg' />
                     <span className='font-serif text-[24px] font-bold tracking-tight text-[#13231B]'>
                         TimmyTails
                     </span>
