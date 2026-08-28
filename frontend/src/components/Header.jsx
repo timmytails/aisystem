@@ -85,6 +85,8 @@ export default function Header() {
                             <button onClick={startBooking} className='tt-primary'><CalendarDays size={17} />Book a visit</button>
                         </>
                     )}
+                </div>
+
                 <div className='ml-auto flex items-center gap-2 lg:hidden'>
                     {user && <NotificationBell />}
                     <button
