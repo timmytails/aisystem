@@ -143,7 +143,7 @@ export default function GoogleSignInButton({
 
     if (!clientId) {
         return (
-            <div className='w-full rounded-xl border border-dashed border-[#d9c8b5] bg-[#faf5ee] px-4 py-3 text-center text-xs text-[#806654]'>
+            <div className='w-full rounded-xl border border-dashed border-[#F6F7F2] bg-[#F6F7F2] px-4 py-3 text-center text-xs text-[#2F6B57]'>
                 Add VITE_GOOGLE_CLIENT_ID to enable Google sign-in.
             </div>
         )

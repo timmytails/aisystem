@@ -8,6 +8,7 @@ const crypto = require('crypto')
 const User = require('../models/User')
 const OtpRequest = require('../models/OtpRequest')
 const { sendOtp } = require('../services/textbee')
+const { sendWelcomeEmail } = require('../services/mailer')
 const { protect } = require('../middleware/auth')
 
 const router = express.Router()
@@ -449,6 +450,15 @@ router.post(
 
             await OtpRequest.deleteOne({ _id: otpRequest._id })
 
+            if (user.email) {
+                sendWelcomeEmail({
+                    to: user.email,
+                    name: user.firstName
+                }).catch((emailErr) => {
+                    console.error('Welcome email dispatch error:', emailErr.message)
+                })
+            }
+
             res.status(201).json({
                 success: true,
                 message: 'Account created successfully',
@@ -525,6 +535,15 @@ router.post(
                     authProvider: 'google',
                     profileCompleted: false
                 })
+
+                if (email) {
+                    sendWelcomeEmail({
+                        to: email,
+                        name: user.firstName
+                    }).catch((emailErr) => {
+                        console.error('Google welcome email dispatch error:', emailErr.message)
+                    })
+                }
             } else {
                 await User.findByIdAndUpdate(user._id, {
                     $set: {
@@ -536,22 +555,10 @@ router.post(
                 })
             }
 
-            // Fresh check from DB for accountStatus & enforcement notifications
-            const freshUser = await User.findById(user._id).select('accountStatus statusReason warningMessage')
-            const Notification = require('../models/Notification')
-            const lastNotif = await Notification.findOne({ audience: 'user', targetUser: user._id }).sort({ createdAt: -1 })
-
-            let isBanned = freshUser?.accountStatus === 'banned'
-            let banReason = freshUser?.statusReason || ''
-
-            if (!isBanned && lastNotif) {
-                const title = String(lastNotif.title || '').toLowerCase()
-                if (title.includes('banned')) {
-                    isBanned = true
-                    banReason = lastNotif.message || ''
-                    await User.findByIdAndUpdate(user._id, { accountStatus: 'banned', statusReason: banReason })
-                }
-            }
+            // Re-read the persisted status so a newly banned account cannot authenticate.
+            const freshUser = await User.findById(user._id).select('accountStatus statusReason')
+            const isBanned = freshUser?.accountStatus === 'banned'
+            const banReason = freshUser?.statusReason || ''
 
             if (isBanned) {
                 return res.status(403).json({
@@ -597,31 +604,31 @@ router.post(
                 true
             )
 
-            if (
-                !user ||
-                !(await user.matchPassword(req.body.password))
-            ) {
+            if (!user) {
                 return res.status(401).json({
                     success: false,
                     message: 'Invalid email, phone number, or password'
                 })
             }
 
-            const freshUser = await User.findById(user._id).select('accountStatus statusReason warningMessage')
-            const Notification = require('../models/Notification')
-            const lastNotif = await Notification.findOne({ audience: 'user', targetUser: user._id }).sort({ createdAt: -1 })
-
-            let isBanned = freshUser?.accountStatus === 'banned'
-            let banReason = freshUser?.statusReason || ''
-
-            if (!isBanned && lastNotif) {
-                const title = String(lastNotif.title || '').toLowerCase()
-                if (title.includes('banned')) {
-                    isBanned = true
-                    banReason = lastNotif.message || ''
-                    await User.findByIdAndUpdate(user._id, { accountStatus: 'banned', statusReason: banReason })
-                }
+            if (user.authProvider === 'google' && !user.password) {
+                return res.status(400).json({
+                    success: false,
+                    code: 'GOOGLE_AUTH_REQUIRED',
+                    message: 'This account is linked with Google. Please click "Continue with Google" below to sign in, or use "Forgot password?" to set a password.'
+                })
             }
+
+            if (!(await user.matchPassword(req.body.password))) {
+                return res.status(401).json({
+                    success: false,
+                    message: 'Invalid email, phone number, or password'
+                })
+            }
+
+            const freshUser = await User.findById(user._id).select('accountStatus statusReason')
+            const isBanned = freshUser?.accountStatus === 'banned'
+            const banReason = freshUser?.statusReason || ''
 
             if (isBanned) {
                 return res.status(403).json({
@@ -1137,11 +1144,11 @@ router.post(
                 true
             )
 
-            if (!user || !user.password) {
+            if (!user) {
                 return res.status(404).json({
                     success: false,
                     message:
-                        'No password account was found with that email address or phone number'
+                        'No account was found with that email address or phone number'
                 })
             }
 
@@ -1149,7 +1156,7 @@ router.post(
                 return res.status(400).json({
                     success: false,
                     message:
-                        'This account has no verified phone number for OTP recovery'
+                        'This account has no verified phone number. Please sign in with Google.'
                 })
             }
 

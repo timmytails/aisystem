@@ -7,7 +7,7 @@ export default function ProtectedRoute() {
     const location = useLocation()
 
     if (loading) {
-        return <div className='min-h-[60vh] grid place-items-center text-sm text-stone-600'>Loading your account...</div>
+        return <div className='min-h-[60vh] grid place-items-center text-sm text-[#405148]'>Loading your account...</div>
     }
 
     if (!user) {

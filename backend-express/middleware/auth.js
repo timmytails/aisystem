@@ -20,35 +20,13 @@ const protect = async (req, res, next) => {
             return res.status(401).json({ success: false, message: 'User not found' })
         }
 
-        // Enforce account ban check for non-admin users
-        if (req.user && req.user.role !== 'admin') {
-            const Notification = require('../models/Notification')
-            const lastNotif = await Notification.findOne({ targetUser: req.user._id }).sort({ createdAt: -1 })
-
-            if (lastNotif) {
-                const text = (String(lastNotif.title || '') + ' ' + String(lastNotif.message || '')).toLowerCase()
-                if (text.includes('banned') || text.includes('ban account')) {
-                    if (req.user.accountStatus !== 'banned') {
-                        req.user.accountStatus = 'banned'
-                        req.user.statusReason = lastNotif.message || ''
-                        await User.findByIdAndUpdate(req.user._id, { accountStatus: 'banned', statusReason: req.user.statusReason }).catch(() => {})
-                    }
-                } else if (text.includes('restored') || text.includes('privileges restored')) {
-                    if (req.user.accountStatus === 'banned') {
-                        req.user.accountStatus = 'active'
-                        req.user.statusReason = ''
-                        await User.findByIdAndUpdate(req.user._id, { accountStatus: 'active', statusReason: '' }).catch(() => {})
-                    }
-                }
-            }
-
-            if (req.user.accountStatus === 'banned') {
-                return res.status(403).json({
-                    success: false,
-                    isBanned: true,
-                    message: `Your customer account has been suspended by salon administration. ${req.user.statusReason ? `Reason: ${req.user.statusReason}` : ''}`
-                })
-            }
+        // Account status in MongoDB is the sole authorization source.
+        if (req.user && req.user.role !== 'admin' && req.user.accountStatus === 'banned') {
+            return res.status(403).json({
+                success: false,
+                isBanned: true,
+                message: `Your customer account has been suspended by salon administration. ${req.user.statusReason ? `Reason: ${req.user.statusReason}` : ''}`
+            })
         }
 
         next()

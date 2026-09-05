@@ -1,64 +1,46 @@
 import { createElement } from 'react'
-import { Camera, CalendarDays, ShieldCheck, UserRoundCheck } from 'lucide-react'
+import { CalendarDays, Camera, HeartHandshake, ShieldCheck, UserRoundCheck } from 'lucide-react'
 import salonImage from '../assets/images/salon-grooming.png'
 
 const points = [
-    [Camera, 'Visual Haircut Previews', 'Upload your pet photo to visualize species-appropriate haircuts and choose the perfect look before your appointment.'],
-    [CalendarDays, 'Guaranteed Time Slots', 'View real-time availability and lock in a dedicated 2-hour window so your pet gets undivided professional attention.'],
-    [UserRoundCheck, 'Companion Profiles', 'Store your pet’s breed, coat type, and special handling preferences so our groomers are always fully prepared.'],
-    [ShieldCheck, 'Certified Hygiene & Care', 'Every tool is sanitized between sessions, and our groomers strictly follow coat health and gentle stress-free care.']
+    [HeartHandshake, 'Patient handling', 'Every visit is paced around comfort, coat condition, and practical handling needs.'],
+    [Camera, 'Visual style references', 'Use a photo-based haircut reference when words alone are not enough to explain the look.'],
+    [CalendarDays, 'Clear scheduling', 'See available times, service duration, and visit details before you confirm.'],
+    [UserRoundCheck, 'Pet profiles that stay useful', 'Breed, coat notes, photos, and handling preferences stay connected to your account.']
 ]
 
 export default function About() {
     return (
-        <div className='bg-[#F8F7F4] text-slate-900'>
-
-            {/* Hero Section */}
-            <section className='mx-auto grid max-w-7xl items-center gap-12 px-6 py-16 lg:grid-cols-2 sm:py-20'>
-                <div>
-                    <span className='inline-block rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
-                        About TimmyTails
-                    </span>
-                    <h1 className='mt-2 font-serif text-3xl font-bold leading-tight text-slate-900 sm:text-5xl'>
-                        Where gentle pet care meets modern visual previews.
-                    </h1>
-                    <p className='mt-4 text-sm leading-relaxed text-slate-600 sm:text-base'>
-                        At TimmyTails, we believe grooming should be a calming, enjoyable experience for every pet. TimmyTails combines certified grooming expertise with interactive visual previews, allowing pet owners to choose hairstyles with confidence and schedule convenient appointments.
-                    </p>
-                </div>
-
-                <div className='overflow-hidden rounded-xl border border-slate-200 bg-white'>
-                    <img
-                        src={salonImage}
-                        alt='A pet receiving gentle professional grooming'
-                        className='h-[380px] w-full object-cover'
-                    />
+        <div className='bg-[#F6F7F2] text-[#13231B]'>
+            <section className='border-b border-[#DDE4DE] bg-white'>
+                <div className='mx-auto grid max-w-[1480px] gap-10 px-5 py-14 sm:px-6 lg:grid-cols-[.88fr_1.12fr] lg:items-center lg:px-8 lg:py-20'>
+                    <div>
+                        <p className='tt-kicker'>About TimmyTails</p>
+                        <h1 className='mt-4 font-serif text-[clamp(3.2rem,7vw,6rem)] leading-[.92] tracking-[-.04em]'>Built for a calmer kind of grooming visit.</h1>
+                        <p className='mt-6 max-w-xl text-base leading-8 text-[#68776F]'>TimmyTails combines professional grooming in Tangos, Baliuag City with a clearer digital experience, so pet owners know what they are booking, what their pet needs, and what to expect before arrival.</p>
+                    </div>
+                    <div className='relative overflow-hidden rounded-[2rem] bg-[#DCE9E0]'>
+                        <img src={salonImage} alt='A pet receiving professional grooming care' className='h-[430px] w-full object-cover sm:h-[560px]' />
+                        <div className='absolute bottom-5 left-5 right-5 rounded-2xl bg-white/94 p-5 shadow-xl backdrop-blur sm:right-auto sm:max-w-sm'>
+                            <div className='flex items-center gap-3'><span className='grid h-9 w-9 place-items-center rounded-xl bg-[#EDF3EE] text-[#1F4D3E]'><ShieldCheck size={18} /></span><p className='text-sm font-extrabold'>Care first, software second.</p></div>
+                            <p className='mt-2 text-xs leading-5 text-[#68776F]'>The product is designed to reduce uncertainty around the real-world grooming experience—not add more steps.</p>
+                        </div>
+                    </div>
                 </div>
             </section>
 
-            {/* Commitments Section */}
-            <section className='border-t border-slate-200 bg-white'>
-                <div className='mx-auto max-w-7xl px-6 py-16 sm:py-20'>
-                    <div className='mx-auto mb-12 max-w-2xl text-center'>
-                        <span className='inline-block rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
-                            Our Commitments
-                        </span>
-                        <h2 className='mt-2 font-serif text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl'>
-                            Why Pet Owners Trust Us
-                        </h2>
+            <section className='mx-auto max-w-[1480px] px-5 py-16 sm:px-6 lg:px-8 lg:py-24'>
+                <div className='grid gap-10 lg:grid-cols-[.7fr_1.3fr]'>
+                    <div>
+                        <p className='tt-kicker'>What we optimize for</p>
+                        <h2 className='tt-section-title mt-4'>Clear expectations make better visits.</h2>
                     </div>
-
-                    <div className='grid gap-6 md:grid-cols-2'>
+                    <div className='grid gap-px overflow-hidden rounded-[1.75rem] border border-[#DDE4DE] bg-[#DDE4DE] sm:grid-cols-2'>
                         {points.map(([icon, title, description]) => (
-                            <article
-                                key={title}
-                                className='rounded-xl border border-slate-200 bg-[#F8F7F4] p-6 transition hover:border-slate-300'
-                            >
-                                <span className='mb-4 inline-grid h-10 w-10 place-items-center rounded-lg border border-slate-200 bg-white text-[#C25E2B]'>
-                                    {createElement(icon, { size: 20 })}
-                                </span>
-                                <h3 className='font-serif text-lg font-bold text-slate-900'>{title}</h3>
-                                <p className='mt-2 text-sm leading-relaxed text-slate-600'>{description}</p>
+                            <article key={title} className='bg-white p-6 sm:p-7'>
+                                <span className='grid h-11 w-11 place-items-center rounded-2xl bg-[#EDF3EE] text-[#1F4D3E]'>{createElement(icon, { size: 19 })}</span>
+                                <h3 className='mt-7 font-serif text-2xl'>{title}</h3>
+                                <p className='mt-3 text-sm leading-7 text-[#68776F]'>{description}</p>
                             </article>
                         ))}
                     </div>

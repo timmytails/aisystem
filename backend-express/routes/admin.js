@@ -7,6 +7,12 @@ const Contact = require('../models/Contact')
 const User = require('../models/User')
 const Notification = require('../models/Notification')
 const Pet = require('../models/Pet')
+const { normalizeAccountStatus, persistAccountStatus, toAccountStatusResponse } = require('../services/accountStatus')
+const {
+    sendAppointmentCancelledEmail,
+    sendAppointmentConfirmedEmail,
+    sendAppointmentCompletedEmail
+} = require('../services/mailer')
 
 const { protect, adminOnly } = require('../middleware/auth')
 
@@ -409,70 +415,36 @@ router.get('/users', async (req, res) => {
                 {}
             )
 
-        const customerRecords = await Promise.all(
-            users.map(async (user) => {
-                let status = user.accountStatus && user.accountStatus !== 'active' ? user.accountStatus : 'active'
-                let reason = user.statusReason || ''
-
-                // Check most recent notification sent to this user
-                const lastNotif = await Notification.findOne({
-                    targetUser: user._id
-                }).sort({ createdAt: -1 })
-
-                if (lastNotif) {
-                    const text = (String(lastNotif.title || '') + ' ' + String(lastNotif.message || '')).toLowerCase()
-
-                    if (text.includes('banned') || text.includes('ban account')) {
-                        status = 'banned'
-                        reason = lastNotif.message || reason
-                    } else if (text.includes('suspended') || text.includes('blocked') || text.includes('booking access')) {
-                        status = 'booking_blocked'
-                        reason = lastNotif.message || reason
-                    } else if (text.includes('warning') || text.includes('warned')) {
-                        status = 'warned'
-                        reason = lastNotif.message || reason
-                    } else if (text.includes('restored') || text.includes('privileges restored')) {
-                        status = 'active'
-                        reason = ''
-                    }
-
-                    if (user.accountStatus !== status) {
-                        await User.findByIdAndUpdate(user._id, {
-                            accountStatus: status,
-                            statusReason: reason
-                        }).catch(() => {})
-                    }
+        const customerRecords = users.map((user) => {
+            const summary =
+                summariesByUser[
+                    String(user._id)
+                ] || {
+                    visits: 0,
+                    completedVisits: 0,
+                    totalSpend: 0,
+                    lastVisit: null
                 }
 
-                const summary =
-                    summariesByUser[
+            return {
+                ...user,
+                accountStatus: normalizeAccountStatus(user.accountStatus),
+                statusReason: user.statusReason || '',
+                warningMessage: user.warningMessage || '',
+                pets:
+                    petsByOwner[
                         String(user._id)
-                    ] || {
-                        visits: 0,
-                        completedVisits: 0,
-                        totalSpend: 0,
-                        lastVisit: null
-                    }
-
-                return {
-                    ...user,
-                    accountStatus: status,
-                    statusReason: reason,
-                    pets:
-                        petsByOwner[
-                            String(user._id)
-                        ] || [],
-                    visits:
-                        summary.visits,
-                    completedVisits:
-                        summary.completedVisits,
-                    totalSpend:
-                        summary.totalSpend,
-                    lastVisit:
-                        summary.lastVisit
-                }
-            })
-        )
+                    ] || [],
+                visits:
+                    summary.visits,
+                completedVisits:
+                    summary.completedVisits,
+                totalSpend:
+                    summary.totalSpend,
+                lastVisit:
+                    summary.lastVisit
+            }
+        })
 
         res.json({
             success: true,
@@ -498,27 +470,26 @@ router.get('/users', async (req, res) => {
 router.patch('/users/:id/status', async (req, res) => {
     const { accountStatus, statusReason, warningMessage } = req.body
 
-    const validStatuses = ['active', 'warned', 'booking_blocked', 'banned']
-    if (!accountStatus || !validStatuses.includes(accountStatus)) {
+    if (!mongoose.isValidObjectId(req.params.id)) {
         return res.status(400).json({
             success: false,
-            message: 'Invalid account status option'
+            message: 'Invalid customer ID'
         })
     }
 
     try {
-        const user = await User.findByIdAndUpdate(
-            req.params.id,
-            {
-                $set: {
-                    accountStatus: accountStatus,
-                    statusReason: statusReason || warningMessage || '',
-                    warningMessage: warningMessage || statusReason || '',
-                    statusUpdatedAt: new Date()
-                }
-            },
-            { new: true, runValidators: false }
-        )
+        const user = await persistAccountStatus(User, req.params.id, {
+            accountStatus,
+            statusReason,
+            warningMessage
+        })
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'Customer not found'
+            })
+        }
 
         // Create in-app Notification for the customer if warned, blocked, banned, or unblocked
         if (['warned', 'booking_blocked', 'banned', 'active'].includes(accountStatus)) {
@@ -539,34 +510,42 @@ router.patch('/users/:id/status', async (req, res) => {
                 notifMessage = 'Your customer account status is active. You may now book appointments.'
             }
 
-            await Notification.create({
-                title: notifTitle,
-                message: notifMessage,
-                audience: 'user',
-                targetUser: user._id,
-                type: 'appointment-status',
-                createdBy: req.user._id
-            })
+            try {
+                await Notification.create({
+                    title: notifTitle,
+                    message: notifMessage,
+                    audience: 'user',
+                    targetUser: user._id,
+                    type: 'appointment-status',
+                    createdBy: req.user._id
+                })
+            } catch (notificationError) {
+                // The persisted account status is authoritative. A notification failure must not
+                // turn a successful database write into a misleading failed status update.
+                console.error('Customer status notification error:', notificationError)
+            }
         }
 
         res.json({
             success: true,
             message: `Customer status updated to ${accountStatus}`,
-            user: {
-                _id: user._id,
-                firstName: user.firstName,
-                lastName: user.lastName,
-                accountStatus: user.accountStatus,
-                statusReason: user.statusReason,
-                warningMessage: user.warningMessage,
-                statusUpdatedAt: user.statusUpdatedAt
-            }
+            user: toAccountStatusResponse(user)
         })
     } catch (error) {
         console.error('Update customer status error:', error)
+
+        if (error.code === 'INVALID_ACCOUNT_STATUS') {
+            return res.status(400).json({
+                success: false,
+                message: error.message
+            })
+        }
+
         res.status(500).json({
             success: false,
-            message: 'Server error updating customer status'
+            message: error.code === 'ACCOUNT_STATUS_NOT_PERSISTED'
+                ? 'Customer status could not be persisted'
+                : 'Server error updating customer status'
         })
     }
 })
@@ -1033,6 +1012,33 @@ router.patch(
                         appointment: appointment._id,
                         createdBy: req.user._id
                     })
+
+                    // Send transactional email notifications based on status update
+                    User.findById(appointment.user).select('email firstName').then((targetUser) => {
+                        const customerEmail = targetUser?.email || appointment.contactEmail
+                        if (!customerEmail) return
+
+                        if (status === 'cancelled') {
+                            sendAppointmentCancelledEmail({
+                                to: customerEmail,
+                                name: targetUser?.firstName,
+                                appointment,
+                                reason: cancellationReason || 'Cancelled by administration'
+                            }).catch((emailErr) => console.error('Admin cancel email error:', emailErr.message))
+                        } else if (status === 'confirmed') {
+                            sendAppointmentConfirmedEmail({
+                                to: customerEmail,
+                                name: targetUser?.firstName,
+                                appointment
+                            }).catch((emailErr) => console.error('Admin approve email error:', emailErr.message))
+                        } else if (status === 'completed') {
+                            sendAppointmentCompletedEmail({
+                                to: customerEmail,
+                                name: targetUser?.firstName,
+                                appointment
+                            }).catch((emailErr) => console.error('Admin completed email error:', emailErr.message))
+                        }
+                    }).catch(() => {})
                 } catch (notificationError) {
                     console.error(
                         'Status notification error:',
@@ -1659,25 +1665,7 @@ router.post('/notifications', async (req, res) => {
                 })
             }
 
-            // Sync recipient accountStatus in MongoDB if title indicates an enforcement action
-            const lowerTitle = cleanTitle.toLowerCase()
-            if (lowerTitle.includes('banned')) {
-                recipient.accountStatus = 'banned'
-                recipient.statusReason = cleanMessage
-                await recipient.save()
-            } else if (lowerTitle.includes('suspended') || lowerTitle.includes('blocked')) {
-                recipient.accountStatus = 'booking_blocked'
-                recipient.statusReason = cleanMessage
-                await recipient.save()
-            } else if (lowerTitle.includes('warning')) {
-                recipient.accountStatus = 'warned'
-                recipient.statusReason = cleanMessage
-                await recipient.save()
-            } else if (lowerTitle.includes('restored') || lowerTitle.includes('active')) {
-                recipient.accountStatus = 'active'
-                recipient.statusReason = ''
-                await recipient.save()
-            }
+            // Notifications communicate with the customer; enforcement changes go through /users/:id/status only.
         }
 
         const notification =

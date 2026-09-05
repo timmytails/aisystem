@@ -12,12 +12,12 @@ import yorkie from '../assets/images/style-yorkie.png'
 import mixed from '../assets/images/style-mixed.png'
 
 const CUT_STYLES = [
-    { id: '1', style: 'Fluffy Lion Cut', breed: 'Pomeranian', image: shihTzu },
-    { id: '2', style: 'Teddy Bear Cut', breed: 'Toy Poodle', image: poodle },
-    { id: '3', style: 'Coat De-Shedding', breed: 'Persian Cat', image: persian },
-    { id: '4', style: 'Flat-Top Precision Cut', breed: 'Exotic Shorthair Cat', image: yorkie },
-    { id: '5', style: 'Full Coat Trim', breed: 'Rough Collie', image: mixed },
-    { id: '6', style: 'Puppy Cut', breed: 'Maltese', image: maltese }
+    { id: '1', style: 'Teddy Bear Cut', breed: 'Toy Poodle', image: poodle },
+    { id: '2', style: 'Puppy Cut', breed: 'Shih Tzu', image: shihTzu },
+    { id: '3', style: 'Lion Trim & De-Shed', breed: 'Persian Cat', image: persian },
+    { id: '4', style: 'Summer Bob Cut', breed: 'Maltese', image: maltese },
+    { id: '5', style: 'Silky Clean Trim', breed: 'Yorkshire Terrier', image: yorkie },
+    { id: '6', style: 'Fluffy Hygiene Trim', breed: 'Mixed Companion', image: mixed }
 ]
 
 export default function StyleCarousel() {
@@ -26,12 +26,12 @@ export default function StyleCarousel() {
     const [startIndex, setStartIndex] = useState(0)
     const [isPaused, setIsPaused] = useState(false)
 
-    // Auto-swipe scroll index every 3 seconds
+    // Auto-swipe scroll index every 3.5 seconds
     useEffect(() => {
         if (isPaused) return
         const timer = setInterval(() => {
             setStartIndex((prev) => (prev + 1) % CUT_STYLES.length)
-        }, 3000)
+        }, 3500)
         return () => clearInterval(timer)
     }, [isPaused])
 
@@ -67,22 +67,22 @@ export default function StyleCarousel() {
         >
             {/* Nav Arrows Header Bar */}
             <div className='flex items-center justify-between'>
-                <div className='flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500'>
-                    <Scissors size={14} className='text-[#C25E2B]' />
+                <div className='flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#405148]'>
+                    <Scissors size={14} className='text-[#1F4D3E]' />
                     <span>Featured Pet Cuts ({startIndex + 1}/{CUT_STYLES.length})</span>
                 </div>
                 <div className='flex items-center gap-2'>
                     <button
                         onClick={prev}
                         aria-label='Previous style'
-                        className='grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:border-[#C25E2B] hover:text-[#C25E2B]'
+                        className='grid h-9 w-9 place-items-center rounded-xl border border-[#DDE4DE] bg-white text-[#405148] transition hover:border-[#1F4D3E] hover:text-[#1F4D3E] shadow-xs'
                     >
                         <ChevronLeft size={18} />
                     </button>
                     <button
                         onClick={next}
                         aria-label='Next style'
-                        className='grid h-9 w-9 place-items-center rounded-lg border border-slate-200 bg-white text-slate-700 transition hover:border-[#C25E2B] hover:text-[#C25E2B]'
+                        className='grid h-9 w-9 place-items-center rounded-xl border border-[#DDE4DE] bg-white text-[#405148] transition hover:border-[#1F4D3E] hover:text-[#1F4D3E] shadow-xs'
                     >
                         <ChevronRight size={18} />
                     </button>
@@ -94,26 +94,26 @@ export default function StyleCarousel() {
                 {visibleItems.map((item, index) => (
                     <figure
                         key={`${item.id}-${index}`}
-                        className='group flex flex-col justify-between overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xs transition-all duration-500 hover:border-slate-300 hover:shadow-md animate-in fade-in'
+                        className='group flex flex-col justify-between overflow-hidden rounded-2xl border border-[#DDE4DE] bg-white shadow-xs transition-all duration-300 hover:border-[#1F4D3E] hover:shadow-md'
                     >
-                        <div className='h-56 overflow-hidden bg-slate-100 relative'>
+                        <div className='h-60 overflow-hidden bg-[#FAFBF8] relative'>
                             <img
                                 src={item.image}
                                 alt={`${item.style} reference cut`}
-                                className='h-full w-full object-cover transition-transform duration-500 group-hover:scale-105'
+                                className='h-full w-full object-cover object-center transition-transform duration-700 group-hover:scale-105'
                             />
-                            <span className='absolute top-3 right-3 rounded-md bg-white/90 px-2.5 py-0.5 text-[11px] font-bold text-[#C25E2B] backdrop-blur-xs shadow-xs'>
+                            <span className='absolute top-3 right-3 rounded-full bg-white/95 px-3 py-1 text-[11px] font-bold text-[#1F4D3E] backdrop-blur-xs shadow-sm border border-[#DDE4DE]'>
                                 {item.breed}
                             </span>
                         </div>
-                        <figcaption className='flex items-center justify-between p-4'>
+                        <figcaption className='flex items-center justify-between p-4.5 bg-white border-t border-[#DDE4DE]'>
                             <div>
-                                <h3 className='font-serif text-base font-bold text-slate-900'>{item.style}</h3>
-                                <p className='mt-0.5 text-xs text-slate-500'>Available for Custom Booking</p>
+                                <h3 className='font-serif text-base font-bold text-[#13231B]'>{item.style}</h3>
+                                <p className='mt-0.5 text-xs text-[#68776F]'>Available for Custom Booking</p>
                             </div>
                             <button
                                 onClick={handleBook}
-                                className='rounded-lg bg-slate-900 px-3 py-2 text-xs font-bold text-white transition hover:bg-[#C25E2B]'
+                                className='rounded-xl bg-[#1F4D3E] px-4 py-2 text-xs font-bold text-white transition hover:bg-[#13231B] shadow-xs active:scale-95'
                             >
                                 Book
                             </button>
@@ -131,8 +131,8 @@ export default function StyleCarousel() {
                         aria-label={`Go to slide ${idx + 1}`}
                         className={`h-2 rounded-full transition-all duration-300 ${
                             idx === startIndex % CUT_STYLES.length
-                                ? 'w-6 bg-[#C25E2B]'
-                                : 'w-2 bg-slate-300 hover:bg-slate-400'
+                                ? 'w-6 bg-[#1F4D3E]'
+                                : 'w-2 bg-[#DDE4DE] hover:bg-[#1F4D3E]'
                         }`}
                     />
                 ))}

@@ -95,20 +95,20 @@ export default function CustomCalendar({
     }, [viewYear, viewMonth, minDateObj])
 
     return (
-        <div className='w-full rounded-2xl border border-[#eadcc9] bg-[#faf6f0] p-4 text-[#201711] shadow-xs select-none'>
+        <div className='w-full rounded-2xl border border-[#DDE4DE] bg-white p-4 text-[#13231B] shadow-xs select-none'>
             {/* Header: Month/Year navigation */}
-            <div className='flex items-center justify-between pb-3 border-b border-[#dfcfbd] mb-3'>
+            <div className='flex items-center justify-between pb-3 border-b border-[#DDE4DE] mb-3'>
                 <button
                     type='button'
                     onClick={handlePrevMonth}
                     disabled={!canPrevMonth || disabled}
-                    className='grid h-8 w-8 place-items-center rounded-xl border border-[#dfcfbd] bg-white text-[#5f4637] transition hover:bg-[#f6ede2] disabled:opacity-30 disabled:cursor-not-allowed'
+                    className='grid h-8 w-8 place-items-center rounded-xl border border-[#DDE4DE] bg-white text-[#405148] transition hover:bg-[#F6F7F2] disabled:opacity-30 disabled:cursor-not-allowed'
                     aria-label='Previous Month'
                 >
                     <ChevronLeft size={16} />
                 </button>
 
-                <h4 className='font-serif text-sm font-bold text-[#201711]'>
+                <h4 className='font-serif text-sm font-bold text-[#13231B]'>
                     {monthNames[viewMonth]} {viewYear}
                 </h4>
 
@@ -116,7 +116,7 @@ export default function CustomCalendar({
                     type='button'
                     onClick={handleNextMonth}
                     disabled={disabled}
-                    className='grid h-8 w-8 place-items-center rounded-xl border border-[#dfcfbd] bg-white text-[#5f4637] transition hover:bg-[#f6ede2] disabled:opacity-30 disabled:cursor-not-allowed'
+                    className='grid h-8 w-8 place-items-center rounded-xl border border-[#DDE4DE] bg-white text-[#405148] transition hover:bg-[#F6F7F2] disabled:opacity-30 disabled:cursor-not-allowed'
                     aria-label='Next Month'
                 >
                     <ChevronRight size={16} />
@@ -126,7 +126,7 @@ export default function CustomCalendar({
             {/* Days of week header */}
             <div className='grid grid-cols-7 gap-1 text-center mb-1.5'>
                 {dayNames.map((d) => (
-                    <span key={d} className='text-[10px] font-bold uppercase tracking-wider text-[#9b7e6b]'>
+                    <span key={d} className='text-[10px] font-bold uppercase tracking-wider text-[#68776F]'>
                         {d}
                     </span>
                 ))}
@@ -147,17 +147,17 @@ export default function CustomCalendar({
                             onClick={() => !cell.isDisabled && onChange?.(cell.dateStr)}
                             className={`relative grid h-9 w-full place-items-center rounded-xl text-xs font-semibold transition-all ${
                                 cell.isSelected
-                                    ? 'bg-[#bf5a31] text-white font-bold shadow-sm scale-105 z-10'
+                                    ? 'bg-[#1F4D3E] text-white font-bold shadow-xs scale-105 z-10'
                                     : cell.isDisabled
-                                        ? 'text-[#c2b2a3] bg-transparent cursor-not-allowed opacity-40 line-through'
+                                        ? 'text-[#BAC5BE] bg-transparent cursor-not-allowed line-through opacity-50'
                                         : cell.isToday
-                                            ? 'border-2 border-[#bf5a31] bg-white text-[#bf5a31] font-bold hover:bg-[#fff5ee]'
-                                            : 'bg-white text-[#3f2f25] border border-transparent hover:border-[#dfcfbd] hover:bg-[#fff9f4]'
+                                            ? 'border-2 border-[#1F4D3E] bg-[#EDF3EE] text-[#1F4D3E] font-bold hover:bg-[#EDF3EE]'
+                                            : 'bg-[#FAFBF8] text-[#13231B] border border-[#E5EAE6] hover:border-[#1F4D3E] hover:bg-[#EDF3EE]/50'
                             }`}
                         >
                             <span>{cell.dayNumber}</span>
                             {cell.isToday && !cell.isSelected && (
-                                <span className='absolute bottom-1 h-1 w-1 rounded-full bg-[#bf5a31]' />
+                                <span className='absolute bottom-1 h-1 w-1 rounded-full bg-[#1F4D3E]' />
                             )}
                         </button>
                     )

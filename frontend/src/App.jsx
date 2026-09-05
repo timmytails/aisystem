@@ -41,7 +41,7 @@ function AppLayout() {
     const showFooter = publicFooterRoutes.has(location.pathname)
 
     return (
-        <div className='min-h-screen bg-[#F8F7F4] text-[#0F172A] antialiased selection:bg-[#C25E2B] selection:text-white pb-16 md:pb-0'>
+        <div className='min-h-screen bg-[#F6F7F2] text-[#13231B] antialiased selection:bg-[#2F6B57] selection:text-[#F6F7F2] pb-16 md:pb-0'>
             <Header />
             <main><Outlet /></main>
             {showFooter && <Footer />}

@@ -1,74 +1,43 @@
-import { Link, NavLink, useLocation } from 'react-router-dom'
-import { CalendarDays, Dog, Home, LayoutDashboard, LogIn, Scissors, Shield, User, CalendarCheck } from 'lucide-react'
+import { CalendarCheck, CalendarDays, Dog, Home, LayoutDashboard, LogIn, Shield, Sparkles, User } from 'lucide-react'
+import { NavLink, useLocation } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 
 export default function BottomNav() {
     const { user } = useAuth()
     const location = useLocation()
+    if (['/login', '/signup', '/forgot-password', '/complete-profile', '/admin'].includes(location.pathname)) return null
 
-    // Hide bottom nav on specific fullscreen auth pages or admin dashboard if full screen
-    const hideOnRoutes = ['/login', '/signup', '/forgot-password', '/complete-profile']
-    if (hideOnRoutes.includes(location.pathname)) {
-        return null
-    }
-
-    const isUser = user && user.role === 'user'
-    const isAdmin = user && user.role === 'admin'
-
-    const navItems = isUser
+    const items = user?.role === 'user'
         ? [
-            { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
+            { label: 'Home', to: '/dashboard', icon: LayoutDashboard },
             { label: 'Book', to: '/booking', icon: CalendarDays },
-            { label: 'My Pets', to: '/my-pets', icon: Dog },
-            { label: 'Appointments', to: '/appointments', icon: CalendarCheck },
+            { label: 'Pets', to: '/my-pets', icon: Dog },
+            { label: 'Visits', to: '/appointments', icon: CalendarCheck },
             { label: 'Profile', to: '/profile', icon: User }
         ]
-        : isAdmin
-            ? [
-                { label: 'Dashboard', to: '/dashboard', icon: LayoutDashboard },
-                { label: 'Admin', to: '/admin', icon: Shield },
-                { label: 'Profile', to: '/profile', icon: User }
-            ]
+        : user?.role === 'admin'
+            ? [{ label: 'Home', to: '/', icon: Home }, { label: 'Admin', to: '/admin', icon: Shield }]
             : [
                 { label: 'Home', to: '/', icon: Home },
-                { label: 'Services', to: '/services', icon: Scissors },
+                { label: 'Services', to: '/services', icon: Sparkles },
                 { label: 'Book', to: '/booking', icon: CalendarDays },
-                { label: 'Sign In', to: '/login', icon: LogIn }
+                { label: 'Sign in', to: '/login', icon: LogIn }
             ]
 
     return (
-        <nav
-            aria-label="Mobile Navigation Bar"
-            className="fixed bottom-0 left-0 right-0 z-40 border-t border-slate-200 bg-white/95 backdrop-blur-xs shadow-xs md:hidden pb-safe"
-        >
-            <div className="flex h-14 items-center justify-around px-1">
-                {navItems.map((item) => {
+        <nav aria-label='Mobile navigation' className='fixed inset-x-3 bottom-3 z-40 rounded-[22px] border border-[#DDE4DE] bg-white/95 p-1.5 shadow-[0_14px_45px_rgba(19,35,27,.12)] backdrop-blur-xl md:hidden'>
+            <div className='flex min-h-14 items-stretch justify-around gap-1'>
+                {items.map((item) => {
                     const Icon = item.icon
                     return (
                         <NavLink
                             key={item.to}
                             to={item.to}
-                            end={item.to === '/'}
-                            className={({ isActive }) =>
-                                `relative flex flex-1 flex-col items-center justify-center py-1 text-slate-600 transition-all min-w-0 ${isActive
-                                    ? 'text-[#C25E2B] font-bold'
-                                    : 'hover:text-slate-900'
-                                }`
-                            }
+                            end={item.to === '/' || item.to === '/dashboard'}
+                            className={({ isActive }) => `flex min-w-0 flex-1 flex-col items-center justify-center rounded-[16px] px-1 py-1.5 text-[10px] font-bold transition ${isActive ? 'bg-[#EDF3EE] text-[#1F4D3E]' : 'text-[#68776F] hover:bg-[#F6F7F2] hover:text-[#13231B]'}`}
                         >
-                            {({ isActive }) => (
-                                <>
-                                    <div className="relative flex h-5 w-5 items-center justify-center">
-                                        <Icon size={18} className={isActive ? 'stroke-[2.5px] text-[#C25E2B]' : 'stroke-2 text-slate-500'} />
-                                    </div>
-                                    <span
-                                        className={`mt-0.5 w-full text-center truncate px-0.5 text-[10px] leading-tight ${isActive ? 'font-bold text-[#C25E2B]' : 'font-medium text-slate-600'
-                                            }`}
-                                    >
-                                        {item.label}
-                                    </span>
-                                </>
-                            )}
+                            <Icon size={19} />
+                            <span className='mt-1 truncate'>{item.label}</span>
                         </NavLink>
                     )
                 })}

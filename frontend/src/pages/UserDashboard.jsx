@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from 'react'
+import { createElement, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
-    AlertTriangle, Ban, CalendarDays, ChevronRight, Clock3, Eye,
-    Plus, Scissors, Settings, Dog, Cat
+    AlertTriangle, ArrowRight, Ban, CalendarDays, Cat, ChevronRight, Clock3,
+    Dog, Eye, Plus, Settings, Sparkles
 } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { useAuth } from '../context/AuthContext'
@@ -21,10 +21,10 @@ const appointmentDate = (appointment, useEnd = false) => {
 }
 
 const STATUS_STYLES = {
-    confirmed: { pill: 'bg-blue-50 text-blue-800 border-blue-200', bar: 'bg-blue-500' },
-    completed: { pill: 'bg-emerald-50 text-emerald-800 border-emerald-200', bar: 'bg-emerald-500' },
-    cancelled: { pill: 'bg-red-50 text-red-700 border-red-200', bar: 'bg-red-400' },
-    pending:   { pill: 'bg-amber-50 text-amber-800 border-amber-200', bar: 'bg-amber-400' }
+    confirmed: { pill: 'bg-[#E4F1EA] text-[#216245] border-[#C9E1D3]' },
+    completed: { pill: 'bg-[#EDF3EE] text-[#405148] border-[#D7E2DA]' },
+    cancelled: { pill: 'bg-[#FBEAEA] text-[#9E3E3E] border-[#F0CCCC]' },
+    pending: { pill: 'bg-[#FFF4DC] text-[#8A5D13] border-[#F0DEB6]' }
 }
 
 export default function UserDashboard() {
@@ -45,9 +45,7 @@ export default function UserDashboard() {
         if (user?.accountStatus === 'banned') {
             localStorage.removeItem('token')
             const msg = encodeURIComponent(user.statusReason || 'Your customer account has been suspended by salon administration.')
-            if (window.location.pathname !== '/login') {
-                window.location.href = `/login?reason=banned&msg=${msg}`
-            }
+            if (window.location.pathname !== '/login') window.location.href = `/login?reason=banned&msg=${msg}`
         }
     }, [user])
 
@@ -84,247 +82,136 @@ export default function UserDashboard() {
         }
     }
 
-    const upcoming = useMemo(() =>
-        appointments
-            .filter((a) => ['pending', 'confirmed'].includes(a.status) && appointmentDate(a, true) >= new Date())
-            .sort((a, b) => appointmentDate(a) - appointmentDate(b)),
-        [appointments]
-    )
+    const upcoming = useMemo(() => appointments
+        .filter((a) => ['pending', 'confirmed'].includes(a.status) && appointmentDate(a, true) >= new Date())
+        .sort((a, b) => appointmentDate(a) - appointmentDate(b)), [appointments])
+
     const completedCount = appointments.filter((a) => a.status === 'completed').length
+    const nextAppointment = upcoming[0]
 
     return (
-        <div className='min-h-screen bg-[#F8F7F4] px-4 py-8 text-slate-900 sm:px-6 sm:py-10'>
-            <div className='mx-auto max-w-6xl space-y-8'>
-
-                {/* ── Welcome Banner ── */}
-                <section className='overflow-hidden rounded-xl border border-slate-800 bg-[#0F172A] text-white'>
-                    <div className='px-5 py-6 sm:px-8 sm:py-8'>
-                        <div className='flex flex-col justify-between gap-6 md:flex-row md:items-center'>
+        <div className='min-h-screen bg-[#F6F7F2] text-[#13231B]'>
+            <div className='mx-auto max-w-[1480px] px-4 py-8 sm:px-6 lg:px-8 lg:py-10'>
+                <section className='grid gap-5 lg:grid-cols-[1fr_380px]'>
+                    <div className='flex min-h-[300px] flex-col justify-between rounded-[2rem] bg-[#13231B] p-6 text-white sm:p-8 lg:p-10'>
+                        <div className='flex items-start justify-between gap-6'>
                             <div>
-                                <span className='mb-2 inline-block rounded-md bg-slate-800 px-2.5 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
-                                    Customer Workspace
-                                </span>
-                                <h1 className='font-serif text-2xl font-bold tracking-tight sm:text-3xl lg:text-4xl text-white'>
-                                    Welcome back, {user.firstName}!
-                                </h1>
-                                <p className='mt-2 max-w-lg text-xs sm:text-sm text-slate-300'>
-                                    {upcoming.length
-                                        ? `You have ${upcoming.length} upcoming grooming appointment${upcoming.length === 1 ? '' : 's'} scheduled.`
-                                        : 'You currently have no upcoming grooming appointments.'}
-                                </p>
+                                <h1 className='max-w-2xl font-serif text-4xl leading-[.98] tracking-[-.02em] sm:text-5xl'>Good to see you, {user.firstName}.</h1>
+                                <p className='mt-4 max-w-xl text-sm leading-7 text-[#BFCBC4]'>Everything for your pets and grooming visits, without digging through messages or forms.</p>
                             </div>
-
-                            <div className='flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 sm:shrink-0 w-full sm:w-auto'>
-                                <Link
-                                    to='/profile'
-                                    className='inline-flex items-center justify-center gap-2 rounded-lg border border-slate-700 bg-slate-800 px-4 py-2.5 text-xs font-bold text-slate-200 transition hover:bg-slate-700 hover:text-white'
-                                >
-                                    <Settings size={15} />
-                                    <span>Profile Settings</span>
-                                </Link>
-                                <Link
-                                    to='/booking'
-                                    className='inline-flex items-center justify-center gap-2 rounded-lg bg-[#C25E2B] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#A84E20]'
-                                >
-                                    <Plus size={16} />
-                                    <span>Book Appointment</span>
-                                </Link>
-                            </div>
+                            <Link to='/profile' className='grid h-11 w-11 shrink-0 place-items-center rounded-xl border border-white/15 text-[#D7E1DB] hover:bg-white/10' aria-label='Profile settings'><Settings size={18} /></Link>
+                        </div>
+                        <div className='mt-10 flex flex-col gap-3 sm:flex-row sm:items-center'>
+                            <Link to='/booking' className='inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#E8795B] px-5 text-sm font-extrabold text-[#13231B] transition hover:bg-[#F18B70]'><Plus size={17} />Book a new visit</Link>
+                            <Link to='/appointments' className='inline-flex min-h-12 items-center justify-center gap-2 rounded-xl border border-white/15 px-5 text-sm font-extrabold text-white hover:bg-white/10'>View appointments <ArrowRight size={16} /></Link>
                         </div>
                     </div>
+
+                    <aside className='rounded-[2rem] border border-[#DDE4DE] bg-white p-6 sm:p-7'>
+                        <p className='text-[10px] font-extrabold uppercase tracking-[.16em] text-[#2F6B57]'>Next on your calendar</p>
+                        {loading ? (
+                            <div className='mt-8 h-32 animate-pulse rounded-2xl bg-[#EDF3EE]' />
+                        ) : nextAppointment ? (
+                            <button onClick={() => setSelectedAppointment(nextAppointment)} className='mt-7 w-full text-left'>
+                                <div className='flex items-center justify-between gap-3'>
+                                    <StatusPill status={nextAppointment.status} />
+                                    <Eye size={17} className='text-[#7B8981]' />
+                                </div>
+                                <p className='mt-6 font-serif text-3xl leading-none'>{nextAppointment.petName}</p>
+                                <p className='mt-2 text-sm font-bold text-[#405148]'>{nextAppointment.service}</p>
+                                <div className='mt-5 grid gap-2 border-t border-[#E5EAE6] pt-4 text-xs font-bold text-[#68776F]'>
+                                    <span className='inline-flex items-center gap-2'><CalendarDays size={14} className='text-[#2F6B57]' />{formatDateLong(nextAppointment.date)}</span>
+                                    <span className='inline-flex items-center gap-2'><Clock3 size={14} className='text-[#2F6B57]' />{formatTimeRange(nextAppointment.time, nextAppointment.endTime)}</span>
+                                </div>
+                            </button>
+                        ) : (
+                            <div className='mt-8'>
+                                <span className='grid h-12 w-12 place-items-center rounded-2xl bg-[#EDF3EE] text-[#2F6B57]'><CalendarDays size={21} /></span>
+                                <p className='mt-5 font-serif text-2xl'>Nothing booked yet.</p>
+                                <p className='mt-2 text-sm leading-6 text-[#68776F]'>Your next appointment will appear here once reserved.</p>
+                            </div>
+                        )}
+                    </aside>
                 </section>
 
-                {/* Account Enforcement Status Banner */}
                 {user?.accountStatus === 'warned' && (
-                    <div className='rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950 flex items-start gap-3 shadow-xs'>
-                        <AlertTriangle className='h-5 w-5 shrink-0 text-amber-600 mt-0.5' />
-                        <div className='space-y-1'>
-                            <p className='font-bold text-amber-900 text-sm'>Account Policy Notice</p>
-                            <p className='text-amber-800 leading-relaxed'>
-                                {user.warningMessage || user.statusReason || 'You have received a formal warning regarding multiple booking cancellations or no-show policy violations. Please attend scheduled appointments on time.'}
-                            </p>
-                        </div>
+                    <div className='mt-5 flex items-start gap-3 rounded-2xl border border-[#E8D5A8] bg-[#FFF6E3] p-5 text-sm text-[#6E4A0D]'>
+                        <AlertTriangle className='mt-0.5 h-5 w-5 shrink-0' />
+                        <div><p className='font-extrabold'>Account policy notice</p><p className='mt-1 leading-6'>{user.warningMessage || user.statusReason || 'You have received a formal warning regarding multiple booking cancellations or no-show policy violations. Please attend scheduled appointments on time.'}</p></div>
                     </div>
                 )}
 
                 {(user?.accountStatus === 'booking_blocked' || user?.accountStatus === 'banned') && (
-                    <div className='rounded-xl border border-red-300 bg-red-50 p-5 text-xs text-red-950 flex items-start gap-3 shadow-md'>
-                        <Ban className='h-6 w-6 shrink-0 text-red-600 mt-0.5' />
-                        <div className='space-y-1.5'>
-                            <p className='font-bold text-red-900 text-base'>Booking Privileges Suspended</p>
-                            <p className='text-red-800 leading-relaxed text-sm'>
-                                {user.statusReason || user.warningMessage || 'Your customer account has been blocked from scheduling new grooming appointments by salon administration due to repeated cancellations or policy violations.'}
-                            </p>
-                            <p className='text-xs font-semibold text-red-900 pt-1'>
-                                Contact TimmyTails salon support at +63 975 669 2647 for assistance.
-                            </p>
-                        </div>
+                    <div className='mt-5 flex items-start gap-3 rounded-2xl border border-[#F0CCCC] bg-[#FBEAEA] p-5 text-sm text-[#7F3333]'>
+                        <Ban className='mt-0.5 h-5 w-5 shrink-0' />
+                        <div><p className='font-extrabold'>Booking privileges suspended</p><p className='mt-1 leading-6'>{user.statusReason || user.warningMessage || 'Your customer account has been blocked from scheduling new grooming appointments by salon administration.'}</p><p className='mt-2 text-xs font-bold'>Contact TimmyTails support at +63 975 669 2647 for assistance.</p></div>
                     </div>
                 )}
 
-                {/* ── Metric Cards ── */}
-                <section className='grid gap-4 sm:grid-cols-3'>
-                    <StatCard icon={CalendarDays} label='Upcoming Bookings' value={upcoming.length} accent='#C25E2B' />
-                    <StatCard icon={Dog} label='Saved Pets' value={pets.length} accent='#0F172A' />
-                    <StatCard icon={Scissors} label='Completed Groomings' value={completedCount} accent='#475569' />
+                <section className='mt-5 grid gap-3 sm:grid-cols-3'>
+                    <Metric label='Upcoming' value={upcoming.length} icon={CalendarDays} />
+                    <Metric label='Saved pets' value={pets.length} icon={Dog} />
+                    <Metric label='Completed visits' value={completedCount} icon={Sparkles} />
                 </section>
 
-                {/* ── Upcoming Appointments Section ── */}
-                <section>
-                    <div className='mb-4 flex items-center justify-between border-b border-slate-200 pb-3'>
-                        <div className='flex items-center gap-2'>
-                            <CalendarDays size={18} className='text-[#C25E2B]' />
-                            <h2 className='font-serif text-xl font-bold text-slate-900'>Upcoming Appointments</h2>
-                        </div>
-                        <Link
-                            to='/appointments'
-                            className='inline-flex items-center gap-1 text-xs font-bold text-[#C25E2B] transition hover:underline'
-                        >
-                            <span>View All</span>
-                            <ChevronRight size={14} />
-                        </Link>
-                    </div>
-
-                    {loading ? (
-                        <LoadingCard text='Loading your schedule...' />
-                    ) : upcoming.length ? (
-                        <div className='space-y-4'>
-                            {upcoming.slice(0, 3).map((a) => {
-                                const petPhoto = a.pet?.photoUrl || a.photoUrl || pets.find((p) => p.name?.toLowerCase() === a.petName?.toLowerCase())?.photoUrl
-                                return (
-                                    <article
-                                        key={a._id}
-                                        onClick={() => setSelectedAppointment(a)}
-                                        className='group cursor-pointer overflow-hidden rounded-xl border border-slate-200 bg-white p-5 transition hover:border-slate-300'
-                                    >
-                                        <div className='flex flex-col justify-between gap-4 sm:flex-row sm:items-center'>
-                                            <div className='flex items-center gap-4'>
-                                                {/* Pet Photo / Avatar */}
-                                                <div className='h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100'>
-                                                    {petPhoto ? (
-                                                        <img src={petPhoto} alt={a.petName} className='h-full w-full object-cover' />
-                                                    ) : (
-                                                        <div className='flex h-full w-full items-center justify-center text-slate-400'>
-                                                            {a.petType === 'cat' ? <Cat size={22} /> : <Dog size={22} />}
-                                                        </div>
-                                                    )}
-                                                </div>
-
-                                                <div>
-                                                    <div className='flex flex-wrap items-center gap-2'>
-                                                        <h3 className='font-serif text-lg font-bold text-slate-900 group-hover:text-[#C25E2B] transition-colors'>
-                                                            {a.petName}
-                                                        </h3>
-                                                        <StatusPill status={a.status} />
-                                                    </div>
-                                                    <p className='mt-0.5 text-xs font-medium text-slate-600'>
-                                                        {a.service}{a.haircutStyle ? ` · Style: ${a.haircutStyle}` : ''}
-                                                    </p>
-                                                    <div className='mt-2 flex flex-wrap items-center gap-4 text-xs font-bold text-[#C25E2B]'>
-                                                        <span>{formatDateLong(a.date)}</span>
-                                                        <span className='flex items-center gap-1 font-semibold text-slate-600'>
-                                                            <Clock3 size={13} />
-                                                            {formatTimeRange(a.time, a.endTime)}
-                                                        </span>
-                                                    </div>
-                                                </div>
+                <div className='mt-10 grid gap-10 xl:grid-cols-[1.3fr_.7fr]'>
+                    <section>
+                        <SectionHeading icon={CalendarDays} title='Upcoming appointments' to='/appointments' action='See all visits' />
+                        {loading ? (
+                            <LoadingCard text='Loading your schedule…' />
+                        ) : upcoming.length ? (
+                            <div className='mt-4 overflow-hidden rounded-[1.5rem] border border-[#DDE4DE] bg-white'>
+                                {upcoming.slice(0, 4).map((a, index) => {
+                                    const petPhoto = a.pet?.photoUrl || a.photoUrl || pets.find((p) => p.name?.toLowerCase() === a.petName?.toLowerCase())?.photoUrl
+                                    return (
+                                        <button
+                                            key={a._id}
+                                            onClick={() => setSelectedAppointment(a)}
+                                            className={`group grid w-full gap-4 p-5 text-left transition hover:bg-[#FAFBF8] sm:grid-cols-[64px_1fr_auto] sm:items-center ${index ? 'border-t border-[#E5EAE6]' : ''}`}
+                                        >
+                                            <div className='h-14 w-14 overflow-hidden rounded-2xl bg-[#EDF3EE]'>
+                                                {petPhoto ? <img src={petPhoto} alt={a.petName} className='h-full w-full object-cover' /> : <div className='grid h-full w-full place-items-center text-[#2F6B57]'>{a.petType === 'cat' ? <Cat size={21} /> : <Dog size={21} />}</div>}
                                             </div>
-
-                                            <div className='flex items-center justify-between border-t border-slate-100 pt-3 sm:flex-col sm:items-end sm:border-t-0 sm:pt-0'>
-                                                <span className='font-serif text-xl font-bold text-slate-900'>
-                                                    ₱{Number(a.price).toLocaleString('en-PH')}
-                                                </span>
-                                                <span className='inline-flex items-center gap-1 rounded-md border border-slate-200 bg-slate-50 px-3 py-1 text-xs font-bold text-slate-700 group-hover:bg-[#C25E2B] group-hover:text-white group-hover:border-[#C25E2B] transition'>
-                                                    <Eye size={13} />
-                                                    <span>View Details</span>
-                                                </span>
+                                            <div className='min-w-0'>
+                                                <div className='flex flex-wrap items-center gap-2'><h3 className='font-serif text-xl'>{a.petName}</h3><StatusPill status={a.status} /></div>
+                                                <p className='mt-1 truncate text-xs font-bold text-[#68776F]'>{a.service}{a.haircutStyle ? ` · ${a.haircutStyle}` : ''}</p>
+                                                <p className='mt-2 text-xs font-extrabold text-[#2F6B57]'>{formatDateLong(a.date)} <span className='mx-1 text-[#B3BDB7]'>•</span> {formatTimeRange(a.time, a.endTime)}</p>
                                             </div>
-                                        </div>
-                                    </article>
-                                )
-                            })}
-                        </div>
-                    ) : (
-                        <EmptyAppointments />
-                    )}
-                </section>
-
-                {/* ── My Pets Overview Section ── */}
-                <section>
-                    <div className='mb-4 flex items-center justify-between border-b border-slate-200 pb-3'>
-                        <div className='flex items-center gap-2'>
-                            <Dog size={18} className='text-[#C25E2B]' />
-                            <h2 className='font-serif text-xl font-bold text-slate-900'>My Pets</h2>
-                        </div>
-                        <Link
-                            to='/my-pets'
-                            className='inline-flex items-center gap-1 text-xs font-bold text-[#C25E2B] transition hover:underline'
-                        >
-                            <span>Manage Profiles</span>
-                            <ChevronRight size={14} />
-                        </Link>
-                    </div>
-
-                    <div className='grid gap-4 sm:grid-cols-2 lg:grid-cols-3'>
-                        {pets.slice(0, 5).map((pet) => (
-                            <article
-                                key={pet._id}
-                                className='group flex items-center gap-3.5 rounded-xl border border-slate-200 bg-white p-4 transition hover:border-slate-300'
-                            >
-                                <div className='h-14 w-14 shrink-0 overflow-hidden rounded-lg border border-slate-200 bg-slate-100'>
-                                    {pet.photoUrl ? (
-                                        <img src={pet.photoUrl} alt={pet.name} className='h-full w-full object-cover' />
-                                    ) : (
-                                        <div className='flex h-full w-full items-center justify-center text-slate-400'>
-                                            {pet.type === 'cat' ? <Cat size={22} /> : <Dog size={22} />}
-                                        </div>
-                                    )}
-                                </div>
-                                <div className='min-w-0 flex-1'>
-                                    <h3 className='truncate font-serif text-base font-bold text-slate-900'>{pet.name}</h3>
-                                    <p className='truncate text-xs text-slate-600'>
-                                        {pet.type === 'cat' ? 'Cat' : 'Dog'} · {pet.breed}
-                                    </p>
-                                </div>
-                            </article>
-                        ))}
-
-                        <Link
-                            to='/my-pets'
-                            className='group flex min-h-[72px] items-center justify-center rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-center transition hover:border-[#C25E2B] hover:bg-white'
-                        >
-                            <div className='flex items-center gap-2 text-xs font-bold text-[#C25E2B]'>
-                                <Plus size={16} />
-                                <span>Add New Pet</span>
+                                            <div className='flex items-center justify-between gap-4 border-t border-[#EEF1EE] pt-3 sm:block sm:border-0 sm:pt-0 sm:text-right'>
+                                                <p className='font-serif text-xl'>₱{Number(a.price).toLocaleString('en-PH')}</p>
+                                                <span className='mt-1 inline-flex items-center gap-1 text-[11px] font-extrabold text-[#6D7B73] group-hover:text-[#1F4D3E]'>Details <ChevronRight size={13} /></span>
+                                            </div>
+                                        </button>
+                                    )
+                                })}
                             </div>
-                        </Link>
-                    </div>
-                </section>
+                        ) : <EmptyAppointments />}
+                    </section>
+
+                    <section>
+                        <SectionHeading icon={Dog} title='Your pets' to='/my-pets' action='Manage pets' />
+                        <div className='mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-1'>
+                            {pets.slice(0, 4).map((pet) => (
+                                <Link key={pet._id} to='/my-pets' className='group flex items-center gap-4 rounded-2xl border border-[#DDE4DE] bg-white p-4 transition hover:border-[#B9CAC0]'>
+                                    <div className='h-14 w-14 shrink-0 overflow-hidden rounded-2xl bg-[#EDF3EE]'>
+                                        {pet.photoUrl ? <img src={pet.photoUrl} alt={pet.name} className='h-full w-full object-cover' /> : <div className='grid h-full w-full place-items-center text-[#2F6B57]'>{pet.type === 'cat' ? <Cat size={21} /> : <Dog size={21} />}</div>}
+                                    </div>
+                                    <div className='min-w-0 flex-1'><h3 className='truncate font-serif text-lg'>{pet.name}</h3><p className='mt-1 truncate text-xs font-semibold text-[#7A8880]'>{pet.type === 'cat' ? 'Cat' : 'Dog'} · {pet.breed}</p></div>
+                                    <ChevronRight size={16} className='text-[#A6B1AA] group-hover:text-[#2F6B57]' />
+                                </Link>
+                            ))}
+                            <Link to='/my-pets' className='flex min-h-[82px] items-center justify-center gap-2 rounded-2xl border border-dashed border-[#B8C7BE] bg-[#EDF3EE]/60 text-xs font-extrabold text-[#1F4D3E] hover:bg-[#EDF3EE]'><Plus size={15} />Add another pet</Link>
+                        </div>
+                    </section>
+                </div>
             </div>
 
-            {/* Modals */}
-            {selectedAppointment && (
-                <AppointmentDetailsModal
-                    appointment={selectedAppointment}
-                    onClose={() => setSelectedAppointment(null)}
-                    onCancel={(a) => setConfirmCancelAppointment(a)}
-                    onReschedule={(a) => setRescheduleAppointment(a)}
-                />
-            )}
-
-            <RescheduleModal
-                isOpen={Boolean(rescheduleAppointment)}
-                appointment={rescheduleAppointment}
-                onClose={() => setRescheduleAppointment(null)}
-                onSuccess={() => loadData()}
-            />
-
+            {selectedAppointment && <AppointmentDetailsModal appointment={selectedAppointment} onClose={() => setSelectedAppointment(null)} onCancel={(a) => setConfirmCancelAppointment(a)} onReschedule={(a) => setRescheduleAppointment(a)} />}
+            <RescheduleModal isOpen={Boolean(rescheduleAppointment)} appointment={rescheduleAppointment} onClose={() => setRescheduleAppointment(null)} onSuccess={() => loadData()} />
             <ConfirmModal
                 isOpen={Boolean(confirmCancelAppointment)}
                 title='Cancel Appointment'
-                description={confirmCancelAppointment
-                    ? `Are you sure you want to cancel the ${confirmCancelAppointment.service} appointment for ${confirmCancelAppointment.petName}?`
-                    : ''}
+                description={confirmCancelAppointment ? `Are you sure you want to cancel the ${confirmCancelAppointment.service} appointment for ${confirmCancelAppointment.petName}?` : ''}
                 confirmText='Cancel Appointment'
                 cancelText='Keep Booking'
                 variant='danger'
@@ -336,16 +223,20 @@ export default function UserDashboard() {
     )
 }
 
-function StatCard({ icon: Icon, label, value, accent }) {
+function Metric({ icon, label, value }) {
     return (
-        <div className='rounded-xl border border-slate-200 bg-white p-5'>
-            <div className='flex items-center justify-between'>
-                <span className='text-xs font-bold uppercase tracking-wider text-slate-500'>{label}</span>
-                <span className='grid h-9 w-9 place-items-center rounded-lg bg-slate-100' style={{ color: accent }}>
-                    <Icon size={18} />
-                </span>
-            </div>
-            <p className='mt-2 font-serif text-3xl font-bold text-slate-900'>{value}</p>
+        <div className='flex items-center gap-4 rounded-2xl border border-[#DDE4DE] bg-white px-5 py-4 shadow-xs transition hover:shadow-sm'>
+            <span className='grid h-10 w-10 place-items-center rounded-xl bg-[#EDF3EE] text-[#1F4D3E]'>{createElement(icon, { size: 18 })}</span>
+            <div><p className='font-serif text-2xl font-bold leading-none text-[#13231B]'>{value}</p><p className='mt-1 text-[10px] font-extrabold uppercase tracking-[.11em] text-[#68776F]'>{label}</p></div>
+        </div>
+    )
+}
+
+function SectionHeading({ title, to, action }) {
+    return (
+        <div className='flex items-center justify-between gap-4'>
+            <h2 className='font-serif text-2xl font-bold tracking-tight text-[#13231B] sm:text-3xl'>{title}</h2>
+            <Link to={to} className='inline-flex items-center gap-1 text-xs font-extrabold text-[#2F6B57] transition hover:underline'>{action}<ChevronRight size={14} /></Link>
         </div>
     )
 }
@@ -353,36 +244,20 @@ function StatCard({ icon: Icon, label, value, accent }) {
 function StatusPill({ status }) {
     const s = STATUS_STYLES[status] ?? STATUS_STYLES.pending
     const label = status === 'confirmed' ? 'Approved' : status === 'completed' ? 'Completed' : status === 'cancelled' ? 'Cancelled' : 'Pending'
-    return (
-        <span className={`rounded-md border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wide ${s.pill}`}>
-            {label}
-        </span>
-    )
+    return <span className={`rounded-full border px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-[.09em] ${s.pill}`}>{label}</span>
 }
 
 function LoadingCard({ text }) {
-    return (
-        <div className='rounded-xl border border-slate-200 bg-white p-8 text-center text-sm font-medium text-slate-600'>
-            {text}
-        </div>
-    )
+    return <div className='mt-4 rounded-[1.5rem] border border-[#DDE4DE] bg-white p-8 text-center text-sm font-semibold text-[#68776F]'>{text}</div>
 }
 
 function EmptyAppointments() {
     return (
-        <div className='rounded-xl border border-dashed border-slate-300 bg-white p-10 text-center'>
-            <div className='mx-auto grid h-12 w-12 place-items-center rounded-full bg-slate-100 text-[#C25E2B]'>
-                <CalendarDays size={24} />
-            </div>
-            <h3 className='mt-3 font-serif text-lg font-bold text-slate-900'>No Upcoming Appointments</h3>
-            <p className='mt-1 text-xs text-slate-600'>Schedule a grooming session for your pet whenever you are ready.</p>
-            <Link
-                to='/booking'
-                className='mt-4 inline-flex items-center gap-2 rounded-lg bg-[#C25E2B] px-5 py-2.5 text-xs font-bold text-white transition hover:bg-[#A84E20]'
-            >
-                <Plus size={15} />
-                <span>Book Appointment</span>
-            </Link>
+        <div className='mt-4 rounded-[1.5rem] border border-dashed border-[#B8C7BE] bg-white p-9 text-center'>
+            <div className='mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-[#EDF3EE] text-[#2F6B57]'><CalendarDays size={22} /></div>
+            <h3 className='mt-4 font-serif text-2xl'>No upcoming appointments</h3>
+            <p className='mx-auto mt-2 max-w-sm text-sm leading-6 text-[#68776F]'>When you schedule a grooming visit, it will appear here with its status and time.</p>
+            <Link to='/booking' className='tt-primary mt-5'><Plus size={15} />Book an appointment</Link>
         </div>
     )
 }

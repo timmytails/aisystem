@@ -6,7 +6,7 @@ const sections = [
         content: (
             <>
                 <p>We collect information that you provide when you register an account, upload a pet photo, book an appointment, or contact customer support.</p>
-                <ul className='mt-3 space-y-2 list-disc pl-5 text-[#68594E]'>
+                <ul className='mt-3 space-y-2 list-disc pl-5 text-[#405148]'>
                     <li>Name, email address, and verified mobile number</li>
                     <li>Account credentials and profile settings</li>
                     <li>Pet information, including pet photo uploads, breed, age, and care instructions</li>
@@ -21,7 +21,7 @@ const sections = [
         content: (
             <>
                 <p>We use collected data solely for legitimate salon service operations, including:</p>
-                <ul className='mt-3 space-y-2 list-disc pl-5 text-[#68594E]'>
+                <ul className='mt-3 space-y-2 list-disc pl-5 text-[#405148]'>
                     <li>Managing your TimmyTails account and pet profiles</li>
                     <li>Processing, confirming, rescheduling, or cancelling grooming appointments</li>
                     <li>Sending OTP verification codes, booking reminders, and schedule updates</li>
@@ -53,12 +53,12 @@ const sections = [
         content: (
             <>
                 <p>For questions or requests regarding your personal data, contact us via:</p>
-                <div className='mt-3 space-y-1 text-sm font-medium text-[#261C14]'>
+                <div className='mt-3 space-y-1 text-sm font-medium text-[#13231B]'>
                     <p>Phone: +63 975 669 2647</p>
                     <p>Address: Baliuag City, Bulacan, Philippines</p>
                     <p>
                         Online Form:{' '}
-                        <Link to='/contact' className='font-bold text-[#C25E2B] hover:underline'>
+                        <Link to='/contact' className='font-bold text-[#2F6B57] hover:underline'>
                             Contact Us
                         </Link>
                     </p>
@@ -70,35 +70,35 @@ const sections = [
 
 export default function PrivacyPolicy() {
     return (
-        <div className='min-h-screen bg-[#F8F7F4] px-4 py-12 text-slate-900 sm:px-6 lg:px-8'>
+        <div className='min-h-screen bg-[#F6F7F2] px-4 py-12 text-[#13231B] sm:px-6 lg:px-8'>
             <div className='mx-auto max-w-4xl'>
-                <div className='mb-8 border-b border-slate-200 pb-6 text-center sm:text-left'>
-                    <span className='inline-block rounded-md bg-[#C25E2B]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#C25E2B]'>
+                <div className='mb-8 border-b border-[#2F6B57] pb-6 text-center sm:text-left'>
+                    <span className='inline-block rounded-md bg-[#2F6B57]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#2F6B57]'>
                         Legal &amp; Governance
                     </span>
-                    <h1 className='mt-2 font-serif text-3xl font-bold tracking-tight text-slate-900 sm:text-4xl'>
+                    <h1 className='mt-2 font-serif text-3xl font-bold tracking-tight text-[#13231B] sm:text-4xl'>
                         Privacy Policy
                     </h1>
-                    <p className='mt-1 text-sm text-slate-500'>
+                    <p className='mt-1 text-sm text-[#405148]'>
                         Effective date: August 2026
                     </p>
                 </div>
 
-                <div className='rounded-xl border border-slate-200 bg-white p-6 sm:p-10 space-y-8'>
-                    <p className='text-sm leading-relaxed text-slate-600 border-b border-slate-100 pb-6'>
+                <div className='rounded-xl border border-[#DDE4DE] bg-white p-6 sm:p-10 space-y-8'>
+                    <p className='text-sm leading-relaxed text-[#405148] border-b border-[#2F6B57] pb-6'>
                         TimmyTails respects your privacy. This policy explains what information we collect, how it is handled, and your choices when using our pet grooming appointment platform.
                     </p>
 
                     <div className='space-y-8'>
                         {sections.map(({ title, content }) => (
-                            <section key={title} className='border-b border-slate-100 pb-6 last:border-0 last:pb-0'>
-                                <h2 className='font-serif text-xl font-bold text-slate-900 mb-3'>{title}</h2>
-                                <div className='text-sm leading-relaxed text-slate-600'>{content}</div>
+                            <section key={title} className='border-b border-[#2F6B57] pb-6 last:border-0 last:pb-0'>
+                                <h2 className='font-serif text-xl font-bold text-[#13231B] mb-3'>{title}</h2>
+                                <div className='text-sm leading-relaxed text-[#405148]'>{content}</div>
                             </section>
                         ))}
                     </div>
 
-                    <div className='rounded-lg border border-slate-200 bg-slate-50 p-4 text-xs text-slate-600'>
+                    <div className='rounded-lg border border-[#DDE4DE] bg-[#F6F7F2] p-4 text-xs text-[#405148]'>
                         Updates to this Privacy Policy will be published directly on this page with an updated effective date.
                     </div>
                 </div>

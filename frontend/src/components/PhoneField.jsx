@@ -40,18 +40,18 @@ export default function PhoneField({
     return (
         <div className={`space-y-1.5 ${className}`}>
             {label && (
-                <label className='block text-xs font-bold uppercase tracking-[0.14em] text-[#7b5f4c]'>
+                <label className='block text-xs font-bold uppercase tracking-[0.14em] text-[#2F6B57]'>
                     {label}
                 </label>
             )}
             <div
-                className={`flex h-11 items-center rounded-xl border bg-white overflow-hidden transition ${
+                className={`flex h-11 items-center rounded-xl border bg-[#F6F7F2] overflow-hidden transition ${
                     error
-                        ? 'border-rose-400 focus-within:border-rose-500 focus-within:ring-2 focus-within:ring-rose-500/10'
-                        : 'border-[#e0d3c3] focus-within:border-[#bf5a31] focus-within:ring-2 focus-within:ring-[#bf5a31]/10'
+                        ? 'border-[#2F6B57] focus-within:border-[#2F6B57] focus-within:ring-2 focus-within:ring-[#2F6B57]/10'
+                        : 'border-[#F6F7F2] focus-within:border-[#2F6B57] focus-within:ring-2 focus-within:ring-[#2F6B57]/10'
                 } ${disabled ? 'opacity-60' : ''}`}
             >
-                <div className='flex h-full items-center gap-1.5 border-r border-[#e0d3c3] bg-[#f7f2ec] px-3 text-xs font-bold text-[#5f4637] select-none shrink-0'>
+                <div className='flex h-full items-center gap-1.5 border-r border-[#F6F7F2] bg-[#F6F7F2] px-3 text-xs font-bold text-[#405148] select-none shrink-0'>
                     <span className='text-sm leading-none'>🇵🇭</span>
                     <span>+63</span>
                 </div>
@@ -63,11 +63,11 @@ export default function PhoneField({
                     onChange={handleChange}
                     required={required}
                     disabled={disabled}
-                    className='h-full w-full bg-transparent px-3.5 text-sm font-mono text-[#2b2019] outline-none placeholder:font-sans placeholder:text-[#b5a090]'
+                    className='h-full w-full bg-transparent px-3.5 text-sm font-mono text-[#13231B] outline-none placeholder:font-sans placeholder:text-[#9AA69F]'
                 />
             </div>
-            {help && <p className='text-xs text-[#806654]'>{help}</p>}
-            {error && <p className='text-xs font-medium text-rose-600'>{error}</p>}
+            {help && <p className='text-xs text-[#2F6B57]'>{help}</p>}
+            {error && <p className='text-xs font-medium text-[#1F4D3E]'>{error}</p>}
         </div>
     )
 }
