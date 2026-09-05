@@ -23,6 +23,7 @@ export default function StylePicker({
     onSelect,
     onRetry,
     petType,
+    breed,
     photoReady,
     loading,
     generationBusy
@@ -75,6 +76,17 @@ export default function StylePicker({
                             selectedStyleId === style.id
                         const recommendation =
                             recommendationsById.get(style.id)
+                        const activeBreedClean = String(breed || '').trim().toLowerCase()
+                        const isMatchForActiveBreed = Boolean(
+                            activeBreedClean && (
+                                (Array.isArray(style.suitableBreeds) && style.suitableBreeds.some((b) => {
+                                    const bLower = b.toLowerCase()
+                                    return activeBreedClean.includes(bLower) || bLower.includes(activeBreedClean)
+                                })) ||
+                                String(style.breedSuitability || '').toLowerCase().includes(activeBreedClean) ||
+                                String(style.coatSafety || '').toLowerCase().includes(activeBreedClean)
+                            )
+                        )
                         const preview =
                             stylePreviews[style.id] || {
                                 status: 'idle'
@@ -162,15 +174,37 @@ export default function StylePicker({
                                     </span>
 
                                     <span className='block w-full flex-1 p-4'>
-                                        <span className='flex items-start justify-between gap-3'>
+                                        <span className='flex flex-wrap items-start justify-between gap-2'>
                                             <span className='font-serif text-lg font-bold'>{style.name}</span>
-                                            {selected && (
-                                                <span className='inline-flex shrink-0 items-center gap-1 rounded-full bg-[#F6F7F2] px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide text-[#2F6B57]'>
-                                                    <Check size={11} />Selected
-                                                </span>
-                                            )}
+                                            <span className='flex flex-wrap items-center gap-1.5'>
+                                                {isMatchForActiveBreed && breed && (
+                                                    <span className='inline-flex items-center gap-1 rounded-full bg-[#E4F1EA] px-2.5 py-0.5 text-[9px] font-bold text-[#1F4D3E] border border-[#2F6B57]/20'>
+                                                        ✨ Good for {breed}
+                                                    </span>
+                                                )}
+                                                {selected && (
+                                                    <span className='inline-flex shrink-0 items-center gap-1 rounded-full bg-[#2F6B57] px-2.5 py-1 text-[9px] font-bold uppercase tracking-wide text-[#F6F7F2]'>
+                                                        <Check size={11} />Selected
+                                                    </span>
+                                                )}
+                                            </span>
                                         </span>
                                         <span className='mt-1 block text-xs leading-5 text-[#2F6B57]'>{style.description}</span>
+                                        {(style.breedSuitability || style.suitableBreeds?.length) && (
+                                            <span className='mt-2.5 flex items-start gap-1.5 rounded-lg bg-[#FAFBF8] border border-[#DDE4DE] p-2 text-[11px] leading-4 text-[#1F4D3E]'>
+                                                <span className='shrink-0 font-bold'>🐾 Good for:</span>
+                                                <span className='font-medium text-[#405148]'>
+                                                    {isMatchForActiveBreed && breed ? (
+                                                        <span>
+                                                            <strong className='text-[#1F4D3E]'>{breed}</strong>
+                                                            {style.breedSuitability ? ` (${style.breedSuitability.replace(/^good for\s*/i, '')})` : ''}
+                                                        </span>
+                                                    ) : (
+                                                        style.breedSuitability || style.suitableBreeds.join(', ')
+                                                    )}
+                                                </span>
+                                            </span>
+                                        )}
                                         {recommendation?.reason && (
                                             <span className='mt-2 block border-t border-[#DDE4DE] pt-2 text-[11px] leading-5 text-[#13231B]'>{recommendation.reason}</span>
                                         )}
