@@ -1241,11 +1241,16 @@ router.post(
                         '+generatedImage +sourcePhotoHash'
                     )
 
+                const acceptedPreviewPolicies = [
+                    SOURCE_PHOTO_POLICY_VERSION,
+                    'breed-species-v5-strict-check',
+                    'species-v4-neutral-context-bound'
+                ]
+
                 if (
                     !previewRecord ||
                     previewRecord.expiresAt <= new Date() ||
-                    previewRecord.sourceVerificationPolicyVersion !==
-                        SOURCE_PHOTO_POLICY_VERSION
+                    !acceptedPreviewPolicies.includes(previewRecord.sourceVerificationPolicyVersion)
                 ) {
                     return res
                         .status(400)

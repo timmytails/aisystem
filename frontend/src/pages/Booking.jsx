@@ -817,22 +817,21 @@ export default function Booking() {
                     activePet.type || ''
                 ).toLowerCase()
 
-                if (
-                    sourceCheck?.policyVersion !==
-                        SOURCE_PHOTO_POLICY_VERSION
-                ) {
+                if (sourceCheck?.valid !== true) {
                     throw new Error(
-                        'The running backend still uses an older pet-photo verifier. Restart the updated backend, then upload the photo again.'
+                        sourceCheck?.reason ||
+                        `This photo does not pass the ${expectedPetType} verification. Upload a clear photo of the selected ${expectedPetType}.`
                     )
                 }
 
                 if (
-                    sourceCheck?.valid !== true ||
-                    sourceCheck?.detectedAnimal !==
-                        expectedPetType
+                    expectedPetType &&
+                    sourceCheck?.detectedAnimal &&
+                    !['unclear', 'other'].includes(sourceCheck.detectedAnimal) &&
+                    sourceCheck.detectedAnimal !== expectedPetType
                 ) {
                     throw new Error(
-                        `This photo does not pass the ${expectedPetType} verification. Upload a clear photo of the selected ${expectedPetType}.`
+                        `This photo appears to show a ${sourceCheck.detectedAnimal}. Please upload a clear photo of the selected ${expectedPetType}.`
                     )
                 }
 
