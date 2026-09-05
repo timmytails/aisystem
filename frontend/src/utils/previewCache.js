@@ -35,6 +35,30 @@ export const hashFile = async (file) => {
         .join('')
 }
 
+export const hashDataUrl = async (dataUrl) => {
+    try {
+        if (!dataUrl) return ''
+        const base64Index = dataUrl.indexOf('base64,')
+        if (base64Index === -1) {
+            const res = await fetch(dataUrl)
+            const blob = await res.blob()
+            return await hashFile(blob)
+        }
+        const base64 = dataUrl.slice(base64Index + 7).replace(/\s+/g, '')
+        const binary = atob(base64)
+        const bytes = new Uint8Array(binary.length)
+        for (let i = 0; i < binary.length; i++) {
+            bytes[i] = binary.charCodeAt(i)
+        }
+        const hash = await crypto.subtle.digest('SHA-256', bytes)
+        return Array.from(new Uint8Array(hash))
+            .map((byte) => byte.toString(16).padStart(2, '0'))
+            .join('')
+    } catch {
+        return ''
+    }
+}
+
 export const createPreviewCacheKey = ({
     photoHash,
     petType,

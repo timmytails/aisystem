@@ -16,6 +16,10 @@ const {
 const {
     SOURCE_PHOTO_POLICY_VERSION
 } = require('../config/photoVerificationPolicy')
+const {
+    sendAppointmentReminderTodayEmail,
+    sendAppointmentConfirmedEmail
+} = require('../services/mailer')
 
 const router = express.Router()
 
@@ -53,7 +57,7 @@ const MAX_BOOKING_DAYS = Math.max(
 
 const BOOKING_LEAD_MINUTES = Math.max(
     0,
-    Number(process.env.BOOKING_LEAD_MINUTES) || 60
+    Number(process.env.BOOKING_LEAD_MINUTES) || 30
 )
 
 const CLOSED_DAYS = new Set(
@@ -415,6 +419,50 @@ const autoCancelOverdueAppointments = async () => {
 
 // Run auto-cancel interval every 60 seconds
 setInterval(autoCancelOverdueAppointments, 60 * 1000)
+
+const sendTodayAppointmentReminders = async () => {
+    try {
+        const today = getManilaDateString()
+        const pendingReminders = await Appointment.find({
+            date: today,
+            status: { $in: ['pending', 'confirmed'] },
+            reminderSentToday: { $ne: true }
+        }).populate('user', 'email firstName lastName')
+
+        for (const appointment of pendingReminders) {
+            const recipientEmail = appointment.ownerEmail || appointment.user?.email
+            const recipientName = appointment.ownerName || (appointment.user ? `${appointment.user.firstName} ${appointment.user.lastName}`.trim() : 'Valued Customer')
+
+            if (recipientEmail) {
+                await sendAppointmentReminderTodayEmail({
+                    to: recipientEmail,
+                    name: recipientName,
+                    appointment
+                }).catch((err) => console.error(`[REMINDER ERROR] Failed to send today reminder to ${recipientEmail}:`, err))
+            }
+
+            await Notification.create({
+                title: 'Appointment Today Reminder',
+                message: `Your appointment for ${appointment.petName} is scheduled for TODAY at ${appointment.time}. Please arrive 5-10 minutes before ${appointment.time} or your slot will be automatically cancelled and will open to others.`,
+                audience: 'user',
+                targetUser: appointment.user?._id || appointment.user,
+                type: 'appointment-status',
+                appointment: appointment._id
+            }).catch(() => {})
+
+            appointment.reminderSentToday = true
+            appointment.reminderSentAt = new Date()
+            await appointment.save()
+        }
+    } catch (error) {
+        console.error('Send today appointment reminders error:', error)
+    }
+}
+
+// Run reminder checker every 5 minutes (and once on startup)
+setInterval(sendTodayAppointmentReminders, 5 * 60 * 1000)
+setTimeout(sendTodayAppointmentReminders, 5000)
+
 
 const createSlotRows = (
     date,
@@ -1029,7 +1077,7 @@ router.post(
                 .json({
                     success: false,
                     message:
-                        'Select a future time slot with enough booking notice'
+                        `This time slot has already passed or requires at least ${BOOKING_LEAD_MINUTES} minutes advance booking notice.`
                 })
         }
 
@@ -1418,6 +1466,50 @@ router.post(
                     appointment._id
                 previewRecord.usedAt = new Date()
                 await previewRecord.save()
+            }
+
+            const isAppointmentToday = appointment.date === getManilaDateString()
+            const recipientEmail = appointment.ownerEmail || req.user.email
+            const recipientName = appointment.ownerName || `${req.user.firstName} ${req.user.lastName}`.trim()
+
+            if (isAppointmentToday) {
+                // If booked today, instantly mark reminder sent and dispatch today's reminder email & notification
+                appointment.reminderSentToday = true
+                appointment.reminderSentAt = new Date()
+                await appointment.save()
+
+                if (recipientEmail) {
+                    sendAppointmentReminderTodayEmail({
+                        to: recipientEmail,
+                        name: recipientName,
+                        appointment
+                    }).catch((err) => console.error('[MAILER] Immediate today reminder failed:', err))
+
+                    sendAppointmentConfirmedEmail({
+                        to: recipientEmail,
+                        name: recipientName,
+                        appointment,
+                        isToday: true
+                    }).catch((err) => console.error('[MAILER] Booking confirmation email failed:', err))
+                }
+
+                await Notification.create({
+                    title: 'Appointment Today Reminder',
+                    message: `Your appointment for ${appointment.petName} is scheduled for TODAY at ${appointment.time}. Please arrive 5-10 minutes before ${appointment.time} or your slot will be automatically cancelled and will open to others.`,
+                    audience: 'user',
+                    targetUser: req.user._id,
+                    type: 'appointment-status',
+                    appointment: appointment._id
+                }).catch(() => {})
+            } else {
+                if (recipientEmail) {
+                    sendAppointmentConfirmedEmail({
+                        to: recipientEmail,
+                        name: recipientName,
+                        appointment,
+                        isToday: false
+                    }).catch((err) => console.error('[MAILER] Booking confirmation email failed:', err))
+                }
             }
 
             const appointmentResponse =

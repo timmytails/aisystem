@@ -59,13 +59,15 @@ const runInVertexQueue = (fn) => {
 }
 
 const parseDataUrl = (value) => {
-    const match = String(value || '').match(
-        /^data:(image\/(?:jpeg|png|webp));base64,([A-Za-z0-9+/=]+)$/
+    const str = String(value || '').trim()
+    const match = str.match(
+        /^data:(image\/(?:jpe?g|png|webp));base64,([\s\S]+)$/i
     )
 
     if (!match) return null
 
-    const buffer = Buffer.from(match[2], 'base64')
+    const base64Data = match[2].replace(/\s+/g, '')
+    const buffer = Buffer.from(base64Data, 'base64')
 
     if (
         !buffer.length ||
@@ -74,10 +76,12 @@ const parseDataUrl = (value) => {
         return null
     }
 
+    const normalizedMime = match[1].toLowerCase() === 'image/jpg' ? 'image/jpeg' : match[1].toLowerCase()
+
     return {
-        mimeType: match[1],
+        mimeType: normalizedMime,
         buffer,
-        base64: match[2],
+        base64: base64Data,
         sha256: crypto
             .createHash('sha256')
             .update(buffer)
@@ -1380,9 +1384,20 @@ router.post(
         const service = findService(
             req.body.serviceId
         )
-        const imageData = parseDataUrl(
+        let imageData = parseDataUrl(
             req.body.petPhotoDataUrl
         )
+
+        let petContext = null
+        try {
+            petContext = await resolvePetContext(req)
+        } catch (_err) {
+            // will be caught or handled below
+        }
+
+        if (!imageData && petContext?.pet?.photoUrl) {
+            imageData = parseDataUrl(petContext.pet.photoUrl)
+        }
 
         if (!service?.supportsAiPreview) {
             return res.status(400).json({
@@ -1418,8 +1433,9 @@ router.post(
         try {
             getVertexConfig()
 
-            const petContext =
-                await resolvePetContext(req)
+            if (!petContext) {
+                petContext = await resolvePetContext(req)
+            }
             const controller = new AbortController()
 
             timeout = setTimeout(
@@ -1533,9 +1549,20 @@ router.post(
         const style = findStyle(
             req.body.styleId
         )
-        const imageData = parseDataUrl(
+        let imageData = parseDataUrl(
             req.body.petPhotoDataUrl
         )
+
+        let petContext = null
+        try {
+            petContext = await resolvePetContext(req)
+        } catch (_err) {
+            // will be caught below
+        }
+
+        if (!imageData && petContext?.pet?.photoUrl) {
+            imageData = parseDataUrl(petContext.pet.photoUrl)
+        }
 
         if (!service) {
             return res.status(400).json({

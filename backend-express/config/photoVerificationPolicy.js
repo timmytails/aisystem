@@ -1,7 +1,7 @@
 const SOURCE_PHOTO_POLICY_VERSION =
-    'species-v4-neutral-context-bound'
+    'breed-species-v5-strict-check'
 
-const MIN_SPECIES_CONFIDENCE = 0.9
+const MIN_SPECIES_CONFIDENCE = 0.75
 const MAX_PHOTO_VERIFICATION_TIMEOUT_MS = 30000
 const MIN_PHOTO_VERIFICATION_TIMEOUT_MS = 10000
 const MAX_SOURCE_MODEL_TIMEOUT_MS = 15000
@@ -14,59 +14,80 @@ const supportedAnimals = new Set([
     'unclear'
 ])
 
-const buildPetPhotoClassificationPrompt = () => [
-    'You are a neutral animal species classifier for an uploaded photograph.',
-    'Classify the main visible animal only from the image pixels before considering any surrounding request.',
-    'You are not given the registered or expected pet species, and you must not infer one from filenames, metadata, breed names, or user intent.',
-    'Return dog only when the main animal visibly has canine features, cat only when it visibly has feline features, other for another animal, and unclear when the species cannot be identified confidently.',
-    'Set clearPet to false when there is no clear main animal, the animal is heavily obscured, or multiple animals are equally prominent.',
-    'Give a confidence from 0 to 1 based only on visible evidence. Do not be agreeable and do not guess.'
-].join(' ')
+const buildPetPhotoClassificationPrompt = ({
+    expectedPetType = '',
+    expectedBreed = ''
+} = {}) => [
+    'You are an expert animal species and pet breed verifier for a salon AI styling system.',
+    'Carefully inspect the main animal in the uploaded photo:',
+    '1. Identify whether the animal is a dog, cat, other animal, or unclear.',
+    '2. Identify the specific breed or breed appearance of the pet.',
+    expectedPetType
+        ? `3. Expected pet type: "${expectedPetType}"${expectedBreed ? ` with breed: "${expectedBreed}"` : ''}. Check if the photo is a matching animal and compatible with this breed.`
+        : '',
+    '4. Set clearPet to true if there is a single, clear, recognizable pet subject; set false if blurry, heavily obscured, or multiple pets.',
+    '5. Set breedMatch to true if the pet in the photo matches or is reasonably consistent with the expected breed (or mixed-breed containing similar characteristics). Set breedMatch to false if the animal is visibly a completely different breed (e.g. a Labrador/Retriever/Bulldog when Shih Tzu was entered, or a Persian cat when Siamese was entered).',
+    '6. In reason, provide a concise explanation. If there is a mismatch, state what was detected vs what was expected.'
+].filter(Boolean).join(' ')
 
 const normalizePetPhotoClassification = ({
     classification,
     expectedPetType,
+    expectedBreed = '',
     model
 }) => {
     const normalizedExpectedType = String(
         expectedPetType || ''
     ).trim().toLowerCase()
+    const normalizedExpectedBreed = String(
+        expectedBreed || ''
+    ).trim()
     const proposedAnimal = String(
         classification?.detectedAnimal || ''
     ).trim().toLowerCase()
-    const detectedAnimal = supportedAnimals.has(
-        proposedAnimal
-    )
+    const detectedAnimal = supportedAnimals.has(proposedAnimal)
         ? proposedAnimal
         : 'unclear'
-    const proposedConfidence = Number(
-        classification?.confidence
-    )
-    const confidence = Number.isFinite(
-        proposedConfidence
-    )
+    const detectedBreed = String(
+        classification?.detectedBreed || ''
+    ).trim()
+    const proposedConfidence = Number(classification?.confidence)
+    const confidence = Number.isFinite(proposedConfidence)
         ? Math.min(1, Math.max(0, proposedConfidence))
         : 0
-    const clearPet =
-        classification?.clearPet === true
+    const clearPet = classification?.clearPet === true
+    const breedMatch = classification?.breedMatch !== false
+
+    const speciesMatch = detectedAnimal === normalizedExpectedType
     const valid = Boolean(
         ['dog', 'cat'].includes(normalizedExpectedType) &&
         clearPet &&
         confidence >= MIN_SPECIES_CONFIDENCE &&
-        detectedAnimal === normalizedExpectedType
+        speciesMatch &&
+        breedMatch
     )
+
+    let reason = String(classification?.reason || '').slice(0, 300)
+    if (!valid && !reason) {
+        if (!speciesMatch) {
+            reason = `This photo appears to show a ${detectedAnimal}, but the selected pet is a ${normalizedExpectedType}.`
+        } else if (!breedMatch) {
+            reason = `This photo appears to show a ${detectedBreed || 'different breed'}, which does not match the selected ${normalizedExpectedBreed || normalizedExpectedType}.`
+        } else if (!clearPet) {
+            reason = 'Please upload a clear, focused photo of a single pet.'
+        } else {
+            reason = `The uploaded image does not clearly match the selected ${normalizedExpectedType}.`
+        }
+    }
 
     return {
         valid,
         detectedAnimal,
+        detectedBreed,
+        breedMatch,
         clearPet,
         confidence,
-        reason: String(
-            classification?.reason ||
-            (valid
-                ? `A clear ${normalizedExpectedType} is visible.`
-                : `The uploaded image does not clearly match the selected ${normalizedExpectedType}.`)
-        ).slice(0, 300),
+        reason,
         model,
         policyVersion: SOURCE_PHOTO_POLICY_VERSION
     }

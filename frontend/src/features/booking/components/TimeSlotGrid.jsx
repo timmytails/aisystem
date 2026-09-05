@@ -32,6 +32,7 @@ export default function TimeSlotGrid({ slots, selectedTime, onSelect, loading })
                     >
                         {formatTimeRange(slot.startTime, slot.endTime)}
                         {slot.status === 'booked' && <span className='ml-2 text-xs font-medium'>(Booked)</span>}
+                        {slot.status === 'past' && <span className='ml-2 text-xs font-medium'>(Passed)</span>}
                     </button>
                 )
             })}

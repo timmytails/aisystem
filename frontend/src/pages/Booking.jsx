@@ -20,6 +20,7 @@ import {
     SOURCE_PHOTO_POLICY_VERSION,
     createPreviewCacheKey,
     getCachedPreview,
+    hashDataUrl,
     hashFile,
     saveCachedPreview
 } from '../utils/previewCache'
@@ -289,8 +290,12 @@ export default function Booking() {
         if (activePet?.photoUrl) {
             setPhotoPreview(activePet.photoUrl)
             setPhotoDataUrl(activePet.photoUrl)
-            setPhotoHash(`pet-profile-${activePet._id || activePet.name}-${String(activePet.photoUrl).slice(-20)}`)
             setConsent(true)
+            hashDataUrl(activePet.photoUrl).then((hash) => {
+                setPhotoHash(hash || `pet-profile-${activePet._id || activePet.name}`)
+            }).catch(() => {
+                setPhotoHash(`pet-profile-${activePet._id || activePet.name}`)
+            })
         } else {
             setPhotoPreview('')
             setPhotoDataUrl('')
@@ -311,7 +316,7 @@ export default function Booking() {
             setRecommendationsReady(false)
         })
         aiPreviewApi.getRecommendations({
-            serviceId: selectedService.id,
+            serviceId: selectedService?.id || '',
             petId: activePetId,
             petName: activePet.name,
             petType: activePet.type || 'dog',
@@ -416,15 +421,20 @@ export default function Booking() {
         }
     }
 
-    const resetForPetChange = () => {
+    const resetForPetChange = (targetPet = null) => {
+        const pet = targetPet || activePet
         setRecommendations([])
         setRecommendationsReady(false)
-        if (activePet?.photoUrl) {
+        if (pet?.photoUrl) {
             resetStyleGallery({ clearPhoto: false })
-            setPhotoPreview(activePet.photoUrl)
-            setPhotoDataUrl(activePet.photoUrl)
-            setPhotoHash(`pet-profile-${activePet._id || activePet.name}-${String(activePet.photoUrl).slice(-20)}`)
+            setPhotoPreview(pet.photoUrl)
+            setPhotoDataUrl(pet.photoUrl)
             setConsent(true)
+            hashDataUrl(pet.photoUrl).then((hash) => {
+                setPhotoHash(hash || `pet-profile-${pet._id || pet.name}`)
+            }).catch(() => {
+                setPhotoHash(`pet-profile-${pet._id || pet.name}`)
+            })
         } else {
             setConsent(false)
             resetStyleGallery({ clearPhoto: true })
@@ -567,13 +577,13 @@ export default function Booking() {
     }
 
     const getCommonPreviewPayload = () => ({
-        petPhotoDataUrl: photoDataUrl,
-        serviceId: selectedService.id,
-        petId: activePetId,
-        petName: activePet.name,
-        petType: activePet.type || 'dog',
-        breed: activePet.breed,
-        coatType: activePet.coatType || '',
+        petPhotoDataUrl: photoDataUrl || activePet?.photoUrl || '',
+        serviceId: selectedService?.id || '',
+        petId: activePetId || (activePet?._id ? String(activePet._id) : ''),
+        petName: activePet?.name || '',
+        petType: activePet?.type || 'dog',
+        breed: activePet?.breed || '',
+        coatType: activePet?.coatType || '',
         consent: true
     })
 
@@ -1262,8 +1272,8 @@ export default function Booking() {
                                 <div className='mb-4 flex flex-wrap items-center justify-between gap-3'>
                                     <div><h3 className='font-serif text-lg font-bold text-[#261C14]'>Pet Profile</h3><p className='mt-0.5 text-xs text-[#68594E]'>Choose a saved pet or enter details for a new companion.</p></div>
                                     <div className='inline-flex rounded-lg bg-[#FAF7F2] p-1 border border-[#E2D9C8]'>
-                                        <button type='button' onClick={() => { setPetMode('existing'); resetForPetChange() }} disabled={!pets.length} className={`rounded-md px-4 py-1.5 text-xs font-bold ${petMode === 'existing' ? 'bg-white shadow-xs text-[#261C14]' : 'text-[#68594E]'} disabled:opacity-40`}>Saved Pets</button>
-                                        <button type='button' onClick={() => { setPetMode('new'); resetForPetChange() }} className={`rounded-md px-4 py-1.5 text-xs font-bold ${petMode === 'new' ? 'bg-white shadow-xs text-[#261C14]' : 'text-[#68594E]'}`}>New Pet</button>
+                                        <button type='button' onClick={() => { setPetMode('existing'); const currentPet = pets.find((p) => p._id === selectedPetId) || pets[0]; resetForPetChange(currentPet) }} disabled={!pets.length} className={`rounded-md px-4 py-1.5 text-xs font-bold ${petMode === 'existing' ? 'bg-white shadow-xs text-[#261C14]' : 'text-[#68594E]'} disabled:opacity-40`}>Saved Pets</button>
+                                        <button type='button' onClick={() => { setPetMode('new'); resetForPetChange(newPet) }} className={`rounded-md px-4 py-1.5 text-xs font-bold ${petMode === 'new' ? 'bg-white shadow-xs text-[#261C14]' : 'text-[#68594E]'}`}>New Pet</button>
                                     </div>
                                 </div>
 
@@ -1275,7 +1285,7 @@ export default function Booking() {
                                             const unvax = pet.vaccinated === false || pet.vaccinated === 'no' || pet.vaccinated === 'false'
                                             const selected = selectedPetId === pet._id
                                             return (
-                                                <button key={pet._id} type='button' onClick={() => { setSelectedPetId(pet._id); resetForPetChange() }} aria-pressed={selected} className={`flex items-start gap-3 rounded-xl border p-4 text-left transition ${selected ? 'border-[#C25E2B] bg-[#C25E2B]/5 ring-1 ring-[#C25E2B]' : 'border-[#E2D9C8] bg-white hover:border-[#C25E2B]/60'}`}>
+                                                <button key={pet._id} type='button' onClick={() => { setSelectedPetId(pet._id); resetForPetChange(pet) }} aria-pressed={selected} className={`flex items-start gap-3 rounded-xl border p-4 text-left transition ${selected ? 'border-[#C25E2B] bg-[#C25E2B]/5 ring-1 ring-[#C25E2B]' : 'border-[#E2D9C8] bg-white hover:border-[#C25E2B]/60'}`}>
                                                     <span className='grid h-12 w-12 shrink-0 place-items-center overflow-hidden rounded-lg border border-[#E2D9C8] bg-[#FAF7F2] text-[#2B4C3F]'>
                                                         {pet.photoUrl ? (
                                                             <img src={pet.photoUrl} alt={pet.name} className='h-full w-full object-cover' />
